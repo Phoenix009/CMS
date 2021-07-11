@@ -7,7 +7,7 @@ import AuthLayout from "../layouts/AuthLayout";
 // components
 import Page from "../components/Page";
 import { MHidden } from "../components/@material-extend";
-import { LoginForm } from "../components/authentication/login";
+import { GunmanForm } from "../components/authentication/Gunman";
 import AuthSocial from "../components/authentication/AuthSocial";
 
 // ----------------------------------------------------------------------
@@ -39,10 +39,10 @@ const ContentStyle = styled("div")(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Login() {
+export default function Gunmen() {
 	return (
 		<RootStyle title="Login | Minimal-UI">
-			<AuthLayout>
+			{/* <AuthLayout>
 				Don’t have an account? &nbsp;
 				<Link
 					underline="none"
@@ -64,13 +64,13 @@ export default function Login() {
 						alt="login"
 					/>
 				</SectionStyle>
-			</MHidden>
+			</MHidden> */}
 
 			<Container maxWidth="sm">
 				<ContentStyle>
 					<Stack sx={{ mb: 5 }}>
 						<Typography variant="h4" gutterBottom>
-							Sign in to Minimal
+							Gunman
 						</Typography>
 						<Typography sx={{ color: "text.secondary" }}>
 							Enter your details below.
@@ -78,7 +78,7 @@ export default function Login() {
 					</Stack>
 					<AuthSocial />
 
-					<LoginForm />
+					<GunmanForm />
 
 					<MHidden width="smUp">
 						<Typography
