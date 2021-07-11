@@ -23,6 +23,11 @@ const sidebarConfig = [
 		icon: getIcon(peopleFill),
 	},
 	{
+		title: "gunmen",
+		path: "/dashboard/gunmen",
+		icon: getIcon(peopleFill),
+	},
+	{
 		title: "product",
 		path: "/dashboard/products",
 		icon: getIcon(shoppingBagFill),
