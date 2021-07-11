@@ -43,17 +43,6 @@ export default function Router() {
 				{ path: "*", element: <Navigate to="/404" /> },
 			],
 		},
-		{
-			path: "/forms",
-			element: <LogoOnlyLayout />,
-			children: [
-				{ path: "gunmen", element: <Gunmen /> },
-				{ path: "Vehicle", element: <Vehicle /> },
-				{ path: "404", element: <NotFound /> },
-				{ path: "/", element: <Attendance /> },
-				{ path: "*", element: <Navigate to="/404" /> },
-			],
-		},
 
 		{ path: "*", element: <Navigate to="/404" replace /> },
 	]);

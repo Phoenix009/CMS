@@ -41,8 +41,8 @@ const ContentStyle = styled("div")(({ theme }) => ({
 
 export default function Register() {
 	return (
-		<RootStyle title="Register | Minimal-UI">
-			<AuthLayout>
+		<RootStyle title="New User">
+			{/* <AuthLayout>
 				Already have an account? &nbsp;
 				<Link
 					underline="none"
@@ -52,12 +52,12 @@ export default function Register() {
 				>
 					Login
 				</Link>
-			</AuthLayout>
+			</AuthLayout> */}
 
 			<MHidden width="mdDown">
 				<SectionStyle>
 					<Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-						Manage the job more effectively with Minimal
+						Add New User
 					</Typography>
 					<img
 						alt="register"
@@ -70,14 +70,14 @@ export default function Register() {
 				<ContentStyle>
 					<Box sx={{ mb: 5 }}>
 						<Typography variant="h4" gutterBottom>
-							Get started absolutely free.
+							Add new user to company account.
 						</Typography>
 						<Typography sx={{ color: "text.secondary" }}>
-							Free forever. No credit card needed.
+							Add new employee.
 						</Typography>
 					</Box>
 
-					<AuthSocial />
+					{/* <AuthSocial /> */}
 
 					<RegisterForm />
 
