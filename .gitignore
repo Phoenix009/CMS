@@ -167,6 +167,7 @@ sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/django,react
 {"mode":"full","isActive":false}
+<<<<<<< HEAD
 /client/node_modules
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
@@ -193,3 +194,6 @@ sketch
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+=======
+client/node_modules
+>>>>>>> 41c413222912585d191bff8f01499aa1ade3307f
