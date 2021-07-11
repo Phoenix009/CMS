@@ -167,3 +167,4 @@ sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/django,react
 {"mode":"full","isActive":false}
+client/node_modules
