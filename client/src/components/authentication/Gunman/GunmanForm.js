@@ -42,9 +42,9 @@ export default function GunmanForm() {
 
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
 
-  const handleShowPassword = () => {
-    setShowPassword((show) => !show);
-  };
+  // const handleShowPassword = () => {
+  //   setShowPassword((show) => !show);
+  // };
 
   return (
     <FormikProvider value={formik}>
@@ -53,11 +53,43 @@ export default function GunmanForm() {
           <TextField
             fullWidth
             autoComplete="Name"
-            // type="email"
             label="Name"
-            // {...getFieldProps('email')}
-            // error={Boolean(touched.email && errors.email)}
-            // helperText={touched.email && errors.email}
+           
+          />
+           <TextField
+            fullWidth
+            // autoComplete="Date"
+            type="datetime"
+            label="In Date"
+           
+          />
+          <TextField
+            fullWidth
+            // autoComplete="Time"
+            type="time"
+            label="In Time"
+           
+          />
+          <TextField
+            fullWidth
+            // autoComplete="Date"
+            type="date"
+            label="Out Date"
+           
+          />
+          <TextField
+            fullWidth
+            // autoComplete="Time"
+            type="time"
+            label="Out Time"
+           
+          />
+          <TextField
+            fullWidth
+            // autoComplete="Time"
+            type="time"
+            label="Out Time"
+           
           />
 
           {/* <TextField
