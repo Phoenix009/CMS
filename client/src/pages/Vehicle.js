@@ -39,7 +39,7 @@ const ContentStyle = styled("div")(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Gunmen() {
+export default function Vehicle() {
 	return (
 		<RootStyle title="Login | Minimal-UI">
 			<AuthLayout>
