@@ -5,7 +5,9 @@ import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 //
 import Login from "./pages/Login";
 import Gunmen from "./pages/Gunmen";
+import Vehicle from "./pages/Vehicle";
 import Register from "./pages/Register";
+import Attendance from "./pages/Attendance";
 import DashboardApp from "./pages/DashboardApp";
 import Products from "./pages/Products";
 import Blog from "./pages/Blog";
@@ -46,9 +48,9 @@ export default function Router() {
 			element: <LogoOnlyLayout />,
 			children: [
 				{ path: "gunmen", element: <Gunmen /> },
-				{ path: "register", element: <Register /> },
+				{ path: "Vehicle", element: <Vehicle /> },
 				{ path: "404", element: <NotFound /> },
-				{ path: "/", element: <Navigate to="/dashboard" /> },
+				{ path: "/", element: <Attendance /> },
 				{ path: "*", element: <Navigate to="/404" /> },
 			],
 		},
