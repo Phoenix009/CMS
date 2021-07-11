@@ -5,9 +5,8 @@ import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 //
 import Login from "./pages/Login";
 import Gunmen from "./pages/Gunmen";
-import Vehicle from "./pages/Vehicle";
 import Register from "./pages/Register";
-import Attendance from "./pages/Attendance";
+import AddGunman from "./pages/AddGunman";
 import DashboardApp from "./pages/DashboardApp";
 import Products from "./pages/Products";
 import Blog from "./pages/Blog";
@@ -28,6 +27,8 @@ export default function Router() {
 				},
 				{ path: "app", element: <DashboardApp /> },
 				{ path: "user", element: <User /> },
+				{ path: "gunmen", element: <Gunmen /> },
+				// { path: "gunmen/forms", element: <GunmanForm /> },
 				{ path: "products", element: <Products /> },
 				{ path: "blog", element: <Blog /> },
 			],
@@ -40,6 +41,16 @@ export default function Router() {
 				{ path: "register", element: <Register /> },
 				{ path: "404", element: <NotFound /> },
 				{ path: "/", element: <Navigate to="/dashboard" /> },
+				{ path: "*", element: <Navigate to="/404" /> },
+			],
+		},
+		{
+			path: "/forms",
+			element: <LogoOnlyLayout />,
+			children: [
+				{ path: "gunmen", element: <AddGunman /> },
+				// { path: "Vehicle", element: <Vehicle /> },
+				{ path: "404", element: <NotFound /> },
 				{ path: "*", element: <Navigate to="/404" /> },
 			],
 		},
