@@ -7,11 +7,16 @@ class AttendanceSheetAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'sheet_created')
     list_per_page = 20
 
+class GunmenAdmin(admin.ModelAdmin):
+    list_display = ('id', 'first_name','last_name', 'vendor')
+    list_display_links = ('id', 'vendor')
+    search_fields = ('first_name', 'last_name', 'vendor')
+    list_per_page = 20 
 
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'last_name','entry_time', 'exit_time', 'vendor', 'branch_id')
-    list_display_links = ('id', 'first_name', 'last_name')
-    search_fields = ('first_name', 'last_name','vendor')
+    list_display = ('id', 'gunmen','entry_time', 'exit_time', 'branch_id')
+    list_display_links = ('id', 'gunmen')
+    search_fields = ('gunmen',)
     list_per_page = 20 
 
 class IssueAdmin(admin.ModelAdmin):
@@ -22,3 +27,4 @@ class IssueAdmin(admin.ModelAdmin):
 admin.site.register(Attendance, AttendanceAdmin)
 admin.site.register(AttendanceSheet, AttendanceSheetAdmin)
 admin.site.register(Issue, IssueAdmin)
+admin.site.register(Gunmen, GunmenAdmin)

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from vendors.models import Vendor
+from vendors.models import Vendor, Gunmen
 from users.models import Branch
 from datetime import datetime
 
@@ -14,13 +14,6 @@ class AttendanceSheet(models.Model):
         return f'{self.sheet_created} -> {self.verified}'
 
 
-class Gunmen(models.Model):
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, blank=True)
-
-
-
 class Attendance(models.Model):
     entry_time = models.DateTimeField(default=datetime.now)
     exit_time = models.DateTimeField(blank=True,null=True)
@@ -29,8 +22,9 @@ class Attendance(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
     attendance_sheet = models.ForeignKey(AttendanceSheet, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def __str__(self) -> str:
-        return f'{self.first_name} {self.last_name}'
+    def __str__(self):
+        return f'{self.gunmen.first_name} {self.gunmen.last_name}'
+
 
 class Issue(models.Model):
     comment = models.CharField(max_length=200)

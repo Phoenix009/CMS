@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 
+
 class Vendor(models.Model):
     name = models.CharField(max_length=200)
     address = models.CharField(max_length=1000)
@@ -13,3 +14,13 @@ class Vendor(models.Model):
     
     def __str__(self):
         return f'{self.name} -> {self.email}'
+
+
+class Gunmen(models.Model):
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self) -> str:
+        return f'{self.first_name} {self.last_name}'
+
