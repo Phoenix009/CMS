@@ -3,21 +3,32 @@ from rest_framework import mixins
 from rest_framework import generics
 from attendance.serializers import AttendanceSerializer
 from attendance.models import Attendance
+from vendors.models import Gunmen
+from vendors.serializers import GunmenSerializer
 
-# Create your views here.
 
-# ListView for Gunmen
-class GunmenList(generics.ListAPIView):
-    serializer_class = GunmenSerializer
+class GunmenList(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
     queryset = Gunmen.objects.all()
+    serializer_class = GunmenSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
-class AttendanceList(generics.ListAPIView):
-    serializer_class = AttendanceSerializer
+class AttendanceList(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
     queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
 
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
-    
-# ListView for Vehicles
-
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
