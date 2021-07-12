@@ -19,19 +19,30 @@ import {
 	Typography,
 	TableContainer,
 	TablePagination,
+	Breadcrumbs,
+	Link,
+	TextField,
+	Paper,
+	Grid,
+	FormLabel,
+	InputLabel,
+	Select,
+	FormControl,
+	MenuItem,
+	FormHelperText
 } from "@material-ui/core";
 // components
-import Page from "../components/Page";
-import Label from "../components/Label";
-import Scrollbar from "../components/Scrollbar";
-import SearchNotFound from "../components/SearchNotFound";
+import Page from "../../components/Page";
+import Label from "../../components/Label";
+import Scrollbar from "../../components/Scrollbar";
+import SearchNotFound from "../../components/SearchNotFound";
 import {
 	UserListHead,
 	UserListToolbar,
 	UserMoreMenu,
-} from "../components/_dashboard/user";
+} from "../../components/_dashboard/user";
 //
-import USERLIST from "../_mocks_/user";
+import USERLIST from "../../_mocks_/user";
 
 // ----------------------------------------------------------------------
 
@@ -86,7 +97,6 @@ export default function User() {
 	const [orderBy, setOrderBy] = useState("name");
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
-
 	const handleRequestSort = (event, property) => {
 		const isAsc = orderBy === property && order === "asc";
 		setOrder(isAsc ? "desc" : "asc");
@@ -145,9 +155,20 @@ export default function User() {
 	const isUserNotFound = filteredUsers.length === 0;
 
 	return (
+		<>
+		
 		<Page title="Gunmen">
-			<Container>
-				<Stack
+			
+			<Container >
+			
+			<Container style={{padding:'20px', margin:'20px'}}><Breadcrumbs aria-label="breadcrumb">
+				<RouterLink color="inherit" to="/" onClick={handleClick}>
+					Dashbord
+				</RouterLink>
+				<Typography color="textPrimary">Gunmen's Attendance</Typography>
+			</Breadcrumbs></Container>
+
+				{/* <Stack
 					direction="row"
 					alignItems="center"
 					justifyContent="space-between"
@@ -164,7 +185,51 @@ export default function User() {
 					>
 						New Gunman
 					</Button>
-				</Stack>
+				</Stack> */}
+				
+				<Card style={{padding:'20px', marginBottom : '10px'}}>
+					<Grid container spacing={3} direction={{ xs: 'column', sm: 'row' }}>
+						<Grid item xs={12} sm={12} lg={3}>
+							<TextField
+								fullWidth
+								name="first_name"
+								label="First name"
+							/>
+						</Grid>
+						<Grid item xs={12} sm={12} lg={3}>
+							<TextField
+								fullWidth
+								name="last_name"
+								label="Lirst name"
+							/>
+						</Grid>
+						<Grid item xs={12} sm={12} lg={3}>
+							<TextField
+								fullWidth
+								name="email"
+								label="Email"
+							/>
+						</Grid>
+						<Grid item xs={12} sm={12} lg={3}>
+							<FormControl variant="outlined" fullWidth >
+								<InputLabel id="demo-simple-select-outlined-label">Vendor</InputLabel>
+									<Select
+									labelId="demo-simple-select-outlined-label"
+									id="demo-simple-select-outlined"
+									label="Age"
+									>
+								<MenuItem value="">
+									<em>None</em>
+								</MenuItem>
+								<MenuItem value={10}>Ten</MenuItem>
+								<MenuItem value={20}>Twenty</MenuItem>
+								<MenuItem value={30}>Thirty</MenuItem>
+								</Select>
+							</FormControl>
+						</Grid>
+					</Grid>
+				</Card>
+				
 
 				<Card>
 					<UserListToolbar
@@ -322,5 +387,6 @@ export default function User() {
 				</Card>
 			</Container>
 		</Page>
+		</>
 	);
 }

@@ -4,7 +4,7 @@ import DashboardLayout from "./layouts/dashboard";
 import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 //
 import Login from "./pages/Login";
-import Gunmen from "./pages/Gunmen";
+import Gunmen from "./pages/Gunmen/Gunmen";
 import Register from "./pages/Register";
 import AddGunman from "./pages/AddGunman";
 import DashboardApp from "./pages/DashboardApp";
