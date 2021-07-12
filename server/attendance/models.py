@@ -14,12 +14,17 @@ class AttendanceSheet(models.Model):
         return f'{self.sheet_created} -> {self.verified}'
 
 
-class Attendance(models.Model):
+class Gunmen(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
+    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, blank=True)
+
+
+
+class Attendance(models.Model):
     entry_time = models.DateTimeField(default=datetime.now)
     exit_time = models.DateTimeField(blank=True,null=True)
-    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, blank=True)
+    gunmen = models.ForeignKey(Gunmen, on_delete=models.SET_NULL, null=True, blank=True)
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL,null=True, blank=True)
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
     attendance_sheet = models.ForeignKey(AttendanceSheet, on_delete=models.SET_NULL, null=True, blank=True)
