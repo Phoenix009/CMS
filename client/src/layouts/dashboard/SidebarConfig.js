@@ -23,6 +23,11 @@ const sidebarConfig = [
 		icon: getIcon(peopleFill),
 	},
 	{
+		title: "Branch",
+		path: "/dashboard/branch",
+		icon: getIcon(peopleFill),
+	},
+	{
 		title: "gunmen",
 		path: "/dashboard/gunmen",
 		icon: getIcon(peopleFill),

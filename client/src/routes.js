@@ -12,7 +12,7 @@ import Products from "./pages/Products";
 import Blog from "./pages/Blog";
 import User from "./pages/User";
 import NotFound from "./pages/Page404";
-
+import Branch from "./pages/branch"
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -28,6 +28,7 @@ export default function Router() {
 				{ path: "app", element: <DashboardApp /> },
 				{ path: "employees", element: <User /> },
 				{ path: "gunmen", element: <Gunmen /> },
+				{ path: "branch", element: <Branch /> },
 				// { path: "gunmen/forms", element: <GunmanForm /> },
 				{ path: "products", element: <Products /> },
 				{ path: "blog", element: <Blog /> },
