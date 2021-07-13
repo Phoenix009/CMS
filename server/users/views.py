@@ -1,11 +1,12 @@
 from django.contrib.auth.models import User
+from .models import Branch, Region
+from .serializers import BranchSerializer, RegionSerializer
 from users.serializers import UserSerializer
 from rest_framework import mixins
 from rest_framework import generics
 
-class UserList(mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
-                  generics.GenericAPIView):
+
+class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -15,10 +16,13 @@ class UserList(mixins.ListModelMixin,
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-class UserDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
+
+class UserDetail(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
+):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -31,9 +35,12 @@ class UserDetail(mixins.RetrieveModelMixin,
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
-class BranchList(mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericAPIView):
+
+class BranchList(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
     queryset = Branch.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = BranchSerializer
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -41,12 +48,15 @@ class BranchList(mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericA
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-class BranchDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
+
+class BranchDetail(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
+):
     queryset = Branch.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = BranchSerializer
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
@@ -56,4 +66,35 @@ class BranchDetail(mixins.RetrieveModelMixin,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-                
+
+
+class RegionList(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
+    queryset = Region.objects.all()
+    serializer_class = RegionSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class RegionDetail(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
+):
+    queryset = Region.objects.all()
+    serializer_class = RegionSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
