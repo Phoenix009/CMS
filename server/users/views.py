@@ -1,15 +1,16 @@
 from django.contrib.auth.models import User
 from .models import Branch, Region
-from .serializers import BranchSerializer, RegionSerializer , UserSerializer
+from .serializers import BranchSerializer, RegionSerializer, UserSerializer
 from rest_framework import mixins
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filter
+from rest_framework import filters
+
 
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    
+
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
