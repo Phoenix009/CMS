@@ -3,10 +3,12 @@ from rest_framework import mixins
 from rest_framework import generics
 from attendance.serializers import AttendanceSerializer
 from attendance.models import Attendance
-from vendors.models import Gunmen
-from vendors.serializers import GunmenSerializer
 
- 
+# from vendors.models import Gunmen
+# from vendors.serializers import GunmenSerializer
+from rest_framework import filters
+
+
 class AttendanceList(
     mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
 ):

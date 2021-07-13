@@ -1,3 +1,4 @@
+from vendors.models import Vendor
 from django.contrib.auth.models import User
 from users.models import Branch
 from vendors.models import Gunmen
@@ -30,7 +31,7 @@ class AttendanceSheetSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttendanceSheet
         fields = ["sheet_created", "invoice", "verified"]
- 
+
 
 class AttendanceSerializer(serializers.ModelSerializer):
     gunmen = RelatedFieldAlternative(
@@ -59,9 +60,15 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 
 class IssueSerializer(serializers.ModelSerializer):
-    reverted_by = UserSerializer()
-    vendor = VendorSerializer()
-    sheet = AttendanceSheetSerializer()
+    reverted_by = RelatedFieldAlternative(
+        queryset=User.objects.all(), serializer=UserSerializer
+    )
+    vendor = RelatedFieldAlternative(
+        queryset=Vendor.objects.all(), serializer=VendorSerializer
+    )
+    sheet = RelatedFieldAlternative(
+        queryset=AttendanceSheet.objects.all(), serializer=AttendanceSheetSerializer
+    )
 
     class Meta:
         model = Issue
