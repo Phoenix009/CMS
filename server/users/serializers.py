@@ -43,7 +43,7 @@ class RegionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Region
-        fields = ["name", "address", "regional_officer"]
+        fields = ["id", "name", "address", "regional_officer"]
 
 
 class BranchSerializer(serializers.ModelSerializer):
@@ -56,4 +56,4 @@ class BranchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Branch
-        fields = ["name", "address", "branch_manager", "region"]
+        fields = ["id", "name", "address", "branch_manager", "region"]
