@@ -7,9 +7,9 @@ from vendors.models import Gunmen
 from vendors.serializers import GunmenSerializer
 
 
-class AttendanceList(mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
-                  generics.GenericAPIView):
+class AttendanceList(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
 
@@ -18,4 +18,3 @@ class AttendanceList(mixins.ListModelMixin,
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
-
