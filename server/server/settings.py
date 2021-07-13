@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django-filters',
+    'django_filters',
     'users.apps.UsersConfig',
     'vendors.apps.VendorsConfig',
     'attendance.apps.AttendanceConfig',
