@@ -5,7 +5,7 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@material-ui/core';
 // components
-import Logo from '../../components/Logo';
+import Logo from '../../components/CMS/CMS';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';

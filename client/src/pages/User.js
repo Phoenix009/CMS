@@ -1,7 +1,7 @@
 import { filter } from "lodash";
 import { Icon } from "@iconify/react";
 import { sentenceCase } from "change-case";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
 // material
@@ -19,6 +19,7 @@ import {
 	Typography,
 	TableContainer,
 	TablePagination,
+	Breadcrumbs
 } from "@material-ui/core";
 // components
 import Page from "../components/Page";
@@ -32,6 +33,8 @@ import {
 } from "../components/_dashboard/user";
 //
 import USERLIST from "../_mocks_/user";
+import AddEmployee from '../components/AddEmployee/AddEmloyee';
+import { getAllEmployees } from "../api/index";
 
 // ----------------------------------------------------------------------
 
@@ -86,6 +89,12 @@ export default function User() {
 	const [orderBy, setOrderBy] = useState("name");
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [isAddEmployeeOpen, setAddEmployeeOpen] = useState(false);
+	const [employees, setEmployees] = useState([]);
+
+	
+	
+	// const handleClose
 
 	const handleRequestSort = (event, property) => {
 		const isAsc = orderBy === property && order === "asc";
@@ -144,6 +153,22 @@ export default function User() {
 
 	const isUserNotFound = filteredUsers.length === 0;
 
+
+	const getData = async ()=>{
+		try{
+			
+			const data = await getAllEmployees();
+			console.log(data);
+		}catch(error){
+			console.log(error);
+		}
+	}
+
+	useEffect(() => {
+		getData();
+	}, []);
+
+
 	return (
 		<Page title="User | Minimal-UI">
 			<Container>
@@ -153,19 +178,25 @@ export default function User() {
 					justifyContent="space-between"
 					mb={5}
 				>
-					<Typography variant="h4" gutterBottom>
-						User
-					</Typography>
+					<Breadcrumbs aria-label="breadcrumb">
+						<RouterLink color="inherit" to="/" onClick={handleClick}>
+							Dashboard
+						</RouterLink>
+						<Typography color="textPrimary">Employees</Typography>
+						</Breadcrumbs>
 					<Button
 						variant="contained"
-						component={RouterLink}
-						to="/register"
+						onClick={()=>{setAddEmployeeOpen(true)}}
 						startIcon={<Icon icon={plusFill} />}
 					>
-						New User
+						New Employee
 					</Button>
 				</Stack>
-
+				<AddEmployee
+							isOpenFilter={isAddEmployeeOpen}
+							onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
+							onCloseFilter={()=>{setAddEmployeeOpen(false)}}
+				/>
 				<Card>
 					<UserListToolbar
 						numSelected={selected.length}

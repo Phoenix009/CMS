@@ -26,7 +26,7 @@ export default function Router() {
 					element: <Navigate to="/dashboard/app" replace />,
 				},
 				{ path: "app", element: <DashboardApp /> },
-				{ path: "user", element: <User /> },
+				{ path: "employees", element: <User /> },
 				{ path: "gunmen", element: <Gunmen /> },
 				// { path: "gunmen/forms", element: <GunmanForm /> },
 				{ path: "products", element: <Products /> },
