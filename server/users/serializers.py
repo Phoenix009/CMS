@@ -21,16 +21,19 @@ class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
         return super().to_representation(instance)
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("id", "first_name", "last_name", "username", "email")
-
-
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ["user", "is_superuser", "is_incharge"]
+
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = RelatedFieldAlternative(
+        queryset=Profile.objects.all(), serializer=ProfileSerializer
+    )
+    class Meta:
+        model = User
+        fields = ("id", "first_name", "last_name", "username", "email")
 
 
 class RegionSerializer(serializers.ModelSerializer):

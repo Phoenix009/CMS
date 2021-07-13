@@ -35,14 +35,13 @@ class VendorSerializer(serializers.ModelSerializer):
 
 
 class GunmenSerializer(serializers.ModelSerializer):
-    # vendor = VendorSerializer()
     vendor = RelatedFieldAlternative(
         queryset=Vendor.objects.all(), serializer=VendorSerializer
     )
 
     class Meta:
         model = Gunmen
-        fields = ["first_name", "last_name", "vendor"]
+        fields = ["first_name", "last_name", "email", "vendor"]
 
     # def create(self, validated_data):
     #     vendor_data = validated_data.pop("vendor")

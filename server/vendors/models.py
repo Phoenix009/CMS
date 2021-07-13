@@ -19,6 +19,7 @@ class Vendor(models.Model):
 class Gunmen(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
+    email = models.EmailField()
     vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self) -> str:
