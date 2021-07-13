@@ -13,6 +13,7 @@ import Blog from "./pages/Blog";
 import User from "./pages/User";
 import NotFound from "./pages/Page404";
 import Branch from "./pages/branch"
+import Region from "./pages/Region"
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -29,6 +30,7 @@ export default function Router() {
 				{ path: "employees", element: <User /> },
 				{ path: "gunmen", element: <Gunmen /> },
 				{ path: "branch", element: <Branch /> },
+				{ path: "region", element: <Region /> },
 				// { path: "gunmen/forms", element: <GunmanForm /> },
 				{ path: "products", element: <Products /> },
 				{ path: "blog", element: <Blog /> },

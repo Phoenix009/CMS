@@ -33,7 +33,7 @@ import {
 } from "../components/_dashboard/user";
 //
 import USERLIST from "../_mocks_/user";
-import AddEmployee from '../components/AddEmployee/AddEmployee';
+import AddEmployee from '../components/AddRegion/AddRegion';
 import { getAllEmployees } from "../api/index";
 
 // ----------------------------------------------------------------------
@@ -182,14 +182,14 @@ export default function User() {
 						<RouterLink color="inherit" to="/" onClick={handleClick}>
 							Dashboard
 						</RouterLink>
-						<Typography color="textPrimary">Employees</Typography>
+						<Typography color="textPrimary">Regions</Typography>
 						</Breadcrumbs>
 					<Button
 						variant="contained"
 						onClick={()=>{setAddEmployeeOpen(true)}}
 						startIcon={<Icon icon={plusFill} />}
 					>
-						New Employee
+						New Region
 					</Button>
 				</Stack>
 				<AddEmployee

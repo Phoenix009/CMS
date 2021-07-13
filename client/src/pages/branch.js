@@ -182,7 +182,7 @@ export default function Branch() {
 						<RouterLink color="inherit" to="/" onClick={handleClick}>
 							Dashboard
 						</RouterLink>
-						<Typography color="textPrimary">Employees</Typography>
+						<Typography color="textPrimary">Branch</Typography>
 						</Breadcrumbs>
 					<Button
 						variant="contained"

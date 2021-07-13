@@ -80,7 +80,7 @@ export default function ShopFilterSidebar({
               sx={{ px: 1, py: 2 }}
             >
               <Typography variant="subtitle1" sx={{ ml: 1 }}>
-                Add Branch
+                Add Region
               </Typography>
               <IconButton onClick={onCloseFilter}>
                 <Icon icon={closeFill} width={20} height={20} />
@@ -96,7 +96,7 @@ export default function ShopFilterSidebar({
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
  */}
                     <TextField
-                        label="Branch Name"
+                        label="Region Name"
                         name="name"
                         onChange={handleChange}
                         fullWidth
@@ -114,7 +114,7 @@ export default function ShopFilterSidebar({
                 </Grid>
                 <Grid item xs={12} sm={12} lg={4}>
                 <FormControl variant="outlined" fullWidth>
-                    <InputLabel id="demo-simple-select-outlined-label">Branch Manager</InputLabel>
+                    <InputLabel id="demo-simple-select-outlined-label">Regional Manager</InputLabel>
                     <Select
                       labelId="demo-simple-select-outlined-label"
                       id="demo-simple-select-outlined"
