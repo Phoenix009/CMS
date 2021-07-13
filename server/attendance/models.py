@@ -4,7 +4,7 @@ from vendors.models import Vendor, Gunmen
 from users.models import Branch
 from datetime import datetime
 
-
+ 
 class AttendanceSheet(models.Model):
     sheet_created = models.DateField(default=datetime.now)
     invoice = models.FileField(blank=True, null=True, upload_to='invoice')

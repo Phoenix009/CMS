@@ -1,15 +1,14 @@
 from django.contrib.auth.models import User
 from .models import Branch, Region
-from .serializers import BranchSerializer, RegionSerializer
-from users.serializers import UserSerializer
+from .serializers import BranchSerializer, RegionSerializer , UserSerializer
 from rest_framework import mixins
 from rest_framework import generics
-
+from django_filters.rest_framework import DjangoFilterBackend
 
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
+    
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -41,6 +40,9 @@ class BranchList(
 ):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ["^name", "^address"]
+    filterset_fields = ["name", "address", "branch_manager", "region"]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -73,6 +75,9 @@ class RegionList(
 ):
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ["^name", "^address"]
+    filterset_fields = ["name", "address", "regional_officer"]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
