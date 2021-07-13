@@ -32,7 +32,7 @@ class UserDetail(mixins.RetrieveModelMixin,
         return self.destroy(request, *args, **kwargs)
 
 class BranchList(mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericAPIView):
-    queryset = User.objects.all()
+    queryset = Branch.objects.all()
     serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
@@ -45,7 +45,7 @@ class BranchDetail(mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,
                     mixins.DestroyModelMixin,
                     generics.GenericAPIView):
-    queryset = User.objects.all()
+    queryset = Branch.objects.all()
     serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
