@@ -5,9 +5,9 @@ from .models import Vendor, Gunmen
 from .serializers import VendorSerializer, GunmenSerializer
 
 
-class VendorList(mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
-                  generics.GenericAPIView):
+class VendorList(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
 
@@ -18,9 +18,9 @@ class VendorList(mixins.ListModelMixin,
         return self.create(request, *args, **kwargs)
 
 
-class GunmenList(mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
-                  generics.GenericAPIView):
+class GunmenList(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
     queryset = Gunmen.objects.all()
     serializer_class = GunmenSerializer
 
@@ -29,4 +29,3 @@ class GunmenList(mixins.ListModelMixin,
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
-
