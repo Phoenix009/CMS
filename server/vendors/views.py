@@ -4,6 +4,7 @@ from rest_framework import generics
 from .models import Vendor, Gunmen
 from .serializers import VendorSerializer, GunmenSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 
 class VendorList(
@@ -43,7 +44,9 @@ class GunmenList(
 ):
     queryset = Gunmen.objects.all()
     serializer_class = GunmenSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    # filter_backends = [DjangoFilterBackend]
+    search_fields = ["^first_name", "^last_name"]
     filterset_fields = ["first_name", "last_name", "vendor"]
 
     def get(self, request, *args, **kwargs):
