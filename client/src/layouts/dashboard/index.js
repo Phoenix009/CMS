@@ -36,13 +36,13 @@ const MainStyle = styled('div')(({ theme }) => ({
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  useEffect(() => {
-    const access_token = localStorage.getItem('access_token');
-    const refresh_token = localStorage.getItem('refresh_token');
-    if(!access_token || !refresh_token){
-      navigate('/login');
-    }
-  },[])
+  // useEffect(() => {
+  //   const access_token = localStorage.getItem('access_token');
+  //   const refresh_token = localStorage.getItem('refresh_token');
+  //   if(!access_token || !refresh_token){
+  //     navigate('/login');
+  //   }
+  // },[])
   return (
     <RootStyle>
       <DashboardNavbar onOpenSidebar={() => setOpen(true)} />

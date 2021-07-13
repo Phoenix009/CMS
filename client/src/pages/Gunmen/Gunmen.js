@@ -48,10 +48,11 @@ import USERLIST from "../../_mocks_/user";
 
 const TABLE_HEAD = [
 	{ id: "name", label: "Name", alignRight: false },
-	{ id: "company", label: "Company", alignRight: false },
-	{ id: "role", label: "Role", alignRight: false },
-	{ id: "isVerified", label: "Verified", alignRight: false },
-	{ id: "status", label: "Status", alignRight: false },
+	{ id: "branch", label: "Branch", alignRight: false },
+	{ id: "vendor", label: "Vendor", alignRight: false },
+	{ id: "email", label: "Email", alignRight: false },
+	{ id: "checkin", label: "Check-in", alignRight: false },
+	{ id: "checkout", label: "Check-Out", alignRight: false },
 	{ id: "" },
 ];
 
@@ -129,7 +130,20 @@ export default function User() {
 		}
 		setSelected(newSelected);
 	};
-
+	const [gunmen, setGunmen] = useState({
+		first_name : '',
+		last_name : '',
+		email : '',
+		value : ''
+	  });
+	
+	  const handleChange = (e)=>{
+		setGunmen({...gunmen, [e.target.name] : e.target.value});
+		console.log(gunmen);
+	  }
+	  const handleSubmit = ()=>{
+		console.log(gunmen);
+	  }
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -194,13 +208,15 @@ export default function User() {
 								fullWidth
 								name="first_name"
 								label="First name"
+								onChange={handleChange}
 							/>
 						</Grid>
 						<Grid item xs={12} sm={12} lg={3}>
 							<TextField
 								fullWidth
 								name="last_name"
-								label="Lirst name"
+								label="Last name"
+								onChange={handleChange}
 							/>
 						</Grid>
 						<Grid item xs={12} sm={12} lg={3}>
@@ -208,6 +224,7 @@ export default function User() {
 								fullWidth
 								name="email"
 								label="Email"
+								onChange={handleChange}
 							/>
 						</Grid>
 						<Grid item xs={12} sm={12} lg={3}>
@@ -217,6 +234,7 @@ export default function User() {
 									labelId="demo-simple-select-outlined-label"
 									id="demo-simple-select-outlined"
 									label="Age"
+									onChange={handleChange}
 									>
 								<MenuItem value="">
 									<em>None</em>
@@ -227,6 +245,9 @@ export default function User() {
 								</Select>
 							</FormControl>
 						</Grid>
+						<Grid item xs={12} sm={12} lg={12} align="center">
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Gunman </Button>
+                </Grid>
 					</Grid>
 				</Card>
 				
