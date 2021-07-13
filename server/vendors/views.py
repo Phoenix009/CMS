@@ -3,6 +3,7 @@ from rest_framework import mixins
 from rest_framework import generics
 from .models import Vendor, Gunmen
 from .serializers import VendorSerializer, GunmenSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class VendorList(
@@ -23,6 +24,8 @@ class GunmenList(
 ):
     queryset = Gunmen.objects.all()
     serializer_class = GunmenSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["first_name", "last_name"]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
