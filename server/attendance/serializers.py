@@ -9,7 +9,7 @@ class AttendanceSheetSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttendanceSheet
         fields = ["sheet_created", "invoice", "verified"]
-
+ 
 
 class AttendanceSerializer(serializers.ModelSerializer):
     gunmen = GunmenSerializer()

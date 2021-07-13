@@ -12,7 +12,21 @@ class VendorList(
 ):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
-
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    # filter_backends = [DjangoFilterBackend]
+    search_fields = ["^name",         
+    "^address",
+    "^contact",
+    "^officer_incharge"]
+    filterset_fields = [
+    "name",         
+    "address",
+    "email",
+    "contact",
+    "officer_incharge",
+    "created_by",
+    "created_at"
+    ]
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -55,7 +69,7 @@ class GunmenList(
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-
+ 
 class GunmenDetail(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,

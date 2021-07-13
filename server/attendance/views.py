@@ -6,7 +6,7 @@ from attendance.models import Attendance
 from vendors.models import Gunmen
 from vendors.serializers import GunmenSerializer
 
-
+ 
 class AttendanceList(
     mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
 ):
