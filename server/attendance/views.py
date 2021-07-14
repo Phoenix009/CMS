@@ -62,16 +62,6 @@ class AttendanceDetail(
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
-<<<<<<< HEAD
-        # today = date.today()
-        # attendance = Attendance.objects.filter(
-        #     entry_time__year =today.year,
-        #     entry_time__month =today.month,
-        #     entry_time__day =today.day,
-        # ).first()
-
-        # print(attendance)
-=======
 
 class IssueList(
     mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
@@ -103,5 +93,3 @@ class IssueDetail(
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
->>>>>>> 4406c6fec4270f6187814a3bdaed1e585ec8ccbe
-
