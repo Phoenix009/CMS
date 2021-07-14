@@ -24,6 +24,7 @@ class VendorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vendor
         fields = [
+            "id",
             "name",
             "address",
             "email",
@@ -41,7 +42,7 @@ class GunmenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Gunmen
-        fields = ["first_name", "last_name", "email", "vendor"]
+        fields = ["id", "first_name", "last_name", "email", "vendor"]
 
     # def create(self, validated_data):
     #     vendor_data = validated_data.pop("vendor")

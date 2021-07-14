@@ -33,7 +33,12 @@ class UserSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = User
-        fields = ("id", "first_name", "last_name", "username", "email")
+        fields = (
+            "id", "first_name", "last_name", 
+            "username", "email", 'profile', 
+            'is_staff', 'is_active', 'is_superuser', 
+            'last_login', 'date_joined'
+        )
 
 
 class RegionSerializer(serializers.ModelSerializer):
@@ -43,7 +48,7 @@ class RegionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Region
-        fields = ["name", "address", "regional_officer"]
+        fields = ["id", "name", "address", "regional_officer"]
 
 
 class BranchSerializer(serializers.ModelSerializer):
@@ -56,4 +61,4 @@ class BranchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Branch
-        fields = ["name", "address", "branch_manager", "region"]
+        fields = ["id", "name", "address", "branch_manager", "region"]

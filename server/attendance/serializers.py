@@ -30,7 +30,7 @@ class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
 class AttendanceSheetSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttendanceSheet
-        fields = ["sheet_created", "invoice", "verified"]
+        fields = ["id", "sheet_created", "invoice", "verified"]
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
@@ -50,6 +50,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
         fields = [
+            "id",
             "gunmen",
             "entry_time",
             "exit_time",
@@ -72,4 +73,4 @@ class IssueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = ["comment", "reverted_by", "vendor", "sheet", "created_at"]
+        fields = ["id", "comment", "reverted_by", "vendor", "sheet", "created_at"]
