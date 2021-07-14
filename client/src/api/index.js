@@ -101,4 +101,13 @@ axiosInstance.interceptors.response.use(
 export const signIn = (formData) => axiosInstance.post('token/', formData);
 
 // employees (users)
-export const getAllEmployees = () => axiosInstance.get('users/');
+export const getAllEmployees = () => axiosInstance.get('users/user/');
+
+// gunmen's attendance 
+export const viewAllAttendance = () => axiosInstance.get('attendance/');
+
+// regions 
+export const getAllRegions = () => axiosInstance.get('users/region/')
+export const addRegion = (formData) => axiosInstance.post('users/region/', formData);
+export const updateRegion = (formData) => axiosInstance.put('users/region/', formData);
+export const deleteRegion = (formData) => axiosInstance.delete('users/region/', formData);

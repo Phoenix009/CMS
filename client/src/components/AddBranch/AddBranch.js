@@ -80,7 +80,7 @@ export default function ShopFilterSidebar({
               sx={{ px: 1, py: 2 }}
             >
               <Typography variant="subtitle1" sx={{ ml: 1 }}>
-                Add Employee
+                Add Branch
               </Typography>
               <IconButton onClick={onCloseFilter}>
                 <Icon icon={closeFill} width={20} height={20} />
@@ -105,7 +105,7 @@ export default function ShopFilterSidebar({
                 </Grid>
                 <Grid item xs={12} sm={12} lg={8}>
                     <TextField
-                        label="Adress"
+                        label="Address"
                         name="address"
                         onChange={handleChange}
                         fullWidth
