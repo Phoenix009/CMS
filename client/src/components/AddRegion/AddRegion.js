@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Form, FormikProvider } from 'formik';
 import closeFill from '@iconify/icons-eva/close-fill';
 import roundClearAll from '@iconify/icons-ic/round-clear-all';
 import roundFilterList from '@iconify/icons-ic/round-filter-list';
+import {toast} from 'react-toastify';
 // material
 import {
   Box,
@@ -28,7 +29,10 @@ import {
   Select
 } from '@material-ui/core';
 //
-
+import {
+  getAllEmployees, 
+  addRegion,
+} from '../../api/index';
 // ----------------------------------------------------------------------
 
 
@@ -48,21 +52,87 @@ export default function ShopFilterSidebar({
   onOpenFilter,
   onCloseFilter,
 }) {
-  const [employee, setEmployee] = useState({
-    first_name : '',
-    last_name : '',
-    email : '',
-    employee_id : '',
-    age : '',
-    role : ''
+  const [region, setRegion] = useState({
+    'name' : '',
+    'regional_officer' : '',
+    'address' : ''
   });
+  const [employees, setEmployees] = useState([]);
   const handleChange = (e)=>{
-    setEmployee({...employee, [e.target.name] : e.target.value});
-    console.log(employee);
+    setRegion({...region, [e.target.name] : e.target.value});
+    console.log(region);
   }
-  const handleSubmit = ()=>{
-    console.log(employee);
+  const handleSubmit = async ()=>{
+    try{
+			const data = await addRegion(region);
+			console.log(data);
+			if(data.status === 201){
+				toast('Region Added', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				});
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
   }
+  const getUsers = async ()=>{
+		try{
+			const data = await getAllEmployees();
+			console.log(data);
+			if(data.status === 200 ){
+				setEmployees(data?.data);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
+  
+  useEffect(() => {
+		getUsers();
+	}, []);
   return (
     <>
           <Drawer
@@ -88,13 +158,8 @@ export default function ShopFilterSidebar({
             </Stack>
 
             <Divider />
-            <Grid container spacing={3} sx={{ px: 5, py: 10 }}>
-                <Grid item xs={12} sm={12} lg={4}>
-                  {/* name = models.CharField(max_length=200)
-    address = models.CharField(max_length=1000)
-    branch_manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
- */}
+            <Grid container spacing={2} sx={{ px: 5, py: 10 }}>
+                <Grid item xs={12} sm={12} lg={6}>
                     <TextField
                         label="Region Name"
                         name="name"
@@ -103,49 +168,38 @@ export default function ShopFilterSidebar({
                     >
                     </TextField>
                 </Grid>
-                <Grid item xs={12} sm={12} lg={8}>
+               
+                <Grid item xs={12} sm={12} lg={6}>
+                  <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="demo-simple-select-outlined-label">Regional Manager</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        name = 'regional_officer'
+                        onChange={handleChange}
+                      >
+                        {
+                          employees.map((instance)=>(
+                            <MenuItem value={instance.id}>{instance.email}</MenuItem>
+                          ))
+                        }
+                      </Select>
+                  </FormControl>
+                </Grid>
+                
+                <Grid item xs={12} sm={12} lg={12}>
                     <TextField
                         label="Address"
                         name="address"
                         onChange={handleChange}
+                        multiline
+                        rows={3}
                         fullWidth
                     >
                     </TextField>
                 </Grid>
-                <Grid item xs={12} sm={12} lg={4}>
-                <FormControl variant="outlined" fullWidth>
-                    <InputLabel id="demo-simple-select-outlined-label">Regional Manager</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-outlined-label"
-                      id="demo-simple-select-outlined"
-                      label="Age"
-                      onChange={handleChange}
-                    >
-                    <MenuItem value={'admin'}>Admin</MenuItem>
-                    <MenuItem value={'employee'}>Employee</MenuItem>
-                    <MenuItem value={'superadmin'}>SuperAdmin</MenuItem>
-                    </Select>
-                </FormControl>
-                </Grid>
-                
-                
-                <Grid item xs={12} sm={12} lg={4}>
-                <FormControl variant="outlined" fullWidth>
-                    <InputLabel id="demo-simple-select-outlined-label">Region</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-outlined-label"
-                      id="demo-simple-select-outlined"
-                      label="Age"
-                      onChange={handleChange}
-                    >
-                    <MenuItem value={'admin'}>Admin</MenuItem>
-                    <MenuItem value={'employee'}>Employee</MenuItem>
-                    <MenuItem value={'superadmin'}>SuperAdmin</MenuItem>
-                    </Select>
-                </FormControl>
-                </Grid>
                 <Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Branch</Button>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Region</Button>
                 </Grid>
             </Grid>
           </Drawer>

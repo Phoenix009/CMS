@@ -4,6 +4,8 @@ import { sentenceCase } from "change-case";
 import { useState,useEffect } from "react";
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
+import {toast} from 'react-toastify';
+import moment from "moment";
 // material
 import {
 	Card,
@@ -38,12 +40,15 @@ import { getAllEmployees } from "../api/index";
 
 // ----------------------------------------------------------------------
 
+
 const TABLE_HEAD = [
-	{ id: "name", label: "Name", alignRight: false },
-	{ id: "company", label: "Company", alignRight: false },
-	{ id: "role", label: "Role", alignRight: false },
-	{ id: "isVerified", label: "Verified", alignRight: false },
-	{ id: "status", label: "Status", alignRight: false },
+	{ id: "name", label: "Full Name", },
+	{ id: "email", label: "Email" },
+	{ id: "role", label: "Role"},
+	{ id: "isVerified", label: "Account Status" },
+	{ id: "branch", label: "Branch"},
+	{ id: "lastLogin", label: "Last Login"},
+	{ id: "dateJoined", label: "Date Joined"},
 	{ id: "" },
 ];
 
@@ -156,11 +161,32 @@ export default function User() {
 
 	const getData = async ()=>{
 		try{
-			
 			const data = await getAllEmployees();
 			console.log(data);
+			if(data.status === 200 ){
+				setEmployees(data?.data);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
 		}catch(error){
 			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
 		}
 	}
 
@@ -217,110 +243,55 @@ export default function User() {
 									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-									{filteredUsers
-										.slice(
-											page * rowsPerPage,
-											page * rowsPerPage + rowsPerPage
-										)
-										.map((row) => {
-											const {
-												id,
-												name,
-												role,
-												status,
-												company,
-												avatarUrl,
-												isVerified,
-											} = row;
-											const isItemSelected =
-												selected.indexOf(name) !== -1;
-
-											return (
-												<TableRow
-													hover
-													key={id}
-													tabIndex={-1}
-													role="checkbox"
-													selected={isItemSelected}
-													aria-checked={
-														isItemSelected
-													}
+									{employees.map((row)=>(
+										<TableRow key={row.id}>
+											<TableCell component="th" scope="row">
+												{row.id}
+											</TableCell>
+											<TableCell >
+												{`${row.first_name} ${row.last_name}`}
+											</TableCell>
+											<TableCell >
+												{row.email}
+											</TableCell>
+											<TableCell >
+												<Label
+														variant="ghost"
+														color={
+															row.is_superuser ? 'secondary' : 'primary'
+														}
 												>
-													<TableCell padding="checkbox">
-														<Checkbox
-															checked={
-																isItemSelected
-															}
-															onChange={(event) =>
-																handleClick(
-																	event,
-																	name
-																)
-															}
-														/>
-													</TableCell>
-													<TableCell
-														component="th"
-														scope="row"
-														padding="none"
-													>
-														<Stack
-															direction="row"
-															alignItems="center"
-															spacing={2}
-														>
-															<Avatar
-																alt={name}
-																src={avatarUrl}
-															/>
-															<Typography
-																variant="subtitle2"
-																noWrap
-															>
-																{name}
-															</Typography>
-														</Stack>
-													</TableCell>
-													<TableCell align="left">
-														{company}
-													</TableCell>
-													<TableCell align="left">
-														{role}
-													</TableCell>
-													<TableCell align="left">
-														{isVerified
-															? "Yes"
-															: "No"}
-													</TableCell>
-													<TableCell align="left">
-														<Label
-															variant="ghost"
-															color={
-																(status ===
-																	"banned" &&
-																	"error") ||
-																"success"
-															}
-														>
-															{sentenceCase(
-																status
-															)}
-														</Label>
-													</TableCell>
-
-													<TableCell align="right">
-														<UserMoreMenu />
-													</TableCell>
-												</TableRow>
-											);
-										})}
-									{emptyRows > 0 && (
-										<TableRow
-											style={{ height: 53 * emptyRows }}
-										>
-											<TableCell colSpan={6} />
-										</TableRow>
-									)}
+														{sentenceCase(
+															row.is_superuser ? "SuperUser" : (
+																row.is_staff ? "Admin" : "Employee"
+															)
+														)}
+												</Label>
+												{/* {row.profile?.role} */}
+											</TableCell>
+											<TableCell >
+												<Label
+														variant="ghost"
+														color={
+															row.is_active ? "primary" : 'error'
+														}
+												>
+														{sentenceCase(
+															row.is_active ? "active" : "not-active"
+														)}
+												</Label>
+											</TableCell>
+											<TableCell >
+												{row.profile?.branch?.name}
+											</TableCell>
+											<TableCell >
+												{moment(row.last_login).format('hh:mm on DD-MM-YYYY')}
+											</TableCell>
+											<TableCell >
+												{moment(row.date_joined).format('hh:mm on DD-MM-YYYY')}
+											</TableCell>
+									  </TableRow>
+									))}
 								</TableBody>
 								{isUserNotFound && (
 									<TableBody>
@@ -354,4 +325,4 @@ export default function User() {
 			</Container>
 		</Page>
 	);
-}
+}	
