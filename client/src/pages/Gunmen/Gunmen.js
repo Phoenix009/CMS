@@ -38,6 +38,11 @@ import Label from "../../components/Label";
 import Scrollbar from "../../components/Scrollbar";
 import SearchNotFound from "../../components/SearchNotFound";
 import {
+	addGunmen,
+	getAllVendors
+} from '../../api/index';
+
+import {
 	UserListHead,
 	UserListToolbar,
 	UserMoreMenu,
@@ -101,8 +106,7 @@ export default function User() {
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [attendance, setAttendance] = useState([]);
-
-
+	const [vendor, setVendor] = useState([]);
 	const handleRequestSort = (event, property) => {
 		const isAsc = orderBy === property && order === "asc";
 		setOrder(isAsc ? "desc" : "asc");
@@ -135,20 +139,56 @@ export default function User() {
 		}
 		setSelected(newSelected);
 	};
+
 	const [gunmen, setGunmen] = useState({
 		first_name : '',
 		last_name : '',
 		email : '',
 		value : ''
-	  });
+	});
 	
-	  const handleChange = (e)=>{
+	const handleChange = (e)=>{
 		setGunmen({...gunmen, [e.target.name] : e.target.value});
 		console.log(gunmen);
+	}
+	const handleSubmit = async ()=>{
+		try{
+				const data = await addGunmen(gunmen);
+				console.log(data);
+				if(data.status === 201){
+					toast('Gunman Added', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+					});
+				}else{
+					toast.error('Something went wrong!', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+					});
+				} 
+			}catch(error){
+				console.log(error);
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
 	  }
-	  const handleSubmit = ()=>{
-		console.log(gunmen);
-	  }
+
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -171,7 +211,39 @@ export default function User() {
 		filterName
 	);
 
+	
+
 	const isUserNotFound = filteredUsers.length === 0;
+	const getVendors = async ()=>{
+		try{
+			const data = await getAllVendors();
+			console.log(data);
+			if(data.status === 200 ){
+				setVendor(data?.data);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
 	const getData = async ()=>{
 		try{
 			const data = await viewAllAttendance();
@@ -205,7 +277,9 @@ export default function User() {
 
 	useEffect(() => {
 		getData();
+		getVendors();
 	}, []);
+
 	return (
 		<>
 		
@@ -274,12 +348,11 @@ export default function User() {
 									label="Age"
 									onChange={handleChange}
 									>
-								<MenuItem value="">
-									<em>None</em>
-								</MenuItem>
-								<MenuItem value={10}>Ten</MenuItem>
-								<MenuItem value={20}>Twenty</MenuItem>
-								<MenuItem value={30}>Thirty</MenuItem>
+								{
+                          			vendor.map((instance)=>(
+                            		<MenuItem value={instance.id}>{instance.name}</MenuItem>
+                         			 ))
+                        		}
 								</Select>
 							</FormControl>
 						</Grid>
@@ -316,7 +389,7 @@ export default function User() {
 												{row.id}
 											</TableCell>
 											<TableCell >
-												{`${row.gunmen.first_name} ${row.gunmen.last_name}`}
+												{`${row?.gunmen?.first_name} ${row?.gunmen?.last_name}`}
 											</TableCell>
 											<TableCell >
 												{row.gunmen.email}
