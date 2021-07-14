@@ -102,12 +102,33 @@ export const signIn = (formData) => axiosInstance.post('token/', formData);
 
 // employees (users)
 export const getAllEmployees = () => axiosInstance.get('users/user/');
+export const addEmployee = (formData)=> axiosInstance.post('users/user/',formData);
 
 // gunmen's attendance 
-export const viewAllAttendance = () => axiosInstance.get('attendance/');
+export const viewAllAttendance = () => axiosInstance.get('attendance/attendance/');
+
+// gunmen
+export const addGunmen = (formData)=> axiosInstance.post('vendor/gunmen/',formData);
+export const updateGunmen = (formData)=> axiosInstance.put('vendor/gunmen/',formData);
+export const deleteGunmen = ()=> axiosInstance.delete('vendor/gunmen/');
+export const getGunmens = ()=> axiosInstance.get('vendor/gunmen');
 
 // regions 
-export const getAllRegions = () => axiosInstance.get('users/region/')
+export const getAllRegions = () => axiosInstance.get('users/region/');
 export const addRegion = (formData) => axiosInstance.post('users/region/', formData);
 export const updateRegion = (formData) => axiosInstance.put('users/region/', formData);
 export const deleteRegion = (formData) => axiosInstance.delete('users/region/', formData);
+
+// vendors 
+export const getVendors = ()=> axiosInstance.get('vendor/vendor/');
+export const addVendor = (formData) => axiosInstance.post('vendor/vendor/', formData);
+export const updateVendor = (formData) => axiosInstance.put('vendor/vendor/', formData)
+
+// branch 
+export const getBranch = ()=> axiosInstance.get('users/branch/');
+export const addBranch = (formData)=> axiosInstance.post('users/branch/', formData);
+
+// Issues 
+
+
+
