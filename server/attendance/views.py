@@ -5,8 +5,8 @@ from django.utils.translation import override
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework.response import Response
-from attendance.serializers import AttendanceSerializer
-from attendance.models import Attendance
+from attendance.serializers import AttendanceSerializer, IssueSerializer
+from attendance.models import Attendance, Issue
 
 # from vendors.models import Gunmen
 # from vendors.serializers import GunmenSerializer
@@ -62,6 +62,7 @@ class AttendanceDetail(
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+<<<<<<< HEAD
         # today = date.today()
         # attendance = Attendance.objects.filter(
         #     entry_time__year =today.year,
@@ -70,10 +71,37 @@ class AttendanceDetail(
         # ).first()
 
         # print(attendance)
+=======
 
-        # if attendance:
-        #     new_attendance = AttendanceSerializer(request.data)
-        #     if new_attendance.is_valid():
-        #         attendance
-        #     attendance.save()
-        # else:
+class IssueList(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
+    queryset = Issue.objects.all()
+    serializer_class = IssueSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class IssueDetail(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
+):
+    queryset = Issue.objects.all()
+    serializer_class = IssueSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+>>>>>>> 4406c6fec4270f6187814a3bdaed1e585ec8ccbe
+

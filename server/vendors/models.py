@@ -25,3 +25,12 @@ class Gunmen(models.Model):
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
 
+
+class Vehicle(models.Model):
+    model_name = models.CharField(max_length=200)
+    number_plate = models.CharField(max_length=200)
+    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self) -> str:
+        return f'{self.model_name} -> {self.number_plate}'
+

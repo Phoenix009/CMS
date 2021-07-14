@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Vendor, Gunmen
+from .models import Vehicle, Vendor, Gunmen
 
 
 class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
@@ -44,11 +44,12 @@ class GunmenSerializer(serializers.ModelSerializer):
         model = Gunmen
         fields = ["id", "first_name", "last_name", "email", "vendor"]
 
-    # def create(self, validated_data):
-    #     vendor_data = validated_data.pop("vendor")
-    #     vendor_data = Vendor.objects.filter(vendor_data)
-    #     print(vendor_data)
-    #     gunman = Gunmen.objects.create(**validated_data)
-    #     # for track_data in tracks_data:
-    #     #     Track.objects.create(album=album, **track_data)
-    #     return gunman
+
+class VehicleSerializer(serializers.ModelSerializer):
+    vendor = RelatedFieldAlternative(
+        queryset=Vendor.objects.all(), serializer=VendorSerializer
+    )
+
+    class Meta:
+        model = Vehicle
+        fields = ["id", "model_name", "number_plate", "vendor"]
