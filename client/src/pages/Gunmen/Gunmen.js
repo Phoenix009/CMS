@@ -1,9 +1,10 @@
 import { filter } from "lodash";
 import { Icon } from "@iconify/react";
 import { sentenceCase } from "change-case";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
+import {toast} from 'react-toastify';
 // material
 import {
 	Card,
@@ -19,28 +20,41 @@ import {
 	Typography,
 	TableContainer,
 	TablePagination,
+	Breadcrumbs,
+	Link,
+	TextField,
+	Paper,
+	Grid,
+	FormLabel,
+	InputLabel,
+	Select,
+	FormControl,
+	MenuItem,
+	FormHelperText
 } from "@material-ui/core";
 // components
-import Page from "../components/Page";
-import Label from "../components/Label";
-import Scrollbar from "../components/Scrollbar";
-import SearchNotFound from "../components/SearchNotFound";
+import Page from "../../components/Page";
+import Label from "../../components/Label";
+import Scrollbar from "../../components/Scrollbar";
+import SearchNotFound from "../../components/SearchNotFound";
 import {
 	UserListHead,
 	UserListToolbar,
 	UserMoreMenu,
-} from "../components/_dashboard/user";
+} from "../../components/_dashboard/user";
 //
-import USERLIST from "../_mocks_/user";
+import USERLIST from "../../_mocks_/user";
+import {viewAllAttendance} from '../../api/index';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-	{ id: "name", label: "Name", alignRight: false },
-	{ id: "company", label: "Company", alignRight: false },
-	{ id: "role", label: "Role", alignRight: false },
-	{ id: "isVerified", label: "Verified", alignRight: false },
-	{ id: "status", label: "Status", alignRight: false },
+	{ id: "name", label: "Name" },
+	{ id: "email", label: "Email"},
+	{ id: "vendor", label: "Vendor"},
+	{ id: "branch", label: "Branch" },
+	{ id: "checkin", label: "Check-in"},
+	{ id: "checkout", label: "Check-Out"},
 	{ id: "" },
 ];
 
@@ -86,6 +100,8 @@ export default function User() {
 	const [orderBy, setOrderBy] = useState("name");
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [attendance, setAttendance] = useState([]);
+
 
 	const handleRequestSort = (event, property) => {
 		const isAsc = orderBy === property && order === "asc";
@@ -119,7 +135,20 @@ export default function User() {
 		}
 		setSelected(newSelected);
 	};
-
+	const [gunmen, setGunmen] = useState({
+		first_name : '',
+		last_name : '',
+		email : '',
+		value : ''
+	  });
+	
+	  const handleChange = (e)=>{
+		setGunmen({...gunmen, [e.target.name] : e.target.value});
+		console.log(gunmen);
+	  }
+	  const handleSubmit = ()=>{
+		console.log(gunmen);
+	  }
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -143,11 +172,55 @@ export default function User() {
 	);
 
 	const isUserNotFound = filteredUsers.length === 0;
+	const getData = async ()=>{
+		try{
+			const data = await viewAllAttendance();
+			console.log(data);
+			if(data.status === 200 ){
+				setAttendance(data?.data);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
 
+	useEffect(() => {
+		getData();
+	}, []);
 	return (
+		<>
+		
 		<Page title="Gunmen">
-			<Container>
-				<Stack
+			
+			<Container >
+			
+			<Container style={{padding:'20px', margin:'20px'}}><Breadcrumbs aria-label="breadcrumb">
+				<RouterLink color="inherit" to="/" onClick={handleClick}>
+					Dashbord
+				</RouterLink>
+				<Typography color="textPrimary">Gunmen's Attendance</Typography>
+			</Breadcrumbs></Container>
+
+				{/* <Stack
 					direction="row"
 					alignItems="center"
 					justifyContent="space-between"
@@ -164,7 +237,58 @@ export default function User() {
 					>
 						New Gunman
 					</Button>
-				</Stack>
+				</Stack> */}
+				
+				<Card style={{padding:'20px', marginBottom : '10px'}}>
+					<Grid container spacing={3} direction={{ xs: 'column', sm: 'row' }}>
+						<Grid item xs={12} sm={12} lg={3}>
+							<TextField
+								fullWidth
+								name="first_name"
+								label="First name"
+								onChange={handleChange}
+							/>
+						</Grid>
+						<Grid item xs={12} sm={12} lg={3}>
+							<TextField
+								fullWidth
+								name="last_name"
+								label="Last name"
+								onChange={handleChange}
+							/>
+						</Grid>
+						<Grid item xs={12} sm={12} lg={3}>
+							<TextField
+								fullWidth
+								name="email"
+								label="Email"
+								onChange={handleChange}
+							/>
+						</Grid>
+						<Grid item xs={12} sm={12} lg={3}>
+							<FormControl variant="outlined" fullWidth >
+								<InputLabel id="demo-simple-select-outlined-label">Vendor</InputLabel>
+									<Select
+									labelId="demo-simple-select-outlined-label"
+									id="demo-simple-select-outlined"
+									label="Age"
+									onChange={handleChange}
+									>
+								<MenuItem value="">
+									<em>None</em>
+								</MenuItem>
+								<MenuItem value={10}>Ten</MenuItem>
+								<MenuItem value={20}>Twenty</MenuItem>
+								<MenuItem value={30}>Thirty</MenuItem>
+								</Select>
+							</FormControl>
+						</Grid>
+						<Grid item xs={12} sm={12} lg={12} align="center">
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Gunman </Button>
+                </Grid>
+					</Grid>
+				</Card>
+				
 
 				<Card>
 					<UserListToolbar
@@ -186,126 +310,26 @@ export default function User() {
 									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-									{filteredUsers
-										.slice(
-											page * rowsPerPage,
-											page * rowsPerPage + rowsPerPage
-										)
-										.map((row) => {
-											const {
-												id,
-												name,
-												role,
-												status,
-												company,
-												avatarUrl,
-												isVerified,
-											} = row;
-											const isItemSelected =
-												selected.indexOf(name) !== -1;
-
-											return (
-												<TableRow
-													hover
-													key={id}
-													tabIndex={-1}
-													role="checkbox"
-													selected={isItemSelected}
-													aria-checked={
-														isItemSelected
-													}
-												>
-													<TableCell padding="checkbox">
-														<Checkbox
-															checked={
-																isItemSelected
-															}
-															onChange={(event) =>
-																handleClick(
-																	event,
-																	name
-																)
-															}
-														/>
-													</TableCell>
-													<TableCell
-														component="th"
-														scope="row"
-														padding="none"
-													>
-														<Stack
-															direction="row"
-															alignItems="center"
-															spacing={2}
-														>
-															<Avatar
-																alt={name}
-																src={avatarUrl}
-															/>
-															<Typography
-																variant="subtitle2"
-																noWrap
-															>
-																{name}
-															</Typography>
-														</Stack>
-													</TableCell>
-													<TableCell align="left">
-														{company}
-													</TableCell>
-													<TableCell align="left">
-														{role}
-													</TableCell>
-													<TableCell align="left">
-														{isVerified
-															? "Yes"
-															: "No"}
-													</TableCell>
-													<TableCell align="left">
-														<Label
-															variant="ghost"
-															color={
-																(status ===
-																	"banned" &&
-																	"error") ||
-																"success"
-															}
-														>
-															{sentenceCase(
-																status
-															)}
-														</Label>
-													</TableCell>
-
-													<TableCell align="right">
-														<UserMoreMenu />
-													</TableCell>
-												</TableRow>
-											);
-										})}
-									{emptyRows > 0 && (
-										<TableRow
-											style={{ height: 53 * emptyRows }}
-										>
-											<TableCell colSpan={6} />
-										</TableRow>
-									)}
-								</TableBody>
-								{isUserNotFound && (
-									<TableBody>
-										<TableRow>
-											<TableCell
-												align="center"
-												colSpan={6}
-												sx={{ py: 3 }}
-											>
-												<SearchNotFound
-													searchQuery={filterName}
-												/>
+									{attendance.map((row)=>(
+										<TableRow key={row.name}>
+											<TableCell component="th" scope="row">
+												{row.id}
 											</TableCell>
-										</TableRow>
-									</TableBody>
-								)}
+											<TableCell >
+												{`${row.gunmen.first_name} ${row.gunmen.last_name}`}
+											</TableCell>
+											<TableCell >
+												{row.gunmen.email}
+											</TableCell>
+											<TableCell >
+												{row.gunmen.vendor.name}
+											</TableCell>
+											<TableCell >
+												{row.branch.name}
+											</TableCell>
+									  </TableRow>
+									))}
+								</TableBody>
 							</Table>
 						</TableContainer>
 					</Scrollbar>
@@ -322,5 +346,6 @@ export default function User() {
 				</Card>
 			</Container>
 		</Page>
+		</>
 	);
 }

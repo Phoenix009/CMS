@@ -1,4 +1,5 @@
-import { Link as RouterLink } from "react-router-dom";
+import { useEffect } from "react";
+import { Link as RouterLink,useNavigate } from "react-router-dom";
 // material
 import { experimentalStyled as styled } from "@material-ui/core/styles";
 import { Card, Stack, Link, Container, Typography } from "@material-ui/core";
@@ -40,19 +41,17 @@ const ContentStyle = styled("div")(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Login() {
+	const navigate = useNavigate();
+	useEffect(() => {
+		const access_token = localStorage.getItem('access_token');
+		const refresh_token = localStorage.getItem('refresh_token');
+		if(access_token && refresh_token){
+		  navigate('/dashboard/app');
+		}
+	},[]);
 	return (
 		<RootStyle title="Login">
-			{/* <AuthLayout>
-				Don’t have an account? &nbsp;
-				<Link
-					underline="none"
-					variant="subtitle2"
-					component={RouterLink}
-					to="/register"
-				>
-					Get started
-				</Link>
-			</AuthLayout> */}
+			<AuthLayout />
 
 			<MHidden width="mdDown">
 				<SectionStyle>
@@ -60,7 +59,7 @@ export default function Login() {
 						Welcome Back
 					</Typography>
 					<img
-						src="/static/illustrations/illustration_login.png"
+						src="/static/assets/images/cmslogo.jpg"
 						alt="login"
 					/>
 				</SectionStyle>
@@ -76,7 +75,6 @@ export default function Login() {
 							Enter your details below.
 						</Typography>
 					</Stack>
-					{/* <AuthSocial /> */}
 
 					<LoginForm />
 

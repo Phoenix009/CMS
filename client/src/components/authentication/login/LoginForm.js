@@ -16,6 +16,9 @@ import {
 	FormControlLabel,
 } from "@material-ui/core";
 import { LoadingButton } from "@material-ui/lab";
+import {toast} from 'react-toastify';
+
+import { signIn } from "../../../api/index";
 
 // ----------------------------------------------------------------------
 
@@ -24,9 +27,7 @@ export default function LoginForm() {
 	const [showPassword, setShowPassword] = useState(false);
 
 	const LoginSchema = Yup.object().shape({
-		email: Yup.string()
-			.email("Email must be a valid email address")
-			.required("Email is required"),
+		email: Yup.string().required("User Name is required"),
 		password: Yup.string().required("Password is required"),
 	});
 
@@ -37,8 +38,37 @@ export default function LoginForm() {
 			remember: true,
 		},
 		validationSchema: LoginSchema,
-		onSubmit: () => {
-			navigate("/dashboard", { replace: true });
+		onSubmit: async () => {
+			try{
+				const data = await signIn({username : values.email, password : values.password});
+				if(data.status === 200) {
+					localStorage.setItem('access_token', JSON.stringify(data?.data?.access));
+					localStorage.setItem('refresh_token', JSON.stringify(data?.data?.refresh));
+					navigate("/dashboard", { replace: true });
+				}else{
+					toast('Something Went Wrong. Please check your username and password', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+					});
+				}
+
+			}catch(error){
+				console.log(error);
+				toast('Something Went Wrong. Please check your username and password', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
 		},
 	});
 

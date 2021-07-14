@@ -50,49 +50,35 @@ export default function GunmanForm() {
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <TextField
+              fullWidth
+              label="First name"
+              {...getFieldProps('firstName')}
+              error={Boolean(touched.firstName && errors.firstName)}
+              helperText={touched.firstName && errors.firstName}
+            />
+
+            <TextField
+              fullWidth
+              label="Last name"
+              {...getFieldProps('lastName')}
+              error={Boolean(touched.lastName && errors.lastName)}
+              helperText={touched.lastName && errors.lastName}
+            />
+          </Stack>
+
           <TextField
             fullWidth
-            autoComplete="Name"
-            label="Name"
-           
-          />
-           <TextField
-            fullWidth
-            // autoComplete="Date"
-            type="datetime"
-            label="In Date"
-           
-          />
-          <TextField
-            fullWidth
-            // autoComplete="Time"
-            type="time"
-            label="In Time"
-           
-          />
-          <TextField
-            fullWidth
-            // autoComplete="Date"
-            type="date"
-            label="Out Date"
-           
-          />
-          <TextField
-            fullWidth
-            // autoComplete="Time"
-            type="time"
-            label="Out Time"
-           
-          />
-          <TextField
-            fullWidth
-            // autoComplete="Time"
-            type="time"
-            label="Out Time"
-           
+            autoComplete="username"
+            type="email"
+            label="Email address"
+            {...getFieldProps('email')}
+            error={Boolean(touched.email && errors.email)}
+            helperText={touched.email && errors.email}
           />
 
-          {/* <TextField
+          <TextField
             fullWidth
             autoComplete="current-password"
             type={showPassword ? 'text' : 'password'}
@@ -101,7 +87,7 @@ export default function GunmanForm() {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={handleShowPassword} edge="end">
+                  <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
                     <Icon icon={showPassword ? eyeFill : eyeOffFill} />
                   </IconButton>
                 </InputAdornment>
@@ -109,29 +95,18 @@ export default function GunmanForm() {
             }}
             error={Boolean(touched.password && errors.password)}
             helperText={touched.password && errors.password}
-          /> */}
-        </Stack>
-
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-          <FormControlLabel
-            control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
-            label="Remember me"
           />
 
-          <Link component={RouterLink} variant="subtitle2" to="#">
-            Forgot password?
-          </Link>
+          <LoadingButton
+            fullWidth
+            size="large"
+            type="submit"
+            variant="contained"
+            loading={isSubmitting}
+          >
+            Register
+          </LoadingButton>
         </Stack>
-
-        <LoadingButton
-          fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
-          loading={isSubmitting}
-        >
-          Login
-        </LoadingButton>
       </Form>
     </FormikProvider>
   );

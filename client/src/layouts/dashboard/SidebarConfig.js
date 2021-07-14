@@ -18,13 +18,23 @@ const sidebarConfig = [
 		icon: getIcon(pieChart2Fill),
 	},
 	{
-		title: "user",
-		path: "/dashboard/user",
+		title: "Employees",
+		path: "/dashboard/employees",
 		icon: getIcon(peopleFill),
 	},
 	{
 		title: "gunmen",
 		path: "/dashboard/gunmen",
+		icon: getIcon(peopleFill),
+	},
+	{
+		title: "Branch",
+		path: "/dashboard/branch",
+		icon: getIcon(peopleFill),
+	},
+	{
+		title: "Region",
+		path: "/dashboard/region",
 		icon: getIcon(peopleFill),
 	},
 	{
