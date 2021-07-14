@@ -33,7 +33,12 @@ class UserSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = User
-        fields = ("id", "first_name", "last_name", "username", "email")
+        fields = (
+            "id", "first_name", "last_name", 
+            "username", "email", 'profile', 
+            'is_staff', 'is_active', 'is_superuser', 
+            'last_login', 'date_joined'
+        )
 
 
 class RegionSerializer(serializers.ModelSerializer):
