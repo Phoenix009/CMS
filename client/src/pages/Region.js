@@ -4,6 +4,7 @@ import { sentenceCase } from "change-case";
 import { useState,useEffect } from "react";
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
+import {toast} from 'react-toastify';
 // material
 import {
 	Card,
@@ -34,16 +35,17 @@ import {
 //
 import USERLIST from "../_mocks_/user";
 import AddEmployee from '../components/AddRegion/AddRegion';
-import { getAllEmployees } from "../api/index";
+import { getAllEmployees,getAllRegions } from "../api/index";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-	{ id: "name", label: "Name", alignRight: false },
-	{ id: "company", label: "Company", alignRight: false },
-	{ id: "role", label: "Role", alignRight: false },
-	{ id: "isVerified", label: "Verified", alignRight: false },
-	{ id: "status", label: "Status", alignRight: false },
+	{ id: "id", label : 'ID' },
+	{ id: "name", label: "Name Of Region", alignRight: false },
+	{ id: "address", label: "Address of Region", alignRight: false },
+	{ id: "regional_officer", label: "Regional Manager", alignRight: false },
+	{ id: "regional_officer_email", label: "Regional Manager's Email", alignRight: false },
+	{ id: "" },
 	{ id: "" },
 ];
 
@@ -90,7 +92,7 @@ export default function User() {
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [isAddEmployeeOpen, setAddEmployeeOpen] = useState(false);
-	const [employees, setEmployees] = useState([]);
+	const [regions, setRegions] = useState([]);
 
 	
 	
@@ -156,11 +158,32 @@ export default function User() {
 
 	const getData = async ()=>{
 		try{
-			
-			const data = await getAllEmployees();
+			const data = await getAllRegions();
 			console.log(data);
+			if(data.status === 200 ){
+				setRegions(data?.data);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
 		}catch(error){
 			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
 		}
 	}
 
@@ -217,110 +240,40 @@ export default function User() {
 									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-									{filteredUsers
-										.slice(
-											page * rowsPerPage,
-											page * rowsPerPage + rowsPerPage
-										)
-										.map((row) => {
-											const {
-												id,
-												name,
-												role,
-												status,
-												company,
-												avatarUrl,
-												isVerified,
-											} = row;
-											const isItemSelected =
-												selected.indexOf(name) !== -1;
+									{
+										regions.map((row)=>(
+											<TableRow>
+											<TableCell component="th" scope="row">
+												{row.id}
+											</TableCell>
+											<TableCell >
+												{row.name}
+											</TableCell>
+											<TableCell >
+												{row.address}
+											</TableCell>
+											<TableCell >
+												{`${row.regional_officer?.first_name} ${row.regional_officer?.last_name}`}
+											</TableCell>
+											<TableCell >
+												{`${row.regional_officer?.email}`}
+											</TableCell>
+											<TableCell >
+												<Button 
+													variant="contained" 
+													color="primary" 
+													size="small"
 
-											return (
-												<TableRow
-													hover
-													key={id}
-													tabIndex={-1}
-													role="checkbox"
-													selected={isItemSelected}
-													aria-checked={
-														isItemSelected
-													}
 												>
-													<TableCell padding="checkbox">
-														<Checkbox
-															checked={
-																isItemSelected
-															}
-															onChange={(event) =>
-																handleClick(
-																	event,
-																	name
-																)
-															}
-														/>
-													</TableCell>
-													<TableCell
-														component="th"
-														scope="row"
-														padding="none"
-													>
-														<Stack
-															direction="row"
-															alignItems="center"
-															spacing={2}
-														>
-															<Avatar
-																alt={name}
-																src={avatarUrl}
-															/>
-															<Typography
-																variant="subtitle2"
-																noWrap
-															>
-																{name}
-															</Typography>
-														</Stack>
-													</TableCell>
-													<TableCell align="left">
-														{company}
-													</TableCell>
-													<TableCell align="left">
-														{role}
-													</TableCell>
-													<TableCell align="left">
-														{isVerified
-															? "Yes"
-															: "No"}
-													</TableCell>
-													<TableCell align="left">
-														<Label
-															variant="ghost"
-															color={
-																(status ===
-																	"banned" &&
-																	"error") ||
-																"success"
-															}
-														>
-															{sentenceCase(
-																status
-															)}
-														</Label>
-													</TableCell>
-
-													<TableCell align="right">
-														<UserMoreMenu />
-													</TableCell>
-												</TableRow>
-											);
-										})}
-									{emptyRows > 0 && (
-										<TableRow
-											style={{ height: 53 * emptyRows }}
-										>
-											<TableCell colSpan={6} />
-										</TableRow>
-									)}
+													View
+												</Button>
+											</TableCell>
+											<TableCell align="right">
+												<UserMoreMenu />
+											</TableCell>
+											</TableRow>
+										))
+									}
 								</TableBody>
 								{isUserNotFound && (
 									<TableBody>
