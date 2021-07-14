@@ -5,6 +5,7 @@ import { useState,useEffect } from "react";
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
 import {toast} from 'react-toastify';
+import moment from "moment";
 // material
 import {
 	Card,
@@ -20,33 +21,51 @@ import {
 	Typography,
 	TableContainer,
 	TablePagination,
-	Breadcrumbs
+	Breadcrumbs,
+    Grid,
+    Box,
+    TextField
 } from "@material-ui/core";
 // components
-import Page from "../components/Page";
-import Label from "../components/Label";
-import Scrollbar from "../components/Scrollbar";
-import SearchNotFound from "../components/SearchNotFound";
+import Page from "../../components/Page";
+import Label from "../../components/Label";
+import Scrollbar from "../../components/Scrollbar";
+import SearchNotFound from "../../components/SearchNotFound";
+import {
+	AppTasks,
+	AppNewUsers,
+	AppBugReports,
+	AppItemOrders,
+	AppNewsUpdate,
+	AppWeeklySales,
+	AppOrderTimeline,
+	AppCurrentVisits,
+	AppWebsiteVisits,
+	AppTrafficBySite,
+	AppCurrentSubject,
+	AppConversionRates,
+} from "../../components/_dashboard/app";
 import {
 	UserListHead,
 	UserListToolbar,
 	UserMoreMenu,
-} from "../components/_dashboard/user";
+} from "../../components/_dashboard/user";
 //
-import USERLIST from "../_mocks_/user";
-import AddEmployee from '../components/AddRegion/AddRegion';
-import UpdateEmployee from "src/components/updateRegion/updateRegion";
-import { getAllEmployees,getAllRegions } from "../api/index";
+import USERLIST from "../../_mocks_/user";
+import AddEmployee from '../../components/AddEmployee/AddEmployee';
+import { getAllEmployees } from "../../api/index";
 
 // ----------------------------------------------------------------------
 
+
 const TABLE_HEAD = [
-	{ id: "id", label : 'ID' },
-	{ id: "name", label: "Name Of Region", alignRight: false },
-	{ id: "address", label: "Address of Region", alignRight: false },
-	{ id: "regional_officer", label: "Regional Manager", alignRight: false },
-	{ id: "regional_officer_email", label: "Regional Manager's Email", alignRight: false },
-	{ id: "" },
+	{ id: "name", label: "Full Name", },
+	{ id: "email", label: "Email" },
+	{ id: "role", label: "Role"},
+	{ id: "isVerified", label: "Account Status" },
+	{ id: "branch", label: "Branch"},
+	{ id: "lastLogin", label: "Last Login"},
+	{ id: "dateJoined", label: "Date Joined"},
 	{ id: "" },
 ];
 
@@ -93,9 +112,7 @@ export default function User() {
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [isAddEmployeeOpen, setAddEmployeeOpen] = useState(false);
-	const [isUpdateEmployeeOpen, setUpdateEmployeeOpen] = useState(false);
-	const [regions, setRegions] = useState([]);
-	const [regionInfo, setRegionInfo] = useState({});
+	const [employees, setEmployees] = useState([]);
 
 	
 	
@@ -157,17 +174,14 @@ export default function User() {
 	);
 
 	const isUserNotFound = filteredUsers.length === 0;
-	const openUpdateRegionDrawer = (row)=>{
-		setRegionInfo(row);
-		setUpdateEmployeeOpen(true);
-	}
+
 
 	const getData = async ()=>{
 		try{
-			const data = await getAllRegions();
+			const data = await getAllEmployees();
 			console.log(data);
 			if(data.status === 200 ){
-				setRegions(data?.data);
+				setEmployees(data?.data);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -199,39 +213,29 @@ export default function User() {
 
 
 	return (
-		<Page title="Regions">
-			<Container>
-				<Stack
-					direction="row"
-					alignItems="center"
-					justifyContent="space-between"
-					mb={5}
-				>
-					<Breadcrumbs aria-label="breadcrumb">
-						<RouterLink color="inherit" to="/" onClick={handleClick}>
-							Dashboard
-						</RouterLink>
-						<Typography color="textPrimary">Regions</Typography>
-						</Breadcrumbs>
-					<Button
-						variant="contained"
-						onClick={()=>{setAddEmployeeOpen(true)}}
-						startIcon={<Icon icon={plusFill} />}
-					>
-						New Region
-					</Button>
-				</Stack>
+		<Page title="Attendance Record">
+			<Container sx={{ py : 10}}>
+                <Typography variant="h5" sx={{ py : 2}} align="center">
+                    Gunmen's Monthly Attendance Record for Jan 2021
+                </Typography>
+				<Grid container spacing={3}>
+					<Grid item xs={12} sm={6} md={3}>
+						<AppWeeklySales />
+					</Grid>
+					<Grid item xs={12} sm={6} md={3}>
+						<AppNewUsers />
+					</Grid>
+					<Grid item xs={12} sm={6} md={3}>
+						<AppItemOrders />
+					</Grid>
+					<Grid item xs={12} sm={6} md={3}>
+						<AppBugReports />
+					</Grid>
+                </Grid>
 				<AddEmployee
-					isOpenFilter={isAddEmployeeOpen}
-					onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
-					onCloseFilter={()=>{setAddEmployeeOpen(false)}}
-					regionInfo = {{}}
-				/>
-				<UpdateEmployee
-					isOpenFilter={isUpdateEmployeeOpen}
-					onOpenFilter= {()=>{setUpdateEmployeeOpen(true)}}
-					onCloseFilter={()=>{setUpdateEmployeeOpen(false)}}
-					regionInfo={regionInfo}
+							isOpenFilter={isAddEmployeeOpen}
+							onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
+							onCloseFilter={()=>{setAddEmployeeOpen(false)}}
 				/>
 				<Card>
 					<UserListToolbar
@@ -253,40 +257,55 @@ export default function User() {
 									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-									{
-										regions.map((row)=>(
-											<TableRow>
+									{employees.map((row)=>(
+										<TableRow key={row.id}>
 											<TableCell component="th" scope="row">
 												{row.id}
 											</TableCell>
 											<TableCell >
-												{row.name}
+												{`${row.first_name} ${row.last_name}`}
 											</TableCell>
 											<TableCell >
-												{row.address}
+												{row.email}
 											</TableCell>
 											<TableCell >
-												{`${row.regional_officer?.first_name} ${row.regional_officer?.last_name}`}
-											</TableCell>
-											<TableCell >
-												{`${row.regional_officer?.email}`}
-											</TableCell>
-											<TableCell >
-												<Button 
-													variant="contained" 
-													color="primary" 
-													size="small"
-													onClick={()=>{openUpdateRegionDrawer(row)}}
+												<Label
+														variant="ghost"
+														color={
+															row.is_superuser ? 'secondary' : 'primary'
+														}
 												>
-													View
-												</Button>
+														{sentenceCase(
+															row.is_superuser ? "SuperUser" : (
+																row.is_staff ? "Admin" : "Employee"
+															)
+														)}
+												</Label>
+												{/* {row.profile?.role} */}
 											</TableCell>
-											<TableCell align="right">
-												<UserMoreMenu />
+											<TableCell >
+												<Label
+														variant="ghost"
+														color={
+															row.is_active ? "primary" : 'error'
+														}
+												>
+														{sentenceCase(
+															row.is_active ? "active" : "not-active"
+														)}
+												</Label>
 											</TableCell>
-											</TableRow>
-										))
-									}
+											<TableCell >
+												{row.profile?.branch?.name}
+											</TableCell>
+											<TableCell >
+												{moment(row.last_login).format('hh:mm on DD-MM-YYYY')}
+											</TableCell>
+											<TableCell >
+												{moment(row.date_joined).format('hh:mm on DD-MM-YYYY')}
+											</TableCell>
+									  </TableRow>
+									))}
 								</TableBody>
 								{isUserNotFound && (
 									<TableBody>
@@ -317,7 +336,41 @@ export default function User() {
 						onRowsPerPageChange={handleChangeRowsPerPage}
 					/>
 				</Card>
+                <Grid container spacing={4} sx={{ py : 2}}>
+                     <Grid item xs={12} md={12} lg={12}>
+						<AppOrderTimeline />
+					</Grid>
+                    <Grid item xs={12} md={12} lg={12}>
+                        <Card sx={{ py : 3, px : 3}}>
+                            <Grid container spacing={4} sx={{ py : 2}}>
+                                <Grid item xs={12} md={12} lg={12}>
+                                    <Typography variant="h5">
+                                        Request Changes/Comment
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} md={12} lg={12}> 
+                                    <TextField
+                                        label = "Message"
+                                        fullWidth
+                                        multiline
+                                        rows={5}
+                                    >
+                                    </TextField>
+                                </Grid>
+                                <Grid item xs={12} md={12} lg={12} align="center"> 
+                                    <Button
+                                        sx={{width:300}} 
+                                        variant="contained" 
+                                        color="primary"
+                                    >
+                                        Send
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Card>
+					</Grid>
+                </Grid>
 			</Container>
 		</Page>
 	);
-}
+}	

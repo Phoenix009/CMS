@@ -2,7 +2,7 @@ import { Link as RouterLink, Outlet } from 'react-router-dom';
 // material
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 // components
-import Logo from '../components/Logo';
+import Logo from '../components/CMS/CMS';
 
 // ----------------------------------------------------------------------
 

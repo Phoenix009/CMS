@@ -54,7 +54,6 @@ export default function UpdateEmployee({
   onCloseFilter,
   regionInfo
 }) {
-  console.log(regionInfo);
   const [region, setRegion] = useState(regionInfo);
   const [employees, setEmployees] = useState([]);
   const handleChange = (e)=>{
