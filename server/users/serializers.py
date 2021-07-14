@@ -24,20 +24,28 @@ class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ["user", "is_superuser", "is_incharge"]
+        fields = ["is_superuser", "is_incharge"]
 
 
 class UserSerializer(serializers.ModelSerializer):
     profile = RelatedFieldAlternative(
         queryset=Profile.objects.all(), serializer=ProfileSerializer
     )
+
     class Meta:
         model = User
         fields = (
-            "id", "first_name", "last_name", 
-            "username", "email", 'profile', 
-            'is_staff', 'is_active', 'is_superuser', 
-            'last_login', 'date_joined'
+            "id",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "profile",
+            "is_staff",
+            "is_active",
+            "is_superuser",
+            "last_login",
+            "date_joined",
         )
 
 
