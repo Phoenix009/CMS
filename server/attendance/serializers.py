@@ -1,3 +1,4 @@
+from datetime import date
 from vendors.models import Vendor
 from django.contrib.auth.models import User
 from users.models import Branch
@@ -58,6 +59,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "added_by",
             "attendance_sheet",
         ]
+    
+
 
 
 class IssueSerializer(serializers.ModelSerializer):
