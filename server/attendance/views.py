@@ -27,19 +27,19 @@ class AttendanceList(
         if new_attendance.is_valid():
             today = datetime.now()
             attendance = Attendance.objects.filter(
-                entry_time__year =today.date().year,
-                entry_time__month =today.date().month,
-                entry_time__day =today.date().day,
-                gunmen = new_attendance.data['gunmen']['id'],
-                branch = new_attendance.data['branch']['id']
+                entry_time__year=today.date().year,
+                entry_time__month=today.date().month,
+                entry_time__day=today.date().day,
+                gunmen=new_attendance.data["gunmen"]["id"],
+                branch=new_attendance.data["branch"]["id"],
             ).first()
 
             if attendance:
                 attendance.entry_time = today
-                if 'exit_time' in new_attendance.data:
-                    attendance.exit_time = new_attendance.data.get('exit_time')
+                if "exit_time" in new_attendance.data:
+                    attendance.exit_time = new_attendance.data.get("exit_time")
                 attendance.save()
-                return Response(data = AttendanceSerializer(attendance).data)
+                return Response(data=AttendanceSerializer(attendance).data)
             else:
                 return self.create(request, *args, **kwargs)
 
@@ -62,15 +62,12 @@ class AttendanceDetail(
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
-
-
         # today = date.today()
         # attendance = Attendance.objects.filter(
         #     entry_time__year =today.year,
         #     entry_time__month =today.month,
         #     entry_time__day =today.day,
         # ).first()
-
 
         # print(attendance)
 
