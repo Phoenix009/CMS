@@ -116,7 +116,10 @@ export const getGunmens = ()=> axiosInstance.get('vendor/gunmen');
 // regions 
 export const getAllRegions = () => axiosInstance.get('users/region/');
 export const addRegion = (formData) => axiosInstance.post('users/region/', formData);
-export const updateRegion = (formData) => axiosInstance.put('users/region/', formData);
+export const updateRegion = (id,formData) =>{
+	console.log(formData);
+	return axiosInstance.put(`users/region/${id}/`, formData);
+}
 export const deleteRegion = (formData) => axiosInstance.delete('users/region/', formData);
 
 // vendors 

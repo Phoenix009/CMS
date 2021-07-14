@@ -54,6 +54,7 @@ export default function UpdateEmployee({
   onCloseFilter,
   regionInfo
 }) {
+  console.log(regionInfo);
   const [region, setRegion] = useState(regionInfo);
   const [employees, setEmployees] = useState([]);
   const handleChange = (e)=>{
@@ -61,11 +62,19 @@ export default function UpdateEmployee({
     console.log(region);
   }
   const handleSubmit = async ()=>{
+    console.log(region);
     try{
-			const data = await updateRegion(region);
+			const data = await updateRegion(
+        region?.id,
+        {
+          name : region?.name,
+          address : region?.address,
+          regional_officer : region?.regional_officer?.id
+        }
+        );
 			console.log(data);
-			if(data.status === 201){
-				toast('Region Added', {
+			if(data.status === 200){
+				toast('Region Updated', {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -130,7 +139,8 @@ export default function UpdateEmployee({
   
   useEffect(() => {
 		getUsers();
-	}, []);
+    setRegion(regionInfo);
+	}, [regionInfo]);
   return (
     <>
           <Drawer
@@ -148,7 +158,7 @@ export default function UpdateEmployee({
               sx={{ px: 1, py: 2 }}
             >
               <Typography variant="subtitle1" sx={{ ml: 1 }}>
-                Add Region
+                Update Region
               </Typography>
               <IconButton onClick={onCloseFilter}>
                 <Icon icon={closeFill} width={20} height={20} />
@@ -163,7 +173,7 @@ export default function UpdateEmployee({
                         name="name"
                         onChange={handleChange}
                         fullWidth
-                        value={region.name}
+                        value={region?.name}
                     >
                     </TextField>
                 </Grid>
@@ -175,7 +185,7 @@ export default function UpdateEmployee({
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
                         name = 'regional_officer'
-                        value={region.regional_officer?.id}
+                        value={region?.regional_officer?.id}
                         onChange={handleChange}
                       >
                         {
@@ -195,12 +205,12 @@ export default function UpdateEmployee({
                         multiline
                         rows={3}
                         fullWidth
-                        value={region.address}
+                        value={region?.address}
                     >
                     </TextField>
                 </Grid>
                 <Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Region</Button>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Update Region</Button>
                 </Grid>
             </Grid>
           </Drawer>

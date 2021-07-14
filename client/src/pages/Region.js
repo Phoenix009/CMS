@@ -35,6 +35,7 @@ import {
 //
 import USERLIST from "../_mocks_/user";
 import AddEmployee from '../components/AddRegion/AddRegion';
+import UpdateEmployee from "src/components/updateRegion/updateRegion";
 import { getAllEmployees,getAllRegions } from "../api/index";
 
 // ----------------------------------------------------------------------
@@ -92,7 +93,9 @@ export default function User() {
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [isAddEmployeeOpen, setAddEmployeeOpen] = useState(false);
+	const [isUpdateEmployeeOpen, setUpdateEmployeeOpen] = useState(false);
 	const [regions, setRegions] = useState([]);
+	const [regionInfo, setRegionInfo] = useState({});
 
 	
 	
@@ -154,7 +157,11 @@ export default function User() {
 	);
 
 	const isUserNotFound = filteredUsers.length === 0;
-
+	const openUpdateRegionDrawer = (row)=>{
+		console.log(row);
+		setRegionInfo(row);
+		setUpdateEmployeeOpen(true);
+	}
 
 	const getData = async ()=>{
 		try{
@@ -193,7 +200,7 @@ export default function User() {
 
 
 	return (
-		<Page title="User | Minimal-UI">
+		<Page title="Regions">
 			<Container>
 				<Stack
 					direction="row"
@@ -216,9 +223,16 @@ export default function User() {
 					</Button>
 				</Stack>
 				<AddEmployee
-							isOpenFilter={isAddEmployeeOpen}
-							onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
-							onCloseFilter={()=>{setAddEmployeeOpen(false)}}
+					isOpenFilter={isAddEmployeeOpen}
+					onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
+					onCloseFilter={()=>{setAddEmployeeOpen(false)}}
+					regionInfo = {{}}
+				/>
+				<UpdateEmployee
+					isOpenFilter={isUpdateEmployeeOpen}
+					onOpenFilter= {()=>{setUpdateEmployeeOpen(true)}}
+					onCloseFilter={()=>{setUpdateEmployeeOpen(false)}}
+					regionInfo={regionInfo}
 				/>
 				<Card>
 					<UserListToolbar
@@ -263,7 +277,7 @@ export default function User() {
 													variant="contained" 
 													color="primary" 
 													size="small"
-
+													onClick={()=>{openUpdateRegionDrawer(row)}}
 												>
 													View
 												</Button>
