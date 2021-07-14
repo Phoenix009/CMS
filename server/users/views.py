@@ -5,11 +5,46 @@ from rest_framework import mixins
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+
+
+class CustomPagination(PageNumberPagination):
+    page_size = 2
+    page_size_query_param = "page_size"
+    max_page_size = 1000
+
+    def get_paginated_response(self, data):
+        return Response(
+            {
+                "links": {
+                    "next": self.get_next_link(),
+                    "previous": self.get_previous_link(),
+                },
+                "count": self.page.paginator.count,
+                "page_size": self.page_size,
+                "results": data,
+            }
+        )
 
 
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    pagination_class = CustomPagination
+
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ["^first_name", "^last_name", "^username", "^email"]
+    filterset_fields = [
+        "first_name",
+        "last_name",
+        "username",
+        "email",
+        "profile__gender",
+        "is_staff",
+        "is_active",
+        "is_superuser",
+    ]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -42,6 +77,7 @@ class BranchList(
 ):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
+    pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^name", "^address"]
     filterset_fields = ["name", "address", "branch_manager", "region"]
@@ -77,6 +113,8 @@ class RegionList(
 ):
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
+    pagination_class = CustomPagination
+
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^name", "^address"]
     filterset_fields = ["name", "address", "regional_officer"]

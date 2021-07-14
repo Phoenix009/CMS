@@ -22,9 +22,11 @@ class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    # branch = RelatedFieldAlternative(queryset=Branch.objects.all())
+
     class Meta:
         model = Profile
-        fields = ["is_superuser", "is_incharge"]
+        fields = ["id", "gender", "branch", "is_superuser", "is_incharge"]
 
 
 class UserSerializer(serializers.ModelSerializer):

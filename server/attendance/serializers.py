@@ -59,8 +59,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "added_by",
             "attendance_sheet",
         ]
-    
-
 
 
 class IssueSerializer(serializers.ModelSerializer):
