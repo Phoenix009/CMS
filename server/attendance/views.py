@@ -4,8 +4,8 @@ from django.shortcuts import render
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework.response import Response
-from attendance.serializers import AttendanceSerializer
-from attendance.models import Attendance
+from attendance.serializers import AttendanceSerializer, IssueSerializer
+from attendance.models import Attendance, Issue
 
 # from vendors.models import Gunmen
 # from vendors.serializers import GunmenSerializer
@@ -62,20 +62,34 @@ class AttendanceDetail(
         return self.destroy(request, *args, **kwargs)
 
 
+class IssueList(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
+    queryset = Issue.objects.all()
+    serializer_class = IssueSerializer
 
-        # today = date.today()
-        # attendance = Attendance.objects.filter(
-        #     entry_time__year =today.year,
-        #     entry_time__month =today.month,
-        #     entry_time__day =today.day,
-        # ).first()
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
-        # print(attendance)
+class IssueDetail(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
+):
+    queryset = Issue.objects.all()
+    serializer_class = IssueSerializer
 
-        # if attendance:
-        #     new_attendance = AttendanceSerializer(request.data)
-        #     if new_attendance.is_valid():
-        #         attendance
-        #     attendance.save()
-        # else:
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
