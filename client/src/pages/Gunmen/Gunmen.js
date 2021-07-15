@@ -49,17 +49,16 @@ import {
 } from "../../components/_dashboard/user";
 //
 import USERLIST from "../../_mocks_/user";
-import {viewAllAttendance} from '../../api/index';
+import {viewAllAttendance,getGunmens} from '../../api/index';
+
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+	{ id: "id", label: "ID" },
 	{ id: "name", label: "Name" },
 	{ id: "email", label: "Email"},
 	{ id: "vendor", label: "Vendor"},
-	{ id: "branch", label: "Branch" },
-	{ id: "checkin", label: "Check-in"},
-	{ id: "checkout", label: "Check-Out"},
 	{ id: "" },
 ];
 
@@ -144,7 +143,7 @@ export default function User() {
 		first_name : '',
 		last_name : '',
 		email : '',
-		value : ''
+		vendor : ''
 	});
 	
 	const handleChange = (e)=>{
@@ -156,6 +155,7 @@ export default function User() {
 				const data = await addGunmen(gunmen);
 				console.log(data);
 				if(data.status === 201){
+					await getData();
 					toast('Gunman Added', {
 						position: "top-right",
 						autoClose: 5000,
@@ -246,7 +246,7 @@ export default function User() {
 	}
 	const getData = async ()=>{
 		try{
-			const data = await viewAllAttendance();
+			const data = await getGunmens();
 			console.log(data);
 			if(data.status === 200 ){
 				setAttendance(data?.data);
@@ -346,6 +346,7 @@ export default function User() {
 									labelId="demo-simple-select-outlined-label"
 									id="demo-simple-select-outlined"
 									label="Age"
+									name="vendor"
 									onChange={handleChange}
 									>
 								{
@@ -389,17 +390,15 @@ export default function User() {
 												{row.id}
 											</TableCell>
 											<TableCell >
-												{`${row?.gunmen?.first_name} ${row?.gunmen?.last_name}`}
+												{`${row?.first_name} ${row?.last_name}`}
 											</TableCell>
 											<TableCell >
-												{row.gunmen.email}
+												{row?.email}
 											</TableCell>
-											<TableCell >
-												{row.gunmen.vendor.name}
+											<TableCell>
+												{row?.vendor.name}
 											</TableCell>
-											<TableCell >
-												{row.branch.name}
-											</TableCell>
+
 									  </TableRow>
 									))}
 								</TableBody>
