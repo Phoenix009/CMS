@@ -7,11 +7,17 @@ from rest_framework import generics
 from rest_framework.response import Response
 from attendance.serializers import AttendanceSerializer, IssueSerializer
 from attendance.models import Attendance, Issue
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import filters
 from rest_framework.response import Response
+<<<<<<< HEAD
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.pagination import PageNumberPagination
+=======
+import datetime
+>>>>>>> 948b59f5f46befb714a19aa3d041c2707965eab4
 
 # from vendors.models import Gunmen
 # from vendors.serializers import GunmenSerializer
@@ -37,14 +43,26 @@ class CustomPagination(PageNumberPagination):
 
 
 class AttendanceList(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    generics.GenericAPIView,
+    filters.FilterSet,
 ):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^gunmen__first_name", "^gunmen__last_name"]
-    filterset_fields = ["gunmen", "branch"]
+    filterset_fields = {
+        "entry_time": ["exact"],
+        "exit_time": ["exact"],
+        "gunmen": ["exact"],
+        "added_by": ["exact"],
+        "branch": ["exact"],
+        "attendance_sheet": ["exact"],
+    }
+
+    ordering_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -69,7 +87,6 @@ class AttendanceList(
                 return Response(data=AttendanceSerializer(attendance).data)
             else:
                 return self.create(request, *args, **kwargs)
-
 
 class AttendanceDetail(
     mixins.RetrieveModelMixin,
@@ -96,6 +113,7 @@ class IssueList(
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
     pagination_class = CustomPagination
+    ordering_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

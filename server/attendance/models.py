@@ -12,7 +12,7 @@ class AttendanceSheet(models.Model):
 
     def __str__(self):
         return f'{self.sheet_created} -> {self.verified}'
-
+ 
 
 class Attendance(models.Model):
     entry_time = models.DateTimeField(default=datetime.now)

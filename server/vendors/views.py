@@ -45,7 +45,7 @@ class VendorList(
         "created_by",
         "created_at",
     ]
-
+    ordering_fields = '__all__'
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -61,7 +61,7 @@ class VendorDetail(
 ):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
-
+    ordering_fields = '__all__'
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
@@ -81,7 +81,7 @@ class GunmenList(
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^first_name", "^last_name"]
     filterset_fields = ["first_name", "last_name", "vendor"]
-
+    ordering_fields = '__all__'
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -117,7 +117,7 @@ class VehicleList(
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^model_name", "^number_plate"]
     filterset_fields = ["model_name", "vendor", "number_plate"]
-
+    ordering_fields = '__all__'
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 

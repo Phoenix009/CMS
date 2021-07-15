@@ -47,7 +47,7 @@ class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         "is_active",
         "is_superuser",
     ]
-
+    ordering_fields = '__all__'
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -83,7 +83,7 @@ class BranchList(
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^name", "^address"]
     filterset_fields = ["name", "address", "branch_manager", "region"]
-
+    ordering_fields = '__all__'
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -120,7 +120,7 @@ class RegionList(
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^name", "^address"]
     filterset_fields = ["name", "address", "regional_officer"]
-
+    ordering_fields = '__all__'
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
