@@ -29,9 +29,9 @@ import {
   Select
 } from '@material-ui/core';
 //
-import {
-  getAllEmployees, 
-  updateRegion,
+import { 
+  addVendor,
+  getAllVendors,
 } from '../../api/index';
 // ----------------------------------------------------------------------
 
@@ -39,41 +39,37 @@ import {
 
 // ----------------------------------------------------------------------
 
-UpdateEmployee.propTypes = {
+ShopFilterSidebar.propTypes = {
   isOpenFilter: PropTypes.bool,
   onResetFilter: PropTypes.func,
   onOpenFilter: PropTypes.func,
   onCloseFilter: PropTypes.func,
-  regionInfo : PropTypes.object
 };
 
-export default function UpdateEmployee({
+export default function ShopFilterSidebar({
   isOpenFilter,
   onResetFilter,
   onOpenFilter,
   onCloseFilter,
-  regionInfo
 }) {
-  const [region, setRegion] = useState(regionInfo);
-  const [employees, setEmployees] = useState([]);
+  const [vendor, setVendor] = useState({
+    'name' : '',
+    'address' : '',
+    'email' : '',
+    'contact':'',
+    'officer_incharge': ''
+  });
+  // const [employees, setEmployees] = useState([]);
   const handleChange = (e)=>{
-    setRegion({...region, [e.target.name] : e.target.value});
-    console.log(region);
+    setVendor({...vendor, [e.target.name] : e.target.value});
+    console.log(vendor);
   }
   const handleSubmit = async ()=>{
-    console.log(region);
     try{
-			const data = await updateRegion(
-        region?.id,
-        {
-          name : region?.name,
-          address : region?.address,
-          regional_officer : region?.regional_officer?.id
-        }
-        );
+			const data = await addVendor (vendor);      
 			console.log(data);
-			if(data.status === 200){
-				toast('Region Updated', {
+			if(data.status === 201){
+				toast('Vendor Added', {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -107,10 +103,10 @@ export default function UpdateEmployee({
   }
   const getUsers = async ()=>{
 		try{
-			const data = await getAllEmployees();
+			const data = await getAllVendors();
 			console.log(data);
 			if(data.status === 200 ){
-				setEmployees(data?.data);
+				setVendor(data?.data);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -138,8 +134,7 @@ export default function UpdateEmployee({
   
   useEffect(() => {
 		getUsers();
-    setRegion(regionInfo);
-	}, [regionInfo]);
+	}, []);
   return (
     <>
           <Drawer
@@ -157,7 +152,7 @@ export default function UpdateEmployee({
               sx={{ px: 1, py: 2 }}
             >
               <Typography variant="subtitle1" sx={{ ml: 1 }}>
-                Update Region
+                Add Vendor
               </Typography>
               <IconButton onClick={onCloseFilter}>
                 <Icon icon={closeFill} width={20} height={20} />
@@ -168,35 +163,46 @@ export default function UpdateEmployee({
             <Grid container spacing={2} sx={{ px: 5, py: 10 }}>
                 <Grid item xs={12} sm={12} lg={6}>
                     <TextField
-                        label="Region Name"
+                        label="Vendor Name"
                         name="name"
                         onChange={handleChange}
                         fullWidth
-                        value={region?.name}
                     >
                     </TextField>
                 </Grid>
-               
+                
                 <Grid item xs={12} sm={12} lg={6}>
-                  <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="demo-simple-select-outlined-label">Regional Manager</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-outlined-label"
-                        id="demo-simple-select-outlined"
-                        name = 'regional_officer'
-                        value={region?.regional_officer?.id}
+                    <TextField
+                        label="Name of Officer Incharge"
+                        name="officer_incharge"
                         onChange={handleChange}
-                      >
-                        {
-                          employees.map((instance)=>(
-                            <MenuItem value={instance.id}>{instance.email}</MenuItem>
-                          ))
-                        }
-                      </Select>
-                  </FormControl>
+                        fullWidth
+                    >
+                    </TextField>
                 </Grid>
                 
-                <Grid item xs={12} sm={12} lg={12}>
+               
+                
+                <Grid item xs={12} sm={12} lg={6}>
+                    <TextField
+                        label="Contact"
+                        name="contact"
+                        onChange={handleChange}
+                        fullWidth
+                    >
+                    </TextField>
+                  </Grid>
+                    <Grid item xs={12} sm={12} lg={6}>
+                      <TextField
+                          label="Email"
+                          name="email"
+                          onChange={handleChange}
+                          fullWidth
+                      >
+                      </TextField>
+                    </Grid>
+
+                    <Grid item xs={12} sm={12} lg={12}>
                     <TextField
                         label="Address"
                         name="address"
@@ -204,12 +210,11 @@ export default function UpdateEmployee({
                         multiline
                         rows={3}
                         fullWidth
-                        value={region?.address}
-                    >
-                    </TextField>
+                    ></TextField>
                 </Grid>
+
                 <Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Update Region</Button>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Vendor</Button>
                 </Grid>
             </Grid>
           </Drawer>
