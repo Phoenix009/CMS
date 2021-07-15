@@ -11,13 +11,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 from rest_framework.response import Response
-<<<<<<< HEAD
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
-from rest_framework.pagination import PageNumberPagination
-=======
-import datetime
->>>>>>> 948b59f5f46befb714a19aa3d041c2707965eab4
+from datetime import datetime
 
 # from vendors.models import Gunmen
 # from vendors.serializers import GunmenSerializer
@@ -46,7 +40,7 @@ class AttendanceList(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
     generics.GenericAPIView,
-    filters.FilterSet,
+    # filters.FilterSet,
 ):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
@@ -87,6 +81,7 @@ class AttendanceList(
                 return Response(data=AttendanceSerializer(attendance).data)
             else:
                 return self.create(request, *args, **kwargs)
+
 
 class AttendanceDetail(
     mixins.RetrieveModelMixin,
