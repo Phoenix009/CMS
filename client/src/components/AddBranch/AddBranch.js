@@ -214,7 +214,7 @@ export default function ShopFilterSidebar({
                 </Grid>
                 <Grid item xs={12} sm={12} lg={4}>
                 <FormControl variant="outlined" fullWidth>
-                    <InputLabel id="demo-simple-select-outlined-label">Branch Manager</InputLabel>
+                    <InputLabel id="demo-simple-select-outlined-label">Branch Manager Email</InputLabel>
                     <Select
                       labelId="demo-simple-select-outlined-label"
                       id="demo-simple-select-outlined"

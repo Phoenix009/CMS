@@ -5,7 +5,7 @@ import { useState,useEffect } from "react";
 import {toast} from 'react-toastify';
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
-// material
+import UpdateEmployee from "src/components/updateBranch/updateBranch";
 import {
 	Card,
 	Table,
@@ -156,11 +156,11 @@ export default function Branch() {
 	);
 
 	const isUserNotFound = filteredUsers.length === 0;
-    // const openUpdateRegionDrawer = (row)=>{
-	// 	console.log(row);
-	// 	setRegionInfo(row);
-	// 	setUpdateEmployeeOpen(true);
-	// }
+    const openUpdateBranchDrawer = (row)=>{
+		console.log(row);
+		setBranchInfo(row);
+		setUpdateEmployeeOpen(true);
+	}
 
 	const getData = async ()=>{
 		try{
@@ -225,12 +225,12 @@ export default function Branch() {
 							onOpenFilter= {()=>{setAddBranchOpen(true)}}
 							onCloseFilter={()=>{setAddBranchOpen(false)}}
 				/>
-				{/* <UpdateEmployee
+				<UpdateEmployee
 					isOpenFilter={isUpdateEmployeeOpen}
 					onOpenFilter= {()=>{setUpdateEmployeeOpen(true)}}
 					onCloseFilter={()=>{setUpdateEmployeeOpen(false)}}
-					regionInfo={regionInfo}
-				/> */}
+					branchInfo={branchInfo}
+				/>
 				<Card>
 					<UserListToolbar
 						numSelected={selected.length}
@@ -269,10 +269,17 @@ export default function Branch() {
 											<TableCell >
 											{`${row.region?.name}`}
 											</TableCell>
+											<TableCell >
+												<Button 
+													variant="contained" 
+													color="primary" 
+													size="small"
+													onClick={()=>{openUpdateBranchDrawer(row)}}
+												>
+													View
+												</Button></TableCell>
 											
-											<TableCell align="right">
-												<UserMoreMenu />
-											</TableCell>
+										
 											</TableRow>
 										))
 									}

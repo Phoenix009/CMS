@@ -129,7 +129,9 @@ export const updateVendor = (formData) => axiosInstance.put('vendor/vendor/', fo
 // branch 
 export const getAllBranch = ()=> axiosInstance.get('users/branch/');
 export const addBranch = (formData)=> axiosInstance.post('users/branch/', formData);
-
+export const updateBranch = (id,formData) =>{
+	return axiosInstance.put(`users/branch/${id}/`, formData);
+}
 // Issues 
 
 
