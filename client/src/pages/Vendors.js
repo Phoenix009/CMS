@@ -35,6 +35,7 @@ import {
 //
 import USERLIST from "../_mocks_/user";
 import AddVendor from '../components/AddVendor/AddVendor';
+import UpdateVendor from "../components/updateVendor/updateVendor";
 import { getAllEmployees,getAllVendors } from "../api/index";
 
 // ----------------------------------------------------------------------
@@ -94,6 +95,8 @@ export default function User() {
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [isAddVendorOpen, setAddVendorOpen] = useState(false);
 	const [vendors, setVendors] = useState([]);
+	const [isUpdateVendorOpen, setUpdateVendorOpen] = useState(false);
+	const [vendorInfo, setVendorInfo] = useState({});
 
 	
 	
@@ -155,7 +158,10 @@ export default function User() {
 	);
 
 	const isUserNotFound = filteredUsers.length === 0;
-
+	const openUpdateVendorDrawer = (row)=>{
+		setVendorInfo(row);
+		setUpdateVendorOpen(true);
+	}
 
 	const getData = async ()=>{
 		try{
@@ -225,6 +231,12 @@ export default function User() {
 								}
 							}
 				/>
+				<UpdateVendor
+					isOpenFilter={isUpdateVendorOpen}
+					onOpenFilter= {()=>{setUpdateVendorOpen(true)}}
+					onCloseFilter={()=>{setUpdateVendorOpen(false)}}
+					vendorInfo={vendorInfo}
+				/>
 				<Card>
 					<UserListToolbar
 						numSelected={selected.length}
@@ -271,12 +283,13 @@ export default function User() {
 													variant="contained" 
 													color="primary" 
 													size="small"
+													onClick={()=>{openUpdateVendorDrawer(row)}}
 												>
-													View
+													Update
 												</Button>
 											</TableCell>
 											<TableCell align="right">
-												<UserMoreMenu />
+												<UserMoreMenu onClick={()=>{openUpdateVendorDrawer(row)}}/>
 											</TableCell>
 											</TableRow>
 										))

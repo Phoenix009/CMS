@@ -124,7 +124,9 @@ export const deleteRegion = (formData) => axiosInstance.delete('users/region/', 
 // vendors 
 export const getAllVendors = ()=> axiosInstance.get('vendor/vendor/');
 export const addVendor = (formData) => axiosInstance.post('vendor/vendor/', formData);
-export const updateVendor = (formData) => axiosInstance.put('vendor/vendor/', formData)
+export const updateVendor = (id,formData) =>{
+	return axiosInstance.put (`vendor/vendor/${id}/`, formData);
+}
 
 // branch 
 export const getAllBranch = ()=> axiosInstance.get('users/branch/');
