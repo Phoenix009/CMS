@@ -28,49 +28,59 @@ import {
   MenuItem,
   Select
 } from '@material-ui/core';
+//
 import {
+  getAllEmployees, 
   getAllRegions, 
-  getAllEmployees,
-  addBranch,
+  updateBranch,
 } from '../../api/index';
-
 // ----------------------------------------------------------------------
 
 
 
 // ----------------------------------------------------------------------
 
-ShopFilterSidebar.propTypes = {
+UpdateEmployee.propTypes = {
   isOpenFilter: PropTypes.bool,
   onResetFilter: PropTypes.func,
   onOpenFilter: PropTypes.func,
   onCloseFilter: PropTypes.func,
+  branchInfo : PropTypes.object
 };
 
-export default function ShopFilterSidebar({
+export default function UpdateEmployee({
   isOpenFilter,
   onResetFilter,
   onOpenFilter,
   onCloseFilter,
+  branchInfo
 }) {
-  const [employee_info, setEmployee_info] = useState([]);
-  const [region_info,setRegion_info]=useState([]);
-  const [branch, setBranch] = useState({
-   'name' :'' ,
-    'address' :'',
-    'branch_manager' :'',
-    'region':''
-  });
+  console.log(branchInfo);
+  const [branch, setBranch] = useState(branchInfo)
+  const [region_info,setRegion_info]=useState([]);;
+  const [employees, setEmployees] = useState([]);
   const handleChange = (e)=>{
     setBranch({...branch, [e.target.name] : e.target.value});
     console.log(branch);
+    console.log(e);
   }
-    const handleSubmit = async ()=>{
+  const handleSubmit = async ()=>{
+    console.log("----------==========--------");
+    console.log(branch);
     try{
-			const data = await addBranch(branch);
+			const data = await updateBranch(
+        branch?.id,
+        {
+          name : branch?.name,
+          address : branch?.address,
+          branch_manager:branch.branch_manager.id,
+          region:branch.region.id
+          // regional_officer : region?.regional_officer?.id
+        }
+        );
 			console.log(data);
-			if(data.status === 201){
-				toast('Branch Added', {
+			if(data.status === 200){
+				toast('Region Updated', {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -102,6 +112,36 @@ export default function ShopFilterSidebar({
 			});
 		}
   }
+  const getUsers = async ()=>{
+		try{
+			const data = await getAllEmployees();
+			console.log(data);
+			if(data.status === 200 ){
+				setEmployees(data?.data);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
   const getRegion = async ()=>{
 		try{
 			const data = await getAllRegions();
@@ -132,41 +172,14 @@ export default function ShopFilterSidebar({
 			});
 		}
 	}
-  const getEmployees = async ()=>{
-		try{
-			const data = await getAllEmployees();
-			console.log(data);
-			if(data.status === 200 ){
-				setEmployee_info(data?.data);
-			}else{
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			} 
-		}catch(error){
-			console.log(error);
-			toast.error('Something went wrong!', {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
-	}
-
+  
   useEffect(() => {
-		getRegion();
-    getEmployees();
-	}, []);
+    
+		getUsers();
+    getRegion();
+    setBranch(branchInfo);
+    console.log(region_info)
+	}, [branchInfo]);
   return (
     <>
           <Drawer
@@ -184,7 +197,7 @@ export default function ShopFilterSidebar({
               sx={{ px: 1, py: 2 }}
             >
               <Typography variant="subtitle1" sx={{ ml: 1 }}>
-                Add Branch
+                Update Branch
               </Typography>
               <IconButton onClick={onCloseFilter}>
                 <Icon icon={closeFill} width={20} height={20} />
@@ -192,14 +205,14 @@ export default function ShopFilterSidebar({
             </Stack>
 
             <Divider />
-            <Grid container spacing={3} sx={{ px: 5, py: 10 }}>
-                <Grid item xs={12} sm={12} lg={4}>
-                  
+            <Grid container spacing={2} sx={{ px: 5, py: 10 }}>
+                <Grid item xs={12} sm={12} lg={6}>
                     <TextField
                         label="Branch Name"
                         name="name"
                         onChange={handleChange}
                         fullWidth
+                        value={branch?.name}
                     >
                     </TextField>
                 </Grid>
@@ -209,28 +222,28 @@ export default function ShopFilterSidebar({
                         name="address"
                         onChange={handleChange}
                         fullWidth
+                        value={branch?.address}
                     >
                     </TextField>
                 </Grid>
-                <Grid item xs={12} sm={12} lg={4}>
-                <FormControl variant="outlined" fullWidth>
-                    <InputLabel id="demo-simple-select-outlined-label">Branch Manager Email</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-outlined-label"
-                      id="demo-simple-select-outlined"
-                      label="Age"
-                      onChange={handleChange}
-                    >
+                <Grid item xs={12} sm={12} lg={6}>
+                  <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="demo-simple-select-outlined-label">Branch Manager Email</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        name = 'regional_officer'
+                        value={branch?.id}
+                        onChange={handleChange}
+                      >
                         {
-                          employee_info.map((instance)=>(
+                          employees.map((instance)=>(
                             <MenuItem value={instance.id}>{instance.email}</MenuItem>
                           ))
                         }
-                    </Select>
-                </FormControl>
+                      </Select>
+                  </FormControl>
                 </Grid>
-                
-                
                 <Grid item xs={12} sm={12} lg={4}>
                 <FormControl variant="outlined" fullWidth>
                     <InputLabel id="demo-simple-select-outlined-label">Region</InputLabel>
@@ -238,9 +251,11 @@ export default function ShopFilterSidebar({
                       labelId="demo-simple-select-outlined-label"
                       id="demo-simple-select-outlined"
                       label="Age"
+                      value={branch?.region?.id}
                       onChange={handleChange}
                     >
                     {
+                     
                           region_info.map((instance)=>(
                             <MenuItem value={instance.id}>{instance.name}</MenuItem>
                           ))
@@ -248,8 +263,9 @@ export default function ShopFilterSidebar({
                     </Select>
                 </FormControl>
                 </Grid>
+                
                 <Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Branch</Button>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Update Region</Button>
                 </Grid>
             </Grid>
           </Drawer>

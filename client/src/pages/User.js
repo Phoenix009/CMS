@@ -42,6 +42,7 @@ import { getAllEmployees } from "../api/index";
 
 
 const TABLE_HEAD = [
+	{ id: "id", label : "ID" },
 	{ id: "name", label: "Full Name", },
 	{ id: "email", label: "Email" },
 	{ id: "role", label: "Role"},
