@@ -5,6 +5,7 @@ import { useState,useEffect } from "react";
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
 import {toast} from 'react-toastify';
+import moment from 'moment';
 // material
 import {
 	Card,
@@ -30,7 +31,8 @@ import {
 	Select,
 	FormControl,
 	MenuItem,
-	FormHelperText
+	FormHelperText,
+	Box
 } from "@material-ui/core";
 // components
 import Page from "../../components/Page";
@@ -62,6 +64,13 @@ const TABLE_HEAD = [
 	{ id: "" },
 ];
 
+const ADD_ATTENDANCE_TABLE_HEAD = [
+	{ id: "id", label: "ID" },
+	{ id: "name", label: "Name" },
+	{ id: "email", label: "Email"},
+	{ id: "vendor", label: "Vendor"},
+	{ id: "" },
+];
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
@@ -105,7 +114,10 @@ export default function User() {
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [attendance, setAttendance] = useState([]);
+	const [gunmensAttendance, setGunmensAttendance] = useState([]);
+
 	const [vendor, setVendor] = useState([]);
+	const [gunmens, setGunmens] = useState([]);
 	const handleRequestSort = (event, property) => {
 		const isAsc = orderBy === property && order === "asc";
 		setOrder(isAsc ? "desc" : "asc");
@@ -138,7 +150,15 @@ export default function User() {
 		}
 		setSelected(newSelected);
 	};
-
+	const addAttendance = (row)=>{
+		const isAlreadyPresent = attendance.filter((value)=>{return value.id===row.id});
+		if(isAlreadyPresent.length > 0) return;
+		setAttendance([...attendance, row])
+	}
+	const removeAttendance = (row)=>{
+		const newAttendance = attendance.filter((value)=>{return value.id!==row.id});
+		setAttendance(newAttendance);
+	}
 	const [gunmen, setGunmen] = useState({
 		first_name : '',
 		last_name : '',
@@ -249,7 +269,37 @@ export default function User() {
 			const data = await getGunmens();
 			console.log(data);
 			if(data.status === 200 ){
-				setAttendance(data?.data);
+				setGunmens(data?.data);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
+	const getAttendanceData = async ()=>{
+		try{
+			const data = await viewAllAttendance();
+			console.log(data);
+			if(data.status === 200 ){
+				setGunmensAttendance(data?.data);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -277,6 +327,7 @@ export default function User() {
 
 	useEffect(() => {
 		getData();
+		getAttendanceData();
 		getVendors();
 	}, []);
 
@@ -293,25 +344,6 @@ export default function User() {
 				</RouterLink>
 				<Typography color="textPrimary">Gunmen's Attendance</Typography>
 			</Breadcrumbs></Container>
-
-				{/* <Stack
-					direction="row"
-					alignItems="center"
-					justifyContent="space-between"
-					mb={5}
-				>
-					<Typography variant="h4" gutterBottom>
-						User
-					</Typography>
-					<Button
-						variant="contained"
-						component={RouterLink}
-						to="/forms/gunmen"
-						startIcon={<Icon icon={plusFill} />}
-					>
-						New Gunman
-					</Button>
-				</Stack> */}
 				
 				<Card style={{padding:'20px', marginBottom : '10px'}}>
 					<Grid container spacing={3} direction={{ xs: 'column', sm: 'row' }}>
@@ -364,7 +396,7 @@ export default function User() {
 				</Card>
 				
 
-				<Card>
+				<Card >
 					<UserListToolbar
 						numSelected={selected.length}
 						filterName={filterName}
@@ -384,7 +416,7 @@ export default function User() {
 									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-									{attendance.map((row)=>(
+									{gunmens.map((row)=>(
 										<TableRow key={row.name}>
 											<TableCell component="th" scope="row">
 												{row.id}
@@ -397,6 +429,15 @@ export default function User() {
 											</TableCell>
 											<TableCell>
 												{row?.vendor.name}
+											</TableCell>
+											<TableCell>
+												<Button 
+													color="secondary" 
+													variant="contained"
+													onClick={()=>{addAttendance(row)}}
+												>
+													Add Attendance
+												</Button>
 											</TableCell>
 
 									  </TableRow>
@@ -416,6 +457,128 @@ export default function User() {
 						onRowsPerPageChange={handleChangeRowsPerPage}
 					/>
 				</Card>
+				<Box sx={{my:5}}>
+					<Card >
+					
+						<Typography variant="h5" align="center"sx={{py:2}}>
+							Add Attendance
+						</Typography>
+
+						<Scrollbar>
+							<TableContainer sx={{ minWidth: 800 }}>
+								<Table>
+								<UserListHead
+									order={order}
+									orderBy={orderBy}
+									headLabel={TABLE_HEAD}
+									rowCount={USERLIST.length}
+									numSelected={selected.length}
+									onRequestSort={handleRequestSort}
+									onSelectAllClick={handleSelectAllClick}
+								/>
+									<TableBody>
+										{attendance.map((row)=>(
+											<TableRow key={row.name}>
+												<TableCell component="th" scope="row">
+													{row.id}
+												</TableCell>
+												<TableCell >
+													{`${row?.first_name} ${row?.last_name}`}
+												</TableCell>
+												<TableCell >
+													{row?.email}
+												</TableCell>
+												<TableCell>
+													{row?.vendor.name}
+												</TableCell>
+												<TableCell>
+												<Button 
+													color="secondary" 
+													variant="contained"
+													sx = {{backgroundColor : "red"}}
+													onClick={()=>{removeAttendance(row)}}
+												>
+													Remove
+												</Button>
+											</TableCell>
+
+										</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</Scrollbar>
+					</Card>
+				</Box>
+				<Box sx={{my:5}}>
+					<Card >
+					
+						<Typography variant="h5" align="center"sx={{py:2}}>
+							Todays Attendance
+						</Typography>
+
+						<Scrollbar>
+							<TableContainer sx={{ minWidth: 800 }}>
+								<Table>
+								<UserListHead
+									order={order}
+									orderBy={orderBy}
+									headLabel={TABLE_HEAD}
+									rowCount={USERLIST.length}
+									numSelected={selected.length}
+									onRequestSort={handleRequestSort}
+									onSelectAllClick={handleSelectAllClick}
+								/>
+									<TableBody>
+										{gunmensAttendance.map((row)=>(
+											<TableRow key={row.name}>
+												<TableCell component="th" scope="row">
+													{row.id}
+												</TableCell>
+												<TableCell >
+													{`${row?.gunmen?.first_name} ${row?.gunmen?.last_name}`}
+												</TableCell>
+												<TableCell >
+													{row?.gunmen?.email}
+												</TableCell>
+												<TableCell>
+													{moment(row?.entry_time).format('hh:mm on DD-MM-YYYY')}
+												</TableCell>
+												<TableCell>
+													{
+														row?.exit_time || 
+														<Button 
+															color="secondary" 
+															variant="contained"
+															
+														>
+															CheckOut
+														</Button>
+													}
+												</TableCell>
+												<TableCell>
+													{row?.branch?.name}
+												</TableCell>
+												<TableCell>
+													{row?.vendor?.name}
+												</TableCell>
+												<TableCell>
+													{row?.added_by?.email}
+												</TableCell>
+												<TableCell>
+													{row?.branch?.name}
+												</TableCell>
+												<TableCell>
+											</TableCell>
+
+										</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</Scrollbar>
+					</Card>
+				</Box>
 			</Container>
 		</Page>
 		</>

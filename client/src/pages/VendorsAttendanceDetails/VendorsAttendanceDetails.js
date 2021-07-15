@@ -61,11 +61,9 @@ import { getAllEmployees } from "../../api/index";
 const TABLE_HEAD = [
 	{ id: "name", label: "Full Name", },
 	{ id: "email", label: "Email" },
-	{ id: "role", label: "Role"},
-	{ id: "isVerified", label: "Account Status" },
 	{ id: "branch", label: "Branch"},
-	{ id: "lastLogin", label: "Last Login"},
-	{ id: "dateJoined", label: "Date Joined"},
+	{ id: "checkedIn", label: "Check In Time"},
+	{ id: "checkedOut", label: "CheckOut In Time"},
 	{ id: "" },
 ];
 
@@ -176,40 +174,40 @@ export default function User() {
 	const isUserNotFound = filteredUsers.length === 0;
 
 
-	const getData = async ()=>{
-		try{
-			const data = await getAllEmployees();
-			console.log(data);
-			if(data.status === 200 ){
-				setEmployees(data?.data);
-			}else{
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			} 
-		}catch(error){
-			console.log(error);
-			toast.error('Something went wrong!', {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
-	}
+	// const getData = async ()=>{
+	// 	try{
+	// 		const data = await getAllEmployees();
+	// 		console.log(data);
+	// 		if(data.status === 200 ){
+	// 			setEmployees(data?.data);
+	// 		}else{
+	// 			toast.error('Something went wrong!', {
+	// 				position: "top-right",
+	// 				autoClose: 5000,
+	// 				hideProgressBar: false,
+	// 				closeOnClick: true,
+	// 				pauseOnHover: true,
+	// 				draggable: true,
+	// 				progress: undefined,
+	// 			});
+	// 		} 
+	// 	}catch(error){
+	// 		console.log(error);
+	// 		toast.error('Something went wrong!', {
+	// 			position: "top-right",
+	// 			autoClose: 5000,
+	// 			hideProgressBar: false,
+	// 			closeOnClick: true,
+	// 			pauseOnHover: true,
+	// 			draggable: true,
+	// 			progress: undefined,
+	// 		});
+	// 	}
+	// }
 
-	useEffect(() => {
-		getData();
-	}, []);
+	// useEffect(() => {
+	// 	getData();
+	// }, []);
 
 
 	return (
@@ -237,14 +235,14 @@ export default function User() {
 							onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
 							onCloseFilter={()=>{setAddEmployeeOpen(false)}}
 				/>
-				<Card>
+				<Card sx={{my:2}}>
 					<UserListToolbar
 						numSelected={selected.length}
 						filterName={filterName}
 						onFilterName={handleFilterByName}
 					/>
 
-					<Scrollbar>
+					<Scrollbar >
 						<TableContainer sx={{ minWidth: 800 }}>
 							<Table>
 								<UserListHead
@@ -257,55 +255,7 @@ export default function User() {
 									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-									{employees.map((row)=>(
-										<TableRow key={row.id}>
-											<TableCell component="th" scope="row">
-												{row.id}
-											</TableCell>
-											<TableCell >
-												{`${row.first_name} ${row.last_name}`}
-											</TableCell>
-											<TableCell >
-												{row.email}
-											</TableCell>
-											<TableCell >
-												<Label
-														variant="ghost"
-														color={
-															row.is_superuser ? 'secondary' : 'primary'
-														}
-												>
-														{sentenceCase(
-															row.is_superuser ? "SuperUser" : (
-																row.is_staff ? "Admin" : "Employee"
-															)
-														)}
-												</Label>
-												{/* {row.profile?.role} */}
-											</TableCell>
-											<TableCell >
-												<Label
-														variant="ghost"
-														color={
-															row.is_active ? "primary" : 'error'
-														}
-												>
-														{sentenceCase(
-															row.is_active ? "active" : "not-active"
-														)}
-												</Label>
-											</TableCell>
-											<TableCell >
-												{row.profile?.branch?.name}
-											</TableCell>
-											<TableCell >
-												{moment(row.last_login).format('hh:mm on DD-MM-YYYY')}
-											</TableCell>
-											<TableCell >
-												{moment(row.date_joined).format('hh:mm on DD-MM-YYYY')}
-											</TableCell>
-									  </TableRow>
-									))}
+									
 								</TableBody>
 								{isUserNotFound && (
 									<TableBody>
@@ -326,7 +276,7 @@ export default function User() {
 						</TableContainer>
 					</Scrollbar>
 
-					<TablePagination
+					{/* <TablePagination
 						rowsPerPageOptions={[5, 10, 25]}
 						component="div"
 						count={USERLIST.length}
@@ -334,7 +284,7 @@ export default function User() {
 						page={page}
 						onPageChange={handleChangePage}
 						onRowsPerPageChange={handleChangeRowsPerPage}
-					/>
+					/> */}
 				</Card>
                 <Grid container spacing={4} sx={{ py : 2}}>
                      <Grid item xs={12} md={12} lg={12}>
