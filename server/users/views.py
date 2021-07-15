@@ -7,6 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework import status
 
 
 class CustomPagination(PageNumberPagination):
@@ -29,6 +30,7 @@ class CustomPagination(PageNumberPagination):
 
 
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    # permission_classes = (IsAuthenticatedOrWriteOnly,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = CustomPagination

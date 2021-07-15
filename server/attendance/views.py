@@ -9,10 +9,12 @@ from attendance.serializers import AttendanceSerializer, IssueSerializer
 from attendance.models import Attendance, Issue
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+from rest_framework.pagination import PageNumberPagination
 
 # from vendors.models import Gunmen
 # from vendors.serializers import GunmenSerializer
-from rest_framework import filters
 
 
 class CustomPagination(PageNumberPagination):
@@ -40,6 +42,9 @@ class AttendanceList(
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
     pagination_class = CustomPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ["^gunmen__first_name", "^gunmen__last_name"]
+    filterset_fields = ["gunmen", "branch"]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

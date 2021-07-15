@@ -30,9 +30,12 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    profile = RelatedFieldAlternative(
-        queryset=Profile.objects.all(), serializer=ProfileSerializer
-    )
+    # profile = RelatedFieldAlternative(
+    #     queryset=Profile.objects.all(), serializer=ProfileSerializer
+    # )
+    profile = ProfileSerializer(required=False)
+    # password = serializers.CharField(write_only=True, required=False)
+    # confirm_password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User
@@ -49,6 +52,46 @@ class UserSerializer(serializers.ModelSerializer):
             "last_login",
             "date_joined",
         )
+
+    def create(self, validated_data):
+        user_data = validated_data.copy()
+        profile_data = validated_data.pop("profile")
+        user = User.objects.create(**validated_data)
+        profile = Profile.objects.create(user=user, **profile_data)
+        profile.save()
+        return user
+
+    def update(self, instance, validated_data):
+        if "first_name" in validated_data:
+            instance.first_name = validated_data["first_name"]
+        if "last_name" in validated_data:
+            instance.last_name = validated_data["last_name"]
+        if "email" in validated_data:
+            instance.email = validated_data["email"]
+        if "username" in validated_data:
+            instance.username = validated_data["username"]
+        profile = Profile.objects.filter(user=instance).first()
+        if "profile" in validated_data:
+            profile_data = validated_data.pop("profile")
+            if profile:
+                if "gender`" in profile_data:
+                    profile.gender = profile_data["gender"]
+                if "branch" in profile_data:
+                    profile.branch = profile_data["branch"]
+                if "is_superuser" in profile_data:
+                    profile.is_superuser = profile_data["is_superuser"]
+                    if profile.is_superuser:
+                        profile.is_incharge = profile.is_superuser
+                if "is_incharge" in profile_data:
+                    profile.is_incharge = profile_data["is_incharge"]
+                    if profile.is_incharge == False:
+                        profile.is_superuser = False
+                profile.save()
+            else:
+                profile = Profile.objects.create(user=instance, **profile_data)
+                profile.save()
+        instance.save()
+        return instance
 
 
 class RegionSerializer(serializers.ModelSerializer):

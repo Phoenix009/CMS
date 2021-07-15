@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 # Create your models here.
@@ -35,7 +37,7 @@ class Profile(models.Model):
         ("O", "Other"),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    gender = models.CharField(max_length=6, choices=GENDER_CHOICES, unique=True)
+    gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
     is_superuser = models.BooleanField(default=False)
     is_incharge = models.BooleanField(default=False)
