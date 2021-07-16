@@ -47,15 +47,16 @@ class AttendanceList(
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^gunmen__first_name", "^gunmen__last_name"]
+    
     filterset_fields = {
-        "entry_time": ["exact"],
-        "exit_time": ["exact"],
-        "gunmen": ["exact"],
-        "added_by": ["exact"],
-        "branch": ["exact"],
+        "entry_time": ['gte', 'lte', 'exact', 'gt', 'lt'],
+        "exit_time" : ['gte', 'lte', 'exact', 'gt', 'lt'],
+        "gunmen"    : ["exact"],
+        "added_by"  : ["exact"],
+        "branch"    : ["exact"],
         "attendance_sheet": ["exact"],
     }
-
+    
     ordering_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
