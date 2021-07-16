@@ -1,5 +1,8 @@
+from secrets import token_hex
+from django.core.mail import send_mail
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from .models import Profile, Region, Branch
 
 
@@ -22,7 +25,7 @@ class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # branch = RelatedFieldAlternative(queryset=Branch.objects.all())
+    branch = RelatedFieldAlternative(queryset=Branch.objects.all())
 
     class Meta:
         model = Profile
@@ -34,8 +37,6 @@ class UserSerializer(serializers.ModelSerializer):
     #     queryset=Profile.objects.all(), serializer=ProfileSerializer
     # )
     profile = ProfileSerializer(required=False)
-    # password = serializers.CharField(write_only=True, required=False)
-    # confirm_password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User
@@ -54,11 +55,18 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        user_data = validated_data.copy()
         profile_data = validated_data.pop("profile")
-        user = User.objects.create(**validated_data)
+        random_password = token_hex(6).upper()
+        encoded_password = make_password(random_password)
+        user = User.objects.create(**validated_data, password=encoded_password)
         profile = Profile.objects.create(user=user, **profile_data)
-        profile.save()
+
+        # mail(
+        #     subject='CMS Login Credentials',
+        #     message=f'Username: {user.username} Password: {random_password}',
+        #     to_mail= [user.email],
+        # )
+        
         return user
 
     def update(self, instance, validated_data):
@@ -115,3 +123,14 @@ class BranchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
         fields = ["id", "name", "address", "branch_manager", "region"]
+
+
+
+def mail(subject, message, to_mail):
+    send_mail(
+        subject,
+        message,
+        from_email=None,
+        recipient_list = [to_mail],
+        fail_silently=False,
+    )
