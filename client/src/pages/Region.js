@@ -317,7 +317,7 @@ export default function User() {
 													size="small"
 													onClick={()=>{openUpdateRegionDrawer(row)}}
 												>
-													View
+													Update
 												</Button>
 											</TableCell>
 											<TableCell align="right">

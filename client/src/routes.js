@@ -14,7 +14,7 @@ import User from "./pages/User";
 import NotFound from "./pages/Page404";
 import Branch from "./pages/branch";
 import Region from "./pages/Region";
-import VendorsAttendanceDetails from './pages/VendorsAttendanceDetails/VendorsAttendanceDetails';
+import Vendors from "./pages/Vendors";
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -32,18 +32,19 @@ export default function Router() {
 				{ path: "gunmen", element: <Gunmen /> },
 				{ path: "branch", element: <Branch /> },
 				{ path: "region", element: <Region /> },
+				{ path: "vendors", element: <Vendors /> },
 				// { path: "gunmen/forms", element: <GunmanForm /> },
 				{ path: "products", element: <Products /> },
 				{ path: "blog", element: <Blog /> },
 			],
 		},
-		{
-			path: "/vendors",
-			element: <LogoOnlyLayout />,
-			children: [
-				{ path: "attendance", element: <VendorsAttendanceDetails /> },
-			],
-		},
+		// {
+		// 	path: "/vendors",
+		// 	element: <LogoOnlyLayout />,
+		// 	children: [
+		// 		{ path: "attendance", element: <VendorsAttendanceDetails /> },
+		// 	],
+		// },
 		{
 			path: "/",
 			element: <LogoOnlyLayout />,
