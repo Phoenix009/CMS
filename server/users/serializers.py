@@ -52,11 +52,13 @@ class UserSerializer(serializers.ModelSerializer):
             "last_login",
             "date_joined",
         )
+        # extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
-        user_data = validated_data.copy()
+        # password = validated_data.pop("password")
         profile_data = validated_data.pop("profile")
         user = User.objects.create(**validated_data)
+        # user.set_password(password)
         profile = Profile.objects.create(user=user, **profile_data)
         profile.save()
         return user
@@ -74,7 +76,7 @@ class UserSerializer(serializers.ModelSerializer):
         if "profile" in validated_data:
             profile_data = validated_data.pop("profile")
             if profile:
-                if "gender`" in profile_data:
+                if "gender" in profile_data:
                     profile.gender = profile_data["gender"]
                 if "branch" in profile_data:
                     profile.branch = profile_data["branch"]

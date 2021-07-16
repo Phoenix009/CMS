@@ -11,7 +11,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 from rest_framework.response import Response
-from datetime import datetime
 
 # from vendors.models import Gunmen
 # from vendors.serializers import GunmenSerializer
