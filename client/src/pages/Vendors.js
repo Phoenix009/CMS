@@ -168,7 +168,7 @@ export default function User() {
 			const data = await getAllVendors();
 			console.log(data);
 			if(data.status === 200 ){
-				setVendors(data?.data);
+				setVendors(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",

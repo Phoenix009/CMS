@@ -107,7 +107,7 @@ export default function ShopFilterSidebar({
 			const data = await getAllRegions();
 			console.log(data);
 			if(data.status === 200 ){
-				setRegion_info(data?.data);
+				setRegion_info(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -137,7 +137,7 @@ export default function ShopFilterSidebar({
 			const data = await getAllEmployees();
 			console.log(data);
 			if(data.status === 200 ){
-				setEmployee_info(data?.data);
+				setEmployee_info(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",

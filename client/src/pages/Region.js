@@ -206,7 +206,7 @@ export default function User() {
 			const data = await getAllRegions();
 			console.log(data);
 			if(data.status === 200 ){
-				setRegions(data?.data);
+				setRegions(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",

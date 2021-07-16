@@ -167,7 +167,7 @@ export default function Branch() {
 			const data = await getAllBranch();
 			console.log(data);
 			if(data.status === 200 ){
-				setBranch(data?.data);
+				setBranch(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",

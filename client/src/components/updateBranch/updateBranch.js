@@ -117,7 +117,7 @@ export default function UpdateEmployee({
 			const data = await getAllEmployees();
 			console.log(data);
 			if(data.status === 200 ){
-				setEmployees(data?.data);
+				setEmployees(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -147,7 +147,7 @@ export default function UpdateEmployee({
 			const data = await getAllRegions();
 			console.log(data);
 			if(data.status === 200 ){
-				setRegion_info(data?.data);
+				setRegion_info(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",

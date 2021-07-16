@@ -104,7 +104,7 @@ export default function ShopFilterSidebar({
 			const data = await getAllEmployees();
 			console.log(data);
 			if(data.status === 200 ){
-				setEmployees(data?.data);
+				setEmployees(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
