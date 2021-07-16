@@ -1,5 +1,8 @@
+from secrets import token_hex
+from django.core.mail import send_mail
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from .models import Profile, Region, Branch
 
 
@@ -22,7 +25,7 @@ class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # branch = RelatedFieldAlternative(queryset=Branch.objects.all())
+    branch = RelatedFieldAlternative(queryset=Branch.objects.all())
 
     class Meta:
         model = Profile
@@ -34,8 +37,6 @@ class UserSerializer(serializers.ModelSerializer):
     #     queryset=Profile.objects.all(), serializer=ProfileSerializer
     # )
     profile = ProfileSerializer(required=False)
-    # password = serializers.CharField(write_only=True, required=False)
-    # confirm_password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User
@@ -55,24 +56,35 @@ class UserSerializer(serializers.ModelSerializer):
         # extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
+<<<<<<< HEAD
         # password = validated_data.pop("password")
         profile_data = validated_data.pop("profile")
         user = User.objects.create(**validated_data)
         # user.set_password(password)
+=======
+        profile_data = validated_data.pop("profile")
+        random_password = token_hex(6).upper()
+        encoded_password = make_password(random_password)
+        user = User.objects.create(**validated_data, password=encoded_password)
+>>>>>>> 4a6fcfb70062ac06e7d3fcbc998bead046abb558
         profile = Profile.objects.create(user=user, **profile_data)
-        profile.save()
+
+        # mail(
+        #     subject='CMS Login Credentials',
+        #     message=f'Username: {user.username} Password: {random_password}',
+        #     to_mail= [user.email],
+        # )
+        
         return user
 
     def update(self, instance, validated_data):
-        if "first_name" in validated_data:
-            instance.first_name = validated_data["first_name"]
-        if "last_name" in validated_data:
-            instance.last_name = validated_data["last_name"]
-        if "email" in validated_data:
-            instance.email = validated_data["email"]
-        if "username" in validated_data:
-            instance.username = validated_data["username"]
+        instance.first_name = validated_data.get("first_name", instance.first_name)
+        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.email = validated_data.get("email", instance.email)
+        instance.username = validated_data.get("username", instance.username)
+
         profile = Profile.objects.filter(user=instance).first()
+<<<<<<< HEAD
         if "profile" in validated_data:
             profile_data = validated_data.pop("profile")
             if profile:
@@ -92,6 +104,18 @@ class UserSerializer(serializers.ModelSerializer):
             else:
                 profile = Profile.objects.create(user=instance, **profile_data)
                 profile.save()
+=======
+        profile_data = validated_data.pop("profile")
+        if profile:
+            profile.gender = profile_data.get("gender", profile.gender)
+            profile.branch = profile_data.get("branch", profile.branch)
+            profile.is_superuser = profile_data.get("is_superuser", profile.is_superuser)
+            profile.is_incharge = profile_data.get("is_incharge", profile.is_incharge)
+            profile.save()
+        else:
+            profile = Profile.objects.create(user=instance, **profile_data)
+            profile.save()
+>>>>>>> 4a6fcfb70062ac06e7d3fcbc998bead046abb558
         instance.save()
         return instance
 
@@ -117,3 +141,14 @@ class BranchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
         fields = ["id", "name", "address", "branch_manager", "region"]
+
+
+
+def mail(subject, message, to_mail):
+    send_mail(
+        subject,
+        message,
+        from_email=None,
+        recipient_list = [to_mail],
+        fail_silently=False,
+    )
