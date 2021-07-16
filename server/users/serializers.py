@@ -70,34 +70,22 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        if "first_name" in validated_data:
-            instance.first_name = validated_data["first_name"]
-        if "last_name" in validated_data:
-            instance.last_name = validated_data["last_name"]
-        if "email" in validated_data:
-            instance.email = validated_data["email"]
-        if "username" in validated_data:
-            instance.username = validated_data["username"]
+        instance.first_name = validated_data.get("first_name", instance.first_name)
+        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.email = validated_data.get("email", instance.email)
+        instance.username = validated_data.get("username", instance.username)
+
         profile = Profile.objects.filter(user=instance).first()
-        if "profile" in validated_data:
-            profile_data = validated_data.pop("profile")
-            if profile:
-                if "gender`" in profile_data:
-                    profile.gender = profile_data["gender"]
-                if "branch" in profile_data:
-                    profile.branch = profile_data["branch"]
-                if "is_superuser" in profile_data:
-                    profile.is_superuser = profile_data["is_superuser"]
-                    if profile.is_superuser:
-                        profile.is_incharge = profile.is_superuser
-                if "is_incharge" in profile_data:
-                    profile.is_incharge = profile_data["is_incharge"]
-                    if profile.is_incharge == False:
-                        profile.is_superuser = False
-                profile.save()
-            else:
-                profile = Profile.objects.create(user=instance, **profile_data)
-                profile.save()
+        profile_data = validated_data.pop("profile")
+        if profile:
+            profile.gender = profile_data.get("gender", profile.gender)
+            profile.branch = profile_data.get("branch", profile.branch)
+            profile.is_superuser = profile_data.get("is_superuser", profile.is_superuser)
+            profile.is_incharge = profile_data.get("is_incharge", profile.is_incharge)
+            profile.save()
+        else:
+            profile = Profile.objects.create(user=instance, **profile_data)
+            profile.save()
         instance.save()
         return instance
 
