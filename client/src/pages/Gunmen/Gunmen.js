@@ -239,7 +239,7 @@ export default function User() {
 			const data = await getAllVendors();
 			console.log(data);
 			if(data.status === 200 ){
-				setVendor(data?.data);
+				setVendor(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -269,7 +269,7 @@ export default function User() {
 			const data = await getGunmens();
 			console.log(data);
 			if(data.status === 200 ){
-				setGunmens(data?.data);
+				setGunmens(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -299,7 +299,7 @@ export default function User() {
 			const data = await viewAllAttendance();
 			console.log(data);
 			if(data.status === 200 ){
-				setGunmensAttendance(data?.data);
+				setGunmensAttendance(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",

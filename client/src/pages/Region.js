@@ -310,16 +310,7 @@ export default function User() {
 											<TableCell >
 												{`${row.regional_officer?.email}`}
 											</TableCell>
-											<TableCell >
-												<Button 
-													variant="contained" 
-													color="primary" 
-													size="small"
-													onClick={()=>{openUpdateRegionDrawer(row)}}
-												>
-													Update
-												</Button>
-											</TableCell>
+									
 											<TableCell align="right">
 												<UserMoreMenu 
 													handleEdit={()=>{openUpdateRegionDrawer(row)}}
