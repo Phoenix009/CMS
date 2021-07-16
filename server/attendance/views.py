@@ -75,6 +75,7 @@ class AttendanceList(
 
 
     def post(self, request, *args, **kwargs):
+        
         new_attendance = AttendanceSerializer(data=request.data)
         if not new_attendance.is_valid():
             return Response(data='invalid request')
