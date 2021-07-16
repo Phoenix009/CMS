@@ -1,19 +1,19 @@
 from datetime import datetime
 from users.models import Branch
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.utils.translation import override
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework.response import Response
 from attendance.serializers import AttendanceSerializer, IssueSerializer
-from attendance.models import Attendance, Issue
+from attendance.models import Attendance, AttendanceSheet, Issue
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 from rest_framework.response import Response
 from datetime import datetime
-
-# from vendors.models import Gunmen
+from vendors.models import Gunmen
+from users.models import User
 # from vendors.serializers import GunmenSerializer
 
 
@@ -76,26 +76,51 @@ class AttendanceList(
 
 
     def post(self, request, *args, **kwargs):
-        new_attendance = AttendanceSerializer(data=request.data)
-        if not new_attendance.is_valid():
-            return Response(data='invalid request')
+        data = request.data
+        branch_id = data.get('branch')
+        added_by_id = data.get('added_by')
+        gunmen_ids = data.get('gunmen_id')
+        attendance_sheet = data.get('attendance_sheet')
 
-        today = datetime.now()
-        attendance = Attendance.objects.filter(
-            entry_time__year=today.date().year,
-            entry_time__month=today.date().month,
-            entry_time__day=today.date().day,
-            gunmen=new_attendance.data["gunmen"]["id"],
-            branch=new_attendance.data["branch"]["id"],
-        ).first()
 
-        if attendance:
-            attendance.entry_time = today
-            attendance.exit_time = new_attendance.data.get("exit_time", attendance.exit_time)
-            attendance.save()
-            return Response(data=AttendanceSerializer(attendance).data)
-        else:
-            return self.create(request, *args, **kwargs)
+        result = []
+
+        for gunmen_id in gunmen_ids:
+            data = {
+                'gunmen': gunmen_id,
+                'branch':branch_id, 
+                'added_by':added_by_id, 
+                'attendance_sheet': attendance_sheet
+            }
+            print(data)
+            new_attendance = AttendanceSerializer(data=data)
+            if not new_attendance.is_valid():
+                return Response(data='invalid request')
+
+            today = datetime.now()
+            attendance = Attendance.objects.filter(
+                entry_time__year=today.date().year,
+                entry_time__month=today.date().month,
+                entry_time__day=today.date().day,
+                gunmen=new_attendance.data["gunmen"]["id"],
+                branch=new_attendance.data["branch"]["id"],
+            ).first()
+
+            if attendance:
+                attendance.entry_time = today
+                attendance.exit_time = new_attendance.data.get("exit_time", attendance.exit_time)
+                attendance.save()
+                result.append(AttendanceSerializer(attendance).data)
+            else:
+                gunmen_ = get_object_or_404(Gunmen, pk=data.pop('gunmen'))
+                added_by_ = get_object_or_404(User, pk=data.pop('added_by'))
+                branch_ = get_object_or_404(Branch, pk=data.pop('branch'))
+                attendance_sheet_ = get_object_or_404(AttendanceSheet, pk=data.pop('attendance_sheet'))
+                attendance = Attendance(gunmen=gunmen_, added_by=added_by_, branch=branch_, attendance_sheet=attendance_sheet_)
+                attendance.save()
+                result.append(AttendanceSerializer(attendance).data)
+
+        return Response(data=result)
 
 
 class AttendanceDetail(
