@@ -47,22 +47,22 @@ class AttendanceList(
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^gunmen__first_name", "^gunmen__last_name"]
-    
+
     filterset_fields = {
-        "entry_time": ['gte', 'lte', 'exact', 'gt', 'lt'],
-        "exit_time" : ['gte', 'lte', 'exact', 'gt', 'lt'],
-        "gunmen"    : ["exact"],
-        "added_by"  : ["exact"],
-        "branch"    : ["exact"],
+        "entry_time": ["gte", "lte", "exact", "gt", "lt"],
+        "exit_time": ["gte", "lte", "exact", "gt", "lt"],
+        "gunmen": ["exact"],
+        "added_by": ["exact"],
+        "branch": ["exact"],
         "attendance_sheet": ["exact"],
     }
-    
+
     ordering_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
         params = request.query_params
-        start_date = params.get('start_date', datetime.min)
-        end_date = params.get('end_date', datetime.max)
+        start_date = params.get("start_date", datetime.min)
+        end_date = params.get("end_date", datetime.max)
 
         queryset = self.filter_queryset(self.get_queryset())
         queryset = queryset.filter(entry_time__date__range=[start_date, end_date])
@@ -75,11 +75,10 @@ class AttendanceList(
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-
     def post(self, request, *args, **kwargs):
         new_attendance = AttendanceSerializer(data=request.data)
         if not new_attendance.is_valid():
-            return Response(data='invalid request')
+            return Response(data="invalid request")
 
         today = datetime.now()
         attendance = Attendance.objects.filter(
@@ -92,7 +91,9 @@ class AttendanceList(
 
         if attendance:
             attendance.entry_time = today
-            attendance.exit_time = new_attendance.data.get("exit_time", attendance.exit_time)
+            attendance.exit_time = new_attendance.data.get(
+                "exit_time", attendance.exit_time
+            )
             attendance.save()
             return Response(data=AttendanceSerializer(attendance).data)
         else:
