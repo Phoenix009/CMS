@@ -59,28 +59,43 @@ class AttendanceList(
     ordering_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        params = request.query_params
+        start_date = params.get('start_date', datetime.min)
+        end_date = params.get('end_date', datetime.max)
+
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.filter(entry_time__date__range=[start_date, end_date])
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
     def post(self, request, *args, **kwargs):
         new_attendance = AttendanceSerializer(data=request.data)
-        if new_attendance.is_valid():
-            today = datetime.now()
-            attendance = Attendance.objects.filter(
-                entry_time__year=today.date().year,
-                entry_time__month=today.date().month,
-                entry_time__day=today.date().day,
-                gunmen=new_attendance.data["gunmen"]["id"],
-                branch=new_attendance.data["branch"]["id"],
-            ).first()
+        if not new_attendance.is_valid():
+            return Response(data='invalid request')
 
-            if attendance:
-                attendance.entry_time = today
-                if "exit_time" in new_attendance.data:
-                    attendance.exit_time = new_attendance.data.get("exit_time")
-                attendance.save()
-                return Response(data=AttendanceSerializer(attendance).data)
-            else:
-                return self.create(request, *args, **kwargs)
+        today = datetime.now()
+        attendance = Attendance.objects.filter(
+            entry_time__year=today.date().year,
+            entry_time__month=today.date().month,
+            entry_time__day=today.date().day,
+            gunmen=new_attendance.data["gunmen"]["id"],
+            branch=new_attendance.data["branch"]["id"],
+        ).first()
+
+        if attendance:
+            attendance.entry_time = today
+            attendance.exit_time = new_attendance.data.get("exit_time", attendance.exit_time)
+            attendance.save()
+            return Response(data=AttendanceSerializer(attendance).data)
+        else:
+            return self.create(request, *args, **kwargs)
 
 
 class AttendanceDetail(
