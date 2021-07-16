@@ -119,7 +119,9 @@ export const addRegion = (formData) => axiosInstance.post('users/region/', formD
 export const updateRegion = (id,formData) =>{
 	return axiosInstance.put(`users/region/${id}/`, formData);
 }
-export const deleteRegion = (formData) => axiosInstance.delete('users/region/', formData);
+export const deleteRegion = (id) =>{
+	return axiosInstance.delete(`users/region/${id}/`);
+}
 
 // vendors 
 export const getAllVendors = ()=> axiosInstance.get('vendor/vendor');

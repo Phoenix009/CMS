@@ -36,7 +36,7 @@ import {
 import USERLIST from "../_mocks_/user";
 import AddEmployee from '../components/AddRegion/AddRegion';
 import UpdateEmployee from "src/components/updateRegion/updateRegion";
-import { getAllEmployees,getAllRegions } from "../api/index";
+import { getAllEmployees,getAllRegions,deleteRegion } from "../api/index";
 
 // ----------------------------------------------------------------------
 
@@ -161,7 +161,46 @@ export default function User() {
 		setRegionInfo(row);
 		setUpdateEmployeeOpen(true);
 	}
-
+	const handleDeleteRegion = async (region)=>{
+		try{
+				const data = await deleteRegion(
+			region?.id,
+			);
+				console.log(data);
+				if(data.status === 204){
+					toast('Region Deleted', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+					});
+					getData();
+				}else{
+					toast.error('Something went wrong!', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+					});
+				} 
+			}catch(error){
+				console.log(error);
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
+	  }
 	const getData = async ()=>{
 		try{
 			const data = await getAllRegions();
@@ -282,7 +321,10 @@ export default function User() {
 												</Button>
 											</TableCell>
 											<TableCell align="right">
-												<UserMoreMenu onClick={()=>{openUpdateRegionDrawer(row)}}/>
+												<UserMoreMenu 
+													handleEdit={()=>{openUpdateRegionDrawer(row)}}
+													handleDelete={()=>{handleDeleteRegion(row)}}
+												/>
 											</TableCell>
 											</TableRow>
 										))
