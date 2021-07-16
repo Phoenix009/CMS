@@ -56,17 +56,10 @@ class UserSerializer(serializers.ModelSerializer):
         # extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
-<<<<<<< HEAD
-        # password = validated_data.pop("password")
-        profile_data = validated_data.pop("profile")
-        user = User.objects.create(**validated_data)
-        # user.set_password(password)
-=======
         profile_data = validated_data.pop("profile")
         random_password = token_hex(6).upper()
         encoded_password = make_password(random_password)
         user = User.objects.create(**validated_data, password=encoded_password)
->>>>>>> 4a6fcfb70062ac06e7d3fcbc998bead046abb558
         profile = Profile.objects.create(user=user, **profile_data)
 
         # mail(
@@ -74,7 +67,7 @@ class UserSerializer(serializers.ModelSerializer):
         #     message=f'Username: {user.username} Password: {random_password}',
         #     to_mail= [user.email],
         # )
-        
+
         return user
 
     def update(self, instance, validated_data):
@@ -84,38 +77,18 @@ class UserSerializer(serializers.ModelSerializer):
         instance.username = validated_data.get("username", instance.username)
 
         profile = Profile.objects.filter(user=instance).first()
-<<<<<<< HEAD
-        if "profile" in validated_data:
-            profile_data = validated_data.pop("profile")
-            if profile:
-                if "gender" in profile_data:
-                    profile.gender = profile_data["gender"]
-                if "branch" in profile_data:
-                    profile.branch = profile_data["branch"]
-                if "is_superuser" in profile_data:
-                    profile.is_superuser = profile_data["is_superuser"]
-                    if profile.is_superuser:
-                        profile.is_incharge = profile.is_superuser
-                if "is_incharge" in profile_data:
-                    profile.is_incharge = profile_data["is_incharge"]
-                    if profile.is_incharge == False:
-                        profile.is_superuser = False
-                profile.save()
-            else:
-                profile = Profile.objects.create(user=instance, **profile_data)
-                profile.save()
-=======
         profile_data = validated_data.pop("profile")
         if profile:
             profile.gender = profile_data.get("gender", profile.gender)
             profile.branch = profile_data.get("branch", profile.branch)
-            profile.is_superuser = profile_data.get("is_superuser", profile.is_superuser)
+            profile.is_superuser = profile_data.get(
+                "is_superuser", profile.is_superuser
+            )
             profile.is_incharge = profile_data.get("is_incharge", profile.is_incharge)
             profile.save()
         else:
             profile = Profile.objects.create(user=instance, **profile_data)
             profile.save()
->>>>>>> 4a6fcfb70062ac06e7d3fcbc998bead046abb558
         instance.save()
         return instance
 
@@ -143,12 +116,11 @@ class BranchSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "address", "branch_manager", "region"]
 
 
-
 def mail(subject, message, to_mail):
     send_mail(
         subject,
         message,
         from_email=None,
-        recipient_list = [to_mail],
+        recipient_list=[to_mail],
         fail_silently=False,
     )

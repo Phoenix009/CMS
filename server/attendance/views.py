@@ -17,7 +17,7 @@ from rest_framework.response import Response
 
 
 class CustomPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 10
     page_size_query_param = "page_size"
     max_page_size = 1000
 
@@ -47,8 +47,8 @@ class AttendanceList(
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^gunmen__first_name", "^gunmen__last_name"]
     filterset_fields = {
-        "entry_time": ["exact"],
-        "exit_time": ["exact"],
+        "entry_time": ["gte", "lte", "exact", "gt", "lt"],
+        "exit_time": ["gte", "lte", "exact", "gt", "lt"],
         "gunmen": ["exact"],
         "added_by": ["exact"],
         "branch": ["exact"],
