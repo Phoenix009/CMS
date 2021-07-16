@@ -122,6 +122,9 @@ export const updateRegion = (id,formData) =>{
 export const deleteRegion = (id) =>{
 	return axiosInstance.delete(`users/region/${id}/`);
 }
+export const deleteBranch = (id) =>{
+	return axiosInstance.delete(`users/branch/${id}/`);
+}
 
 // vendors 
 export const getAllVendors = ()=> axiosInstance.get('vendor/vendor');
