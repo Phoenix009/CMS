@@ -15,7 +15,8 @@ import NotFound from "./pages/Page404";
 import Branch from "./pages/branch";
 import Region from "./pages/Region";
 import Vendors from "./pages/Vendors";
-import VendorsAttendanceDetails from './pages/VendorsAttendanceDetails/VendorsAttendanceDetails'
+import VendorsAttendanceDetails from './pages/VendorsAttendanceDetails/VendorsAttendanceDetails';
+import VehicleAndGunMenAttendance from './pages/VehicleAndGunmenAttendance/VehicleAndAttendance';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -50,7 +51,7 @@ export default function Router() {
 			path: "/vehicles",
 			element: <LogoOnlyLayout />,
 			children: [
-				{ path: "attendance", element: <VendorsAttendanceDetails /> },
+				{ path: "attendance", element: <VehicleAndGunMenAttendance /> },
 			],
 		},
 		{

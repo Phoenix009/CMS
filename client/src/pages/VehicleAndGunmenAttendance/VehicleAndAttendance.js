@@ -10,316 +10,134 @@ import moment from "moment";
 import {
 	Card,
 	Table,
-	Stack,
-	Avatar,
 	Button,
-	Checkbox,
 	TableRow,
 	TableBody,
 	TableCell,
 	Container,
 	Typography,
 	TableContainer,
-	TablePagination,
-	Breadcrumbs,
     Grid,
-    Box,
     TextField
 } from "@material-ui/core";
 // components
 import Page from "../../components/Page";
-import Label from "../../components/Label";
 import Scrollbar from "../../components/Scrollbar";
-import SearchNotFound from "../../components/SearchNotFound";
-import {
-	AppTasks,
-	AppNewUsers,
-	AppBugReports,
-	AppItemOrders,
-	AppNewsUpdate,
-	AppWeeklySales,
-	AppOrderTimeline,
-	AppCurrentVisits,
-	AppWebsiteVisits,
-	AppTrafficBySite,
-	AppCurrentSubject,
-	AppConversionRates,
-} from "../../components/_dashboard/app";
 import {
 	UserListHead,
-	UserListToolbar,
-	UserMoreMenu,
 } from "../../components/_dashboard/user";
 //
 import USERLIST from "../../_mocks_/user";
-import AddEmployee from '../../components/AddEmployee/AddEmployee';
-import { getAllEmployees } from "../../api/index";
+import MarkAttendance from "../../components/MarkAttendance/MarkAttendance";
 
 // ----------------------------------------------------------------------
 
 
 const TABLE_HEAD = [
 	{ id: "name", label: "Full Name", },
-	{ id: "email", label: "Email" },
-	{ id: "branch", label: "Branch"},
-	{ id: "checkedIn", label: "Check In Time"},
-	{ id: "checkedOut", label: "CheckOut In Time"},
 	{ id: "" },
 ];
 
 // ----------------------------------------------------------------------
 
-function descendingComparator(a, b, orderBy) {
-	if (b[orderBy] < a[orderBy]) {
-		return -1;
+
+
+
+export default function VehicleAndGunMenAttendance() {
+	const [checkIn, setCheckIn] = useState(false);
+	const [geoPosition,setGeoPosition] = useState({});
+	const [tripId, setTripId] = useState("");
+	const handleCheckIn = ()=>{
+		setCheckIn(true);
 	}
-	if (b[orderBy] > a[orderBy]) {
-		return 1;
+	const startTrip = ()=>{
+		console.log(geoPosition);
+		console.log(tripId);
 	}
-	return 0;
-}
-
-function getComparator(order, orderBy) {
-	return order === "desc"
-		? (a, b) => descendingComparator(a, b, orderBy)
-		: (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(array, comparator, query) {
-	const stabilizedThis = array.map((el, index) => [el, index]);
-	stabilizedThis.sort((a, b) => {
-		const order = comparator(a[0], b[0]);
-		if (order !== 0) return order;
-		return a[1] - b[1];
-	});
-	if (query) {
-		return filter(
-			array,
-			(_user) =>
-				_user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
-		);
-	}
-	return stabilizedThis.map((el) => el[0]);
-}
-
-export default function User() {
-	const [page, setPage] = useState(0);
-	const [order, setOrder] = useState("asc");
-	const [selected, setSelected] = useState([]);
-	const [orderBy, setOrderBy] = useState("name");
-	const [filterName, setFilterName] = useState("");
-	const [rowsPerPage, setRowsPerPage] = useState(5);
-	const [isAddEmployeeOpen, setAddEmployeeOpen] = useState(false);
-	const [employees, setEmployees] = useState([]);
-
-	
-	
-	// const handleClose
-
-	const handleRequestSort = (event, property) => {
-		const isAsc = orderBy === property && order === "asc";
-		setOrder(isAsc ? "desc" : "asc");
-		setOrderBy(property);
-	};
-
-	const handleSelectAllClick = (event) => {
-		if (event.target.checked) {
-			const newSelecteds = USERLIST.map((n) => n.name);
-			setSelected(newSelecteds);
-			return;
+	const getLocation = async ()=>{
+		try{
+			await navigator.geolocation.getCurrentPosition(position=>{
+				 setGeoPosition({
+					 latitide : position?.coords?.latitude, 
+					 longitude : position?.coords?.longitude,
+					 accuracy : position?.coords?.accuracy
+				});
+			 })
+		}catch(error){
+			console.log(error);
 		}
-		setSelected([]);
-	};
-
-	const handleClick = (event, name) => {
-		const selectedIndex = selected.indexOf(name);
-		let newSelected = [];
-		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(selected, name);
-		} else if (selectedIndex === 0) {
-			newSelected = newSelected.concat(selected.slice(1));
-		} else if (selectedIndex === selected.length - 1) {
-			newSelected = newSelected.concat(selected.slice(0, -1));
-		} else if (selectedIndex > 0) {
-			newSelected = newSelected.concat(
-				selected.slice(0, selectedIndex),
-				selected.slice(selectedIndex + 1)
-			);
-		}
-		setSelected(newSelected);
-	};
-
-	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
-	};
-
-	const handleChangeRowsPerPage = (event) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
-		setPage(0);
-	};
-
-	const handleFilterByName = (event) => {
-		setFilterName(event.target.value);
-	};
-
-	const emptyRows =
-		page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
-
-	const filteredUsers = applySortFilter(
-		USERLIST,
-		getComparator(order, orderBy),
-		filterName
-	);
-
-	const isUserNotFound = filteredUsers.length === 0;
-
-
-	// const getData = async ()=>{
-	// 	try{
-	// 		const data = await getAllEmployees();
-	// 		console.log(data);
-	// 		if(data.status === 200 ){
-	// 			setEmployees(data?.data);
-	// 		}else{
-	// 			toast.error('Something went wrong!', {
-	// 				position: "top-right",
-	// 				autoClose: 5000,
-	// 				hideProgressBar: false,
-	// 				closeOnClick: true,
-	// 				pauseOnHover: true,
-	// 				draggable: true,
-	// 				progress: undefined,
-	// 			});
-	// 		} 
-	// 	}catch(error){
-	// 		console.log(error);
-	// 		toast.error('Something went wrong!', {
-	// 			position: "top-right",
-	// 			autoClose: 5000,
-	// 			hideProgressBar: false,
-	// 			closeOnClick: true,
-	// 			pauseOnHover: true,
-	// 			draggable: true,
-	// 			progress: undefined,
-	// 		});
-	// 	}
-	// }
-
-	// useEffect(() => {
-	// 	getData();
-	// }, []);
-
-
+	}
+	useEffect(()=>{
+		getLocation();
+	},[]);
 	return (
 		<Page title="Attendance Record">
 			<Container sx={{ py : 10}}>
-                <Typography variant="h5" sx={{ py : 2}} align="center">
-                    Gunmen's Monthly Attendance Record for Jan 2021
-                </Typography>
-				<Grid container spacing={3}>
-					<Grid item xs={12} sm={6} md={3}>
-						<AppWeeklySales />
-					</Grid>
-					<Grid item xs={12} sm={6} md={3}>
-						<AppNewUsers />
-					</Grid>
-					<Grid item xs={12} sm={6} md={3}>
-						<AppItemOrders />
-					</Grid>
-					<Grid item xs={12} sm={6} md={3}>
-						<AppBugReports />
-					</Grid>
-                </Grid>
-				<AddEmployee
-							isOpenFilter={isAddEmployeeOpen}
-							onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
-							onCloseFilter={()=>{setAddEmployeeOpen(false)}}
+				<MarkAttendance
+					isOpenFilter={checkIn}
+					onOpenFilter= {()=>{setCheckIn(true)}}
+					onCloseFilter={()=>{setCheckIn(false)}}
+					regionInfo = {{}}
 				/>
+                <Typography variant="h5" sx={{ py : 2}} align="center">
+                    Attendance Details For Trip
+                </Typography>
+				<Card sx={{my:2, p:3}}>
+					<Grid container spacing={3}>
+						<Grid item xs={12} sm={12} lg={6}>
+							<TextField
+								label="Trip Id"
+								name="trip_id"
+								fullWidth
+								onChange={(event)=>{
+									setTripId(event.target.value);
+								}}
+							>
+							</TextField>
+						</Grid>
+						<Grid item xs={12} sm={12} lg={6}>
+							<Button
+								sx={{py:2}}
+								variant="contained"
+								fullWidth
+								color="secondary"
+								onClick={startTrip}
+							>
+								Start Trip
+							</Button>
+						</Grid>
+					</Grid>
+				</Card>
 				<Card sx={{my:2}}>
-					<UserListToolbar
-						numSelected={selected.length}
-						filterName={filterName}
-						onFilterName={handleFilterByName}
-					/>
-
 					<Scrollbar >
-						<TableContainer sx={{ minWidth: 800 }}>
+						<TableContainer>
 							<Table>
 								<UserListHead
-									order={order}
-									orderBy={orderBy}
 									headLabel={TABLE_HEAD}
 									rowCount={USERLIST.length}
-									numSelected={selected.length}
-									onRequestSort={handleRequestSort}
-									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-									
-								</TableBody>
-								{isUserNotFound && (
-									<TableBody>
-										<TableRow>
-											<TableCell
-												align="center"
-												colSpan={6}
-												sx={{ py: 3 }}
+									<TableRow>
+										<TableCell>
+											Keshav Mishra
+										</TableCell>
+										<TableCell>
+											<Button
+												variant="contained"
+												color="secondary"
+												fullWidth
+												onClick={handleCheckIn}
 											>
-												<SearchNotFound
-													searchQuery={filterName}
-												/>
-											</TableCell>
-										</TableRow>
-									</TableBody>
-								)}
+												CheckIn
+											</Button>
+										</TableCell>
+									</TableRow>
+								</TableBody>
 							</Table>
 						</TableContainer>
 					</Scrollbar>
-
-					{/* <TablePagination
-						rowsPerPageOptions={[5, 10, 25]}
-						component="div"
-						count={USERLIST.length}
-						rowsPerPage={rowsPerPage}
-						page={page}
-						onPageChange={handleChangePage}
-						onRowsPerPageChange={handleChangeRowsPerPage}
-					/> */}
 				</Card>
-                <Grid container spacing={4} sx={{ py : 2}}>
-                     <Grid item xs={12} md={12} lg={12}>
-						<AppOrderTimeline />
-					</Grid>
-                    <Grid item xs={12} md={12} lg={12}>
-                        <Card sx={{ py : 3, px : 3}}>
-                            <Grid container spacing={4} sx={{ py : 2}}>
-                                <Grid item xs={12} md={12} lg={12}>
-                                    <Typography variant="h5">
-                                        Request Changes/Comment
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12} md={12} lg={12}> 
-                                    <TextField
-                                        label = "Message"
-                                        fullWidth
-                                        multiline
-                                        rows={5}
-                                    >
-                                    </TextField>
-                                </Grid>
-                                <Grid item xs={12} md={12} lg={12} align="center"> 
-                                    <Button
-                                        sx={{width:300}} 
-                                        variant="contained" 
-                                        color="primary"
-                                    >
-                                        Send
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </Card>
-					</Grid>
-                </Grid>
+                
 			</Container>
 		</Page>
 	);
