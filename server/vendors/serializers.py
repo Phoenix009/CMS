@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Vehicle, Vendor, Gunmen
+from .models import Vehicle, Vendor, Gunmen, Custodian
 
 
 class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
@@ -43,6 +43,24 @@ class GunmenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Gunmen
         fields = ["id", "first_name", "last_name", "email", "vendor"]
+
+
+class CustodianSerializer(serializers.ModelSerializer):
+    vendor = RelatedFieldAlternative(
+        queryset=Vendor.objects.all(), serializer=VendorSerializer
+    )
+
+    class Meta:
+        model = Custodian
+        fields = [
+            "id",
+            "custodian_type",
+            "first_name",
+            "last_name",
+            "email",
+            "phone_number",
+            "vendor",
+        ]
 
 
 class VehicleSerializer(serializers.ModelSerializer):

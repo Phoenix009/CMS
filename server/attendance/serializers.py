@@ -2,7 +2,7 @@ from datetime import date
 from vendors.models import Vendor
 from django.contrib.auth.models import User
 from users.models import Branch
-from vendors.models import Gunmen
+from vendors.models import Gunmen, Custodian
 from django.db.models import fields
 from rest_framework import serializers
 from users.serializers import BranchSerializer, UserSerializer
