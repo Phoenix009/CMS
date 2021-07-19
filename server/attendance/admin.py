@@ -3,17 +3,20 @@ from django.contrib import admin
 from .models import *
 
 
+class TripAdmin(admin.ModelAdmin):
+    list_display = (
+        "id", "vehicle", "custodian_1", "custodian_2", "custodian_3", 
+        "entry_time", "exit_time", "start_location", "end_location", "branch_id", "added_by")
+    list_display_links = ("id", "custodian_1", "custodian_2", "custodian_3")
+    search_fields = ("id", "vehicle", "custodian_1", "custodian_2", "custodian_3")
+    list_per_page = 20
+
+
 class AttendanceSheetAdmin(admin.ModelAdmin):
     list_display = ("id", "sheet_created")
     list_display_links = ("id", "sheet_created")
     list_per_page = 20
 
-
-class GunmenAdmin(admin.ModelAdmin):
-    list_display = ("id", "first_name", "last_name", "vendor")
-    list_display_links = ("id", "vendor")
-    search_fields = ("first_name", "last_name", "vendor")
-    list_per_page = 20
 
 
 class AttendanceAdmin(admin.ModelAdmin):
@@ -30,6 +33,6 @@ class IssueAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Attendance, AttendanceAdmin)
+admin.site.register(Trip, TripAdmin)
 admin.site.register(AttendanceSheet, AttendanceSheetAdmin)
 admin.site.register(Issue, IssueAdmin)
-admin.site.register(Gunmen, GunmenAdmin)
