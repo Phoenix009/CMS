@@ -1,6 +1,6 @@
 from datetime import date
-from server.vendors.models import Vehicle
-from server.vendors.serializers import CustodianSerializer, VehicleSerializer
+from vendors.models import Vehicle
+from vendors.serializers import CustodianSerializer, VehicleSerializer
 from vendors.models import Vendor
 from django.contrib.auth.models import User
 from users.models import Branch
