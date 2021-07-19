@@ -15,6 +15,7 @@ import NotFound from "./pages/Page404";
 import Branch from "./pages/branch";
 import Region from "./pages/Region";
 import Vendors from "./pages/Vendors";
+import VendorsAttendanceDetails from './pages/VendorsAttendanceDetails/VendorsAttendanceDetails'
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -38,13 +39,20 @@ export default function Router() {
 				{ path: "blog", element: <Blog /> },
 			],
 		},
-		// {
-		// 	path: "/vendors",
-		// 	element: <LogoOnlyLayout />,
-		// 	children: [
-		// 		{ path: "attendance", element: <VendorsAttendanceDetails /> },
-		// 	],
-		// },
+		{
+			path: "/vendors",
+			element: <LogoOnlyLayout />,
+			children: [
+				{ path: "attendance", element: <VendorsAttendanceDetails /> },
+			],
+		},
+		{
+			path: "/vehicles",
+			element: <LogoOnlyLayout />,
+			children: [
+				{ path: "attendance", element: <VendorsAttendanceDetails /> },
+			],
+		},
 		{
 			path: "/",
 			element: <LogoOnlyLayout />,
