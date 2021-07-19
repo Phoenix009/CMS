@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from datetime import datetime
 
 
@@ -18,23 +19,26 @@ class Vendor(models.Model):
         return f"{self.name} -> {self.email}"
 
 
-class Gunmen(models.Model):
-    GUNMEN_TYPES = (
-        ("M", "Male"),
-        ("F", "Female"),
-        ("O", "Other"),
+class Custodian(models.Model):
+    CUSTODIAN_TYPE_CHOICES = (
+        ("C", "Custodian"),
+        ("G", "Gunmen"),
     )
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
+    custodian_type = models.CharField(max_length=1, default='C', choices=CUSTODIAN_TYPE_CHOICES)
     email = models.EmailField()
+    phone_regex = RegexValidator(
+        regex=r'^\+?1?\d{9,15}$', 
+        message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    phone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self) -> str:
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name} -> {self.custodian_type}"
 
 
 class Vehicle(models.Model):
-
     model_name = models.CharField(max_length=200)
     number_plate = models.CharField(max_length=200)
     vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, blank=True)
