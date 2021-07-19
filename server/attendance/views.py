@@ -18,7 +18,6 @@ from vendors.models import Gunmen
 from users.models import User
 
 
-
 class CustomPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = "page_size"
@@ -38,14 +37,22 @@ class CustomPagination(PageNumberPagination):
         )
 
 
-class TripList(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
+class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    search_fields = ["^gunmen__first_name", "^gunmen__last_name"]
+    search_fields = [
+        "^custodian_1__first_name",
+        "^custodian_1__last_name",
+        "^custodian_2__first_name",
+        "^custodian_2__last_name",
+        "^custodian_3__first_name",
+        "^custodian_3__last_name",
+        "^vehicle__number_plate",
+        "^vehicle__model_name",
+        "^vendor__name",
+    ]
 
     filterset_fields = {
         "entry_time": ["gte", "lte", "exact", "gt", "lt"],
@@ -54,6 +61,7 @@ class TripList(
         "custodian_2": ["exact"],
         "custodian_3": ["exact"],
         "vehicle": ["exact"],
+        "vendor": ["exact"],
         "added_by": ["exact"],
         "branch": ["exact"],
     }
