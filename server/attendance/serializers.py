@@ -84,7 +84,7 @@ class TripSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = Attendance
+        model = Trip
         fields = [
             "id",
             "vehicle",

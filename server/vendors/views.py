@@ -5,8 +5,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import Vehicle, Vendor, Gunmen
-from .serializers import VehicleSerializer, VendorSerializer, GunmenSerializer
+from .models import Custodian, Vehicle, Vendor, Gunmen
+from .serializers import (
+    VehicleSerializer,
+    VendorSerializer,
+    GunmenSerializer,
+    CustodianSerializer,
+)
 
 
 class CustomPagination(PageNumberPagination):
@@ -35,7 +40,13 @@ class CustodianList(
     serializer_class = CustodianSerializer
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    search_fields = ["^first_name", "^last_name", "^phone_number", "^vendor"]
+    search_fields = [
+        "^first_name",
+        "^last_name",
+        "^phone_number",
+        "^email",
+        "^vendor__name",
+    ]
     filterset_fields = [
         "custodian_type",
         "first_name",
@@ -71,7 +82,6 @@ class CustodianDetail(
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-
 
 
 class VendorList(
