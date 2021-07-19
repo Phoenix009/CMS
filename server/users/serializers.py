@@ -53,6 +53,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_login",
             "date_joined",
         )
+        # extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
         profile_data = validated_data.pop("profile")
@@ -66,7 +67,7 @@ class UserSerializer(serializers.ModelSerializer):
         #     message=f'Username: {user.username} Password: {random_password}',
         #     to_mail= [user.email],
         # )
-        
+
         return user
 
     def update(self, instance, validated_data):
@@ -80,7 +81,9 @@ class UserSerializer(serializers.ModelSerializer):
         if profile:
             profile.gender = profile_data.get("gender", profile.gender)
             profile.branch = profile_data.get("branch", profile.branch)
-            profile.is_superuser = profile_data.get("is_superuser", profile.is_superuser)
+            profile.is_superuser = profile_data.get(
+                "is_superuser", profile.is_superuser
+            )
             profile.is_incharge = profile_data.get("is_incharge", profile.is_incharge)
             profile.save()
         else:
@@ -113,12 +116,11 @@ class BranchSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "address", "branch_manager", "region"]
 
 
-
 def mail(subject, message, to_mail):
     send_mail(
         subject,
         message,
         from_email=None,
-        recipient_list = [to_mail],
+        recipient_list=[to_mail],
         fail_silently=False,
     )

@@ -14,11 +14,12 @@ from rest_framework.response import Response
 from datetime import datetime
 from vendors.models import Gunmen
 from users.models import User
+
 # from vendors.serializers import GunmenSerializer
 
 
 class CustomPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 10
     page_size_query_param = "page_size"
     max_page_size = 1000
 
@@ -77,25 +78,24 @@ class AttendanceList(
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        branch_id = data.get('branch')
-        added_by_id = data.get('added_by')
-        gunmen_ids = data.get('gunmen_id')
-        attendance_sheet = data.get('attendance_sheet')
-
+        branch_id = data.get("branch")
+        added_by_id = data.get("added_by")
+        gunmen_ids = data.get("gunmen_id")
+        attendance_sheet = data.get("attendance_sheet")
 
         result = []
 
         for gunmen_id in gunmen_ids:
             data = {
-                'gunmen': gunmen_id,
-                'branch':branch_id, 
-                'added_by':added_by_id, 
-                'attendance_sheet': attendance_sheet
+                "gunmen": gunmen_id,
+                "branch": branch_id,
+                "added_by": added_by_id,
+                "attendance_sheet": attendance_sheet,
             }
             print(data)
             new_attendance = AttendanceSerializer(data=data)
             if not new_attendance.is_valid():
-                return Response(data='invalid request')
+                return Response(data="invalid request")
 
             today = datetime.now()
             attendance = Attendance.objects.filter(
@@ -108,15 +108,24 @@ class AttendanceList(
 
             if attendance:
                 attendance.entry_time = today
-                attendance.exit_time = new_attendance.data.get("exit_time", attendance.exit_time)
+                attendance.exit_time = new_attendance.data.get(
+                    "exit_time", attendance.exit_time
+                )
                 attendance.save()
                 result.append(AttendanceSerializer(attendance).data)
             else:
-                gunmen_ = get_object_or_404(Gunmen, pk=data.pop('gunmen'))
-                added_by_ = get_object_or_404(User, pk=data.pop('added_by'))
-                branch_ = get_object_or_404(Branch, pk=data.pop('branch'))
-                attendance_sheet_ = get_object_or_404(AttendanceSheet, pk=data.pop('attendance_sheet'))
-                attendance = Attendance(gunmen=gunmen_, added_by=added_by_, branch=branch_, attendance_sheet=attendance_sheet_)
+                gunmen_ = get_object_or_404(Gunmen, pk=data.pop("gunmen"))
+                added_by_ = get_object_or_404(User, pk=data.pop("added_by"))
+                branch_ = get_object_or_404(Branch, pk=data.pop("branch"))
+                attendance_sheet_ = get_object_or_404(
+                    AttendanceSheet, pk=data.pop("attendance_sheet")
+                )
+                attendance = Attendance(
+                    gunmen=gunmen_,
+                    added_by=added_by_,
+                    branch=branch_,
+                    attendance_sheet=attendance_sheet_,
+                )
                 attendance.save()
                 result.append(AttendanceSerializer(attendance).data)
 
