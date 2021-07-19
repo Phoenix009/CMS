@@ -35,7 +35,7 @@ import {
 //
 import USERLIST from "../_mocks_/user";
 import AddBranch from '../components/AddBranch/AddBranch';
-import { getAllEmployees,getAllBranch } from "../api/index";
+import { getAllEmployees,getAllBranch,deleteBranch } from "../api/index";
 
 // ----------------------------------------------------------------------
 
@@ -161,7 +161,46 @@ export default function Branch() {
 		setBranchInfo(row);
 		setUpdateEmployeeOpen(true);
 	}
-
+	const handleDeleteBranch = async (branch)=>{
+		try{
+				const data = await deleteBranch(
+			branch?.id,
+			);
+				console.log(data);
+				if(data.status === 204){
+					toast('Region Deleted', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+					});
+					getData();
+				}else{
+					toast.error('Something went wrong!', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+					});
+				} 
+			}catch(error){
+				console.log(error);
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
+	  }
 	const getData = async ()=>{
 		try{
 			const data = await getAllBranch();
@@ -269,15 +308,12 @@ export default function Branch() {
 											<TableCell >
 											{`${row.region?.name}`}
 											</TableCell>
-											<TableCell >
-												<Button 
-													variant="contained" 
-													color="primary" 
-													size="small"
-													onClick={()=>{openUpdateBranchDrawer(row)}}
-												>
-													View
-												</Button></TableCell>
+											<TableCell align="right">
+												<UserMoreMenu 
+													handleEdit={()=>{openUpdateBranchDrawer(row)}}
+													handleDelete={()=>{handleDeleteBranch(row)}}
+												/>
+											</TableCell>
 											
 										
 											</TableRow>
