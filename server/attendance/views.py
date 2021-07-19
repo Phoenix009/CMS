@@ -36,7 +36,6 @@ class CustomPagination(PageNumberPagination):
             }
         )
 
-
 class AttendanceList(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
