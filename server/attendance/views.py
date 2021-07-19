@@ -1,21 +1,22 @@
 from datetime import datetime
-from users.models import Branch
-from django.shortcuts import get_object_or_404, render
-from django.utils.translation import override
+
+from django.shortcuts import get_object_or_404
+
 from rest_framework import mixins
 from rest_framework import generics
-from rest_framework.response import Response
-from attendance.serializers import AttendanceSerializer, IssueSerializer
-from attendance.models import Attendance, AttendanceSheet, Issue
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
+
 from rest_framework.response import Response
-from datetime import datetime
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
+
+from attendance.serializers import AttendanceSerializer, IssueSerializer, TripSerializer
+
+from users.models import Branch
+from attendance.models import Attendance, AttendanceSheet, Issue, Trip
 from vendors.models import Gunmen
 from users.models import User
 
-# from vendors.serializers import GunmenSerializer
 
 
 class CustomPagination(PageNumberPagination):
@@ -35,6 +36,54 @@ class CustomPagination(PageNumberPagination):
                 "results": data,
             }
         )
+
+
+class TripList(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
+    queryset = Trip.objects.all()
+    serializer_class = TripSerializer
+    pagination_class = CustomPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ["^gunmen__first_name", "^gunmen__last_name"]
+
+    filterset_fields = {
+        "entry_time": ["gte", "lte", "exact", "gt", "lt"],
+        "exit_time": ["gte", "lte", "exact", "gt", "lt"],
+        "custodian_1": ["exact"],
+        "custodian_2": ["exact"],
+        "custodian_3": ["exact"],
+        "vehicle": ["exact"],
+        "added_by": ["exact"],
+        "branch": ["exact"],
+    }
+    ordering_fields = "__all__"
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class TripDetail(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
+):
+    queryset = Trip.objects.all()
+    serializer_class = IssueSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 
 class AttendanceList(
     mixins.ListModelMixin,

@@ -1,12 +1,12 @@
-from django.shortcuts import render
 from rest_framework import mixins
 from rest_framework import generics
-from .models import Vehicle, Vendor, Gunmen
-from .serializers import VehicleSerializer, VendorSerializer, GunmenSerializer
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+
+from .models import Vehicle, Vendor, Gunmen
+from .serializers import VehicleSerializer, VendorSerializer, GunmenSerializer
 
 
 class CustomPagination(PageNumberPagination):
@@ -26,6 +26,52 @@ class CustomPagination(PageNumberPagination):
                 "results": data,
             }
         )
+
+
+class CustodianList(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
+    queryset = Custodian.objects.all()
+    serializer_class = CustodianSerializer
+    pagination_class = CustomPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ["^first_name", "^last_name", "^phone_number", "^vendor"]
+    filterset_fields = [
+        "custodian_type",
+        "first_name",
+        "last_name",
+        "email",
+        "phone_number",
+        "vendor",
+    ]
+    ordering_fields = "__all__"
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class CustodianDetail(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
+):
+    queryset = Custodian.objects.all()
+    serializer_class = CustodianSerializer
+    ordering_fields = "__all__"
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 
 
 class VendorList(

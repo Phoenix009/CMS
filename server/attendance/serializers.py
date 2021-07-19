@@ -1,13 +1,15 @@
 from datetime import date
+from server.vendors.models import Vehicle
+from server.vendors.serializers import CustodianSerializer, VehicleSerializer
 from vendors.models import Vendor
 from django.contrib.auth.models import User
 from users.models import Branch
-from vendors.models import Gunmen
+from vendors.models import Gunmen, Custodian
 from django.db.models import fields
 from rest_framework import serializers
 from users.serializers import BranchSerializer, UserSerializer
 from vendors.serializers import VendorSerializer, GunmenSerializer
-from .models import Attendance, AttendanceSheet, Issue
+from .models import Attendance, AttendanceSheet, Issue, Trip
 
 
 class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
@@ -58,6 +60,43 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "branch",
             "added_by",
             "attendance_sheet",
+        ]
+
+
+class TripSerializer(serializers.ModelSerializer):
+    vehicle = RelatedFieldAlternative(
+        queryset=Vehicle.objects.all(), serializer=VehicleSerializer
+    )
+    custodian_1 = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer
+    )
+    custodian_2 = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer
+    )
+    custodian_3 = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer
+    )
+    branch = RelatedFieldAlternative(
+        queryset=Branch.objects.all(), serializer=BranchSerializer
+    )
+    added_by = RelatedFieldAlternative(
+        queryset=User.objects.all(), serializer=UserSerializer
+    )
+
+    class Meta:
+        model = Attendance
+        fields = [
+            "id",
+            "vehicle",
+            "custodian_1",
+            "custodian_2",
+            "custodian_3",
+            "entry_time",
+            "exit_time",
+            "start_location",
+            "end_location",
+            "branch",
+            "added_by",
         ]
 
 
