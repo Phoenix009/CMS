@@ -79,7 +79,7 @@ class TripDetail(
     generics.GenericAPIView,
 ):
     queryset = Trip.objects.all()
-    serializer_class = IssueSerializer
+    serializer_class = TripSerializer
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
