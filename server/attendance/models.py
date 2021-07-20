@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.fields import NullBooleanField
 from vendors.models import Vehicle, Vendor, Gunmen, Custodian
 from users.models import Branch
 from datetime import datetime
@@ -8,6 +9,7 @@ class Trip(models.Model):
     trip_code = models.CharField(max_length=6, blank=True, null=True)
 
     vehicle = models.ForeignKey(Vehicle, on_delete=models.SET_NULL, null=True, blank=True)
+
     custodian_1 = models.ForeignKey(Custodian, on_delete=models.SET_NULL, null=True, blank=True, related_name='custodian_1')
     custodian_1_code = models.CharField(max_length=6, blank=True, null=True)
 
