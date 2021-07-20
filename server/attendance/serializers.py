@@ -135,7 +135,7 @@ class TripSerializer(serializers.ModelSerializer):
 
         if custodian_1_code:
             if custodian_1_code != instance.custodian_1_code:
-                return serializers.ValidationError({"error": "Code does not match !"})
+                return serializers.ValidationError({"Error": "Code does not match !"})
             else:
                 Attendance.objects.create(
                     custodian=custodian_1,
