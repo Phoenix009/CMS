@@ -1,3 +1,6 @@
+from secrets import token_hex
+from typing_extensions import Required
+
 from rest_framework import serializers
 from rest_framework.response import Response
 from users.serializers import BranchSerializer, UserSerializer
@@ -65,24 +68,37 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 
 class TripSerializer(serializers.ModelSerializer):
-    vehicle = RelatedFieldAlternative(
-        queryset=Vehicle.objects.all(), serializer=VehicleSerializer
-    )
-    custodian_1 = RelatedFieldAlternative(
-        queryset=Custodian.objects.all(), serializer=CustodianSerializer
-    )
-    custodian_2 = RelatedFieldAlternative(
-        queryset=Custodian.objects.all(), serializer=CustodianSerializer
-    )
-    custodian_3 = RelatedFieldAlternative(
-        queryset=Custodian.objects.all(), serializer=CustodianSerializer
-    )
-    branch = RelatedFieldAlternative(
-        queryset=Branch.objects.all(), serializer=BranchSerializer
-    )
-    added_by = RelatedFieldAlternative(
-        queryset=User.objects.all(), serializer=UserSerializer
-    )
+    # vehicle = RelatedFieldAlternative(
+    #     queryset=Vehicle.objects.all(), serializer=VehicleSerializer
+    # )
+    # custodian_1 = RelatedFieldAlternative(
+    #     queryset=Custodian.objects.all(), serializer=CustodianSerializer
+    # )
+    # custodian_2 = RelatedFieldAlternative(
+    #     queryset=Custodian.objects.all(), serializer=CustodianSerializer
+    # )
+    # custodian_3 = RelatedFieldAlternative(
+    #     queryset=Custodian.objects.all(), serializer=CustodianSerializer
+    # )
+    # branch = RelatedFieldAlternative(
+    #     queryset=Branch.objects.all(), serializer=BranchSerializer
+    # )
+    # added_by = RelatedFieldAlternative(
+    #     queryset=User.objects.all(), serializer=UserSerializer
+    # )
+    vehicle = VehicleSerializer(required=False)
+    custodian_1 =CustodianSerializer(required=False)
+    custodian_2 = CustodianSerializer(required=False)
+    custodian_3 = CustodianSerializer(required=False)
+    branch = BranchSerializer(required=False)
+    added_by = UserSerializer(required=False)
+
+    # vehicle = VehicleSerializer(required=False)
+    # custodian_1 =CustodianSerializer(required=False)
+    # custodian_2 = CustodianSerializer(required=False)
+    # custodian_3 = CustodianSerializer(required=False)
+    # branch = BranchSerializer(required=False)
+    # added_by = UserSerializer(required=False)
 
     class Meta:
         model = Trip
@@ -100,25 +116,35 @@ class TripSerializer(serializers.ModelSerializer):
             "added_by",
         ]
 
-    # def create(self, validated_data):
-    # validated_data['trip_code'] = token_hex(6).upper()
+    def create(self, validated_data):
+        validated_data['trip_code'] = token_hex(6).upper()
 
-    # custodian_1 = validated_data.get('custodian_1')
-    # custodian_2 = validated_data.get('custodian_2')
-    # custodian_3 = validated_data.get('custodian_3')
+        custodian_1 = validated_data.get('custodian_1')
+        custodian_2 = validated_data.get('custodian_2')
+        custodian_3 = validated_data.get('custodian_3')
 
-    # if custodian_1 and custodian_2 and custodian_1 == custodian_2: return Response('!! ERR !!: The custodian ids cannot be same')
-    # if custodian_1 and custodian_3 and custodian_1 == custodian_3: return Response('!! ERR !!: The custodian ids cannot be same')
-    # if custodian_3 and custodian_2 and custodian_3 == custodian_2: return Response('!! ERR !!: The custodian ids cannot be same')
+        if custodian_1 and custodian_2 and custodian_1 == custodian_2: raise serializers.ValidationError({'error': 'Same Custodian cannot be assigned twice'})
+        if custodian_1 and custodian_3 and custodian_1 == custodian_3: raise serializers.ValidationError({'error': 'Same Custodian cannot be assigned twice'})
+        if custodian_3 and custodian_2 and custodian_3 == custodian_2: raise serializers.ValidationError({'error': 'Same Custodian cannot be assigned twice'})
 
-    # if custodian_1: validated_data['custodian_1_code'] = token_hex(6).upper()
-    # if custodian_2: validated_data['custodian_2_code'] = token_hex(6).upper()
-    # if custodian_3: validated_data['custodian_3_code'] = token_hex(6).upper()
+        if custodian_1: validated_data['custodian_1_code'] = token_hex(6).upper()
+        if custodian_2: validated_data['custodian_2_code'] = token_hex(6).upper()
+        if custodian_3: validated_data['custodian_3_code'] = token_hex(6).upper()
 
-    #     return super().create(validated_data)
+        return super().create(validated_data)
 
-    # def update(self, instance, validated_data):
-    #     return super().update(instance, validated_data)
+    def update(self, instance, validated_data):
+        print(validated_data)
+
+        custodian_1 = validated_data.get('custodian_1')
+        custodian_2 = validated_data.get('custodian_2')
+        custodian_3 = validated_data.get('custodian_3')
+
+        if custodian_1: validated_data['custodian_1_code'] = token_hex(6).upper()
+        if custodian_2: validated_data['custodian_2_code'] = token_hex(6).upper()
+        if custodian_3: validated_data['custodian_3_code'] = token_hex(6).upper()
+
+        return super().update(instance, validated_data)
 
 
 class IssueSerializer(serializers.ModelSerializer):
