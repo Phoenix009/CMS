@@ -11,12 +11,13 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 
+from users.serializers import BranchSerializer, UserSerializer
+from vendors.serializers import CustodianSerializer, VehicleSerializer
 from attendance.serializers import AttendanceSerializer, IssueSerializer, TripSerializer
 
-from users.models import Branch
+from users.models import Branch, User
+from vendors.models import Custodian, Vehicle, Gunmen
 from attendance.models import Attendance, AttendanceSheet, Issue, Trip
-from vendors.models import Gunmen
-from users.models import User
 
 
 class CustomPagination(PageNumberPagination):
@@ -70,26 +71,37 @@ class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        # validated_data = request.data
-        # validated_data["trip_code"] = token_hex(6).upper()
+        validated_data = request.data
+        print(request.data)
 
-        # custodian_1 = validated_data.get("custodian_1")
-        # custodian_2 = validated_data.get("custodian_2")
-        # custodian_3 = validated_data.get("custodian_3")
+        # vehicle = validated_data.get("vehicle")
+        custodian_1 = validated_data.get("custodian_1")
+        custodian_2 = validated_data.get("custodian_2")
+        custodian_3 = validated_data.get("custodian_3")
+        # branch = validated_data.get("branch")
+        # added_by = validated_data.get("added_by")
 
-        # if custodian_1 and custodian_2 and custodian_1 == custodian_2:
-        #     return Response("!! ERR !!: The custodian ids cannot be same")
-        # if custodian_1 and custodian_3 and custodian_1 == custodian_3:
-        #     return Response("!! ERR !!: The custodian ids cannot be same")
-        # if custodian_3 and custodian_2 and custodian_3 == custodian_2:
-        #     return Response("!! ERR !!: The custodian ids cannot be same")
+        if custodian_1 and custodian_2 and custodian_1 == custodian_2:
+            return Response(
+                "!! ERR !!: The same custodian cannot be added more than once"
+            )
+        if custodian_1 and custodian_3 and custodian_1 == custodian_3:
+            return Response(
+                "!! ERR !!: The same custodian cannot be added more than once"
+            )
+        if custodian_3 and custodian_2 and custodian_3 == custodian_2:
+            return Response(
+                "!! ERR !!: The same custodian cannot be added more than once"
+            )
 
-        # if custodian_1:
-        #     validated_data["custodian_1_code"] = token_hex(6).upper()
-        # if custodian_2:
-        #     validated_data["custodian_2_code"] = token_hex(6).upper()
-        # if custodian_3:
-        #     validated_data["custodian_3_code"] = token_hex(6).upper()
+        # print(request.data)
+
+        if not custodian_2:
+            request.data["custodian_2"] = request.data["custodian_1"]
+        if not custodian_3:
+            request.data["custodian_3"] = request.data["custodian_1"]
+
+        print(request.data)
         return self.create(request, *args, **kwargs)
 
 
