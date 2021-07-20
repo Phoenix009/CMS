@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.fields import NullBooleanField
-from vendors.models import Vehicle, Vendor, Gunmen, Custodian
+from vendors.models import Vehicle, Vendor, Custodian
 from users.models import Branch
 from datetime import datetime
 
@@ -11,13 +10,13 @@ class Trip(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.SET_NULL, null=True, blank=True)
 
     custodian_1 = models.ForeignKey(Custodian, on_delete=models.SET_NULL, null=True, blank=True, related_name='custodian_1')
-    custodian_1_code = models.CharField(max_length=6, blank=True, null=True)
+    custodian_1_code = models.CharField(max_length=20, blank=True, null=True)
 
     custodian_2 = models.ForeignKey(Custodian, on_delete=models.SET_NULL, null=True, blank=True, related_name='custodian_2')
-    custodian_2_code = models.CharField(max_length=6, blank=True, null=True)
+    custodian_2_code = models.CharField(max_length=20, blank=True, null=True)
 
     custodian_3 = models.ForeignKey(Custodian, on_delete=models.SET_NULL, null=True, blank=True, related_name='custodian_3')
-    custodian_3_code = models.CharField(max_length=6, blank=True, null=True)
+    custodian_3_code = models.CharField(max_length=20, blank=True, null=True)
 
 
     entry_time = models.DateTimeField(blank=True,null=True)
@@ -45,7 +44,7 @@ class AttendanceSheet(models.Model):
 class Attendance(models.Model):
     entry_time = models.DateTimeField(default=datetime.now)
     exit_time = models.DateTimeField(blank=True, null=True)
-    gunmen = models.ForeignKey(Gunmen, on_delete=models.SET_NULL, null=True, blank=True)
+    custodian = models.ForeignKey(Custodian, on_delete=models.SET_NULL, null=True, blank=True)
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
     attendance_sheet = models.ForeignKey(
@@ -53,7 +52,7 @@ class Attendance(models.Model):
     )
 
     def __str__(self):
-        return f"{self.gunmen.first_name} {self.gunmen.last_name}"
+        return f"{self.custodian.first_name} {self.custodian.last_name}"
 
 
 class Issue(models.Model):
