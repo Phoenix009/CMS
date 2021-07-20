@@ -43,8 +43,8 @@ class AttendanceSheetSerializer(serializers.ModelSerializer):
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    gunmen = RelatedFieldAlternative(
-        queryset=Gunmen.objects.all(), serializer=GunmenSerializer
+    custdian = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer
     )
     attendance_sheet = RelatedFieldAlternative(
         queryset=AttendanceSheet.objects.all(), serializer=AttendanceSheetSerializer
@@ -60,7 +60,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         fields = [
             "id",
-            "gunmen",
+            "custodian",
             "entry_time",
             "exit_time",
             "branch",
@@ -77,7 +77,11 @@ class TripSerializer(serializers.ModelSerializer):
         queryset=Custodian.objects.all(), serializer=CustodianSerializer
     )
     custodian_2 = RelatedFieldAlternative(
+<<<<<<< HEAD
         queryset=Custodian.objects.all(), serializer=CustodianSerializer
+=======
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer, required=False
+>>>>>>> 551d02804b04960f7f3e228e635cc2425024c8ec
     )
     custodian_3 = RelatedFieldAlternative(
         queryset=Custodian.objects.all(), serializer=CustodianSerializer
@@ -88,12 +92,15 @@ class TripSerializer(serializers.ModelSerializer):
     added_by = RelatedFieldAlternative(
         queryset=User.objects.all(), serializer=UserSerializer
     )
+<<<<<<< HEAD
     # vehicle = VehicleSerializer(required=False)
     # custodian_1 = CustodianSerializer(required=False)
     # custodian_2 = CustodianSerializer(required=False)
     # custodian_3 = CustodianSerializer(required=False)
     # branch = BranchSerializer(required=False)
     # added_by = UserSerializer(required=False)
+=======
+>>>>>>> 551d02804b04960f7f3e228e635cc2425024c8ec
 
     class Meta:
         model = Trip
@@ -103,6 +110,9 @@ class TripSerializer(serializers.ModelSerializer):
             "custodian_1",
             "custodian_2",
             "custodian_3",
+            "custodian_1_code",
+            "custodian_2_code",
+            "custodian_3_code",
             "entry_time",
             "exit_time",
             "start_location",
@@ -141,11 +151,42 @@ class TripSerializer(serializers.ModelSerializer):
         if custodian_3 != custodian_1:
             validated_data["custodian_3_code"] = token_hex(6).upper()
 
-        print(validated_data)
-
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
+        custodian_1 = validated_data.get('custodian_1')
+        custodian_2 = validated_data.get('custodian_2')
+        custodian_3 = validated_data.get('custodian_3')
+        custodian_1_code = validated_data.get('custodian_1_code')
+        custodian_2_code = validated_data.get('custodian_2_code')
+        custodian_3_code = validated_data.get('custodian_3_code')
+
+        if custodian_1_code:
+            if custodian_1_code != instance.custodian_1_code:
+                return serializers.ValidationError({'error': 'Code does not match !'})
+            else:
+                Attendance.objects.create(
+                    custodian= custodian_1,
+                    branch= instance.branch,
+                )
+
+        if custodian_2_code:
+            if custodian_2_code != instance.custodian_2_code:
+                return serializers.ValidationError({'error': 'Code does not match !'})
+            else:
+                Attendance.objects.create(
+                    custodian= custodian_2,
+                    branch= instance.branch,
+                )
+
+        if custodian_3_code:
+            if custodian_3_code != instance.custodian_3_code:
+                return serializers.ValidationError({'error': 'Code does not match !'})
+            else:
+                Attendance.objects.create(
+                    custodian= custodian_3,
+                    branch= instance.branch,
+                )
 
         return super().update(instance, validated_data)
 

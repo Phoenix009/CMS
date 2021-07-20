@@ -20,9 +20,9 @@ class AttendanceSheetAdmin(admin.ModelAdmin):
 
 
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ("id", "gunmen", "entry_time", "exit_time", "branch_id")
-    list_display_links = ("id", "gunmen")
-    search_fields = ("gunmen",)
+    list_display = ("id", "custodian", "entry_time", "exit_time", "branch_id")
+    list_display_links = ("id", "custodian")
+    search_fields = ("custodian",)
     list_per_page = 20
 
 
