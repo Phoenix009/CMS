@@ -9,8 +9,14 @@ class Trip(models.Model):
 
     vehicle = models.ForeignKey(Vehicle, on_delete=models.SET_NULL, null=True, blank=True)
     custodian_1 = models.ForeignKey(Custodian, on_delete=models.SET_NULL, null=True, blank=True, related_name='custodian_1')
+    custodian_1_code = models.CharField(max_length=6)
+
     custodian_2 = models.ForeignKey(Custodian, on_delete=models.SET_NULL, null=True, blank=True, related_name='custodian_2')
+    custodian_2_code = models.CharField(max_length=6)
+
     custodian_3 = models.ForeignKey(Custodian, on_delete=models.SET_NULL, null=True, blank=True, related_name='custodian_3')
+    custodian_3_code = models.CharField(max_length=6)
+
 
     entry_time = models.DateTimeField(blank=True,null=True)
     exit_time = models.DateTimeField(blank=True,null=True)

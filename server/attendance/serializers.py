@@ -1,15 +1,12 @@
-from datetime import date
-from server.vendors.models import Vehicle
-from server.vendors.serializers import CustodianSerializer, VehicleSerializer
-from vendors.models import Vendor
-from django.contrib.auth.models import User
-from users.models import Branch
-from vendors.models import Gunmen, Custodian
-from django.db.models import fields
+from secrets import token_hex
+
 from rest_framework import serializers
 from users.serializers import BranchSerializer, UserSerializer
-from vendors.serializers import VendorSerializer, GunmenSerializer
+from vendors.serializers import VendorSerializer, GunmenSerializer, CustodianSerializer, VehicleSerializer
+
 from .models import Attendance, AttendanceSheet, Issue, Trip
+from users.models import Branch, User
+from vendors.models import Gunmen, Custodian, Vendor, Vehicle
 
 
 class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
@@ -98,6 +95,18 @@ class TripSerializer(serializers.ModelSerializer):
             "branch",
             "added_by",
         ]
+
+    def create(self, validated_data):
+        validated_data['trip_code'] = token_hex(6).upper()
+        # TODO: Send Mail/Msg and send trip code and otp code
+        validated_data['custodian_1_code'] = token_hex(6).upper()
+        validated_data['custodian_2_code'] = token_hex(6).upper()
+        validated_data['custodian_3_code'] = token_hex(6).upper()
+
+        return super().create(validated_data)
+    
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
 
 
 class IssueSerializer(serializers.ModelSerializer):
