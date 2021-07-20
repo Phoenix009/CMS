@@ -1,10 +1,13 @@
 from secrets import token_hex
-from typing_extensions import Required
-
 from rest_framework import serializers
 from rest_framework.response import Response
 from users.serializers import BranchSerializer, UserSerializer
-from vendors.serializers import VendorSerializer, GunmenSerializer, CustodianSerializer, VehicleSerializer
+from vendors.serializers import (
+    VendorSerializer,
+    GunmenSerializer,
+    CustodianSerializer,
+    VehicleSerializer,
+)
 
 from .models import Attendance, AttendanceSheet, Issue, Trip
 from users.models import Branch, User
@@ -82,7 +85,7 @@ class TripSerializer(serializers.ModelSerializer):
     #     queryset=User.objects.all(), serializer=UserSerializer
     # )
     vehicle = VehicleSerializer(required=False)
-    custodian_1 =CustodianSerializer(required=False)
+    custodian_1 = CustodianSerializer(required=False)
     custodian_2 = CustodianSerializer(required=False)
     custodian_3 = CustodianSerializer(required=False)
     branch = BranchSerializer(required=False)
@@ -112,32 +115,47 @@ class TripSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        validated_data['trip_code'] = token_hex(6).upper()
-    
-        custodian_1 = validated_data.get('custodian_1')
-        custodian_2 = validated_data.get('custodian_2')
-        custodian_3 = validated_data.get('custodian_3')
+        validated_data["trip_code"] = token_hex(6).upper()
 
-        if custodian_1 and custodian_2 and custodian_1 == custodian_2: raise serializers.ValidationError({'error': 'Same Custodian cannot be assigned twice'})
-        if custodian_1 and custodian_3 and custodian_1 == custodian_3: raise serializers.ValidationError({'error': 'Same Custodian cannot be assigned twice'})
-        if custodian_3 and custodian_2 and custodian_3 == custodian_2: raise serializers.ValidationError({'error': 'Same Custodian cannot be assigned twice'})
-        
-        if custodian_1: validated_data['custodian_1_code'] = token_hex(6).upper()
-        if custodian_2: validated_data['custodian_2_code'] = token_hex(6).upper()
-        if custodian_3: validated_data['custodian_3_code'] = token_hex(6).upper()
+        custodian_1 = validated_data.get("custodian_1")
+        custodian_2 = validated_data.get("custodian_2")
+        custodian_3 = validated_data.get("custodian_3")
+
+        if custodian_1 and custodian_2 and custodian_1 == custodian_2:
+            raise serializers.ValidationError(
+                {"error": "Same Custodian cannot be assigned twice"}
+            )
+        if custodian_1 and custodian_3 and custodian_1 == custodian_3:
+            raise serializers.ValidationError(
+                {"error": "Same Custodian cannot be assigned twice"}
+            )
+        if custodian_3 and custodian_2 and custodian_3 == custodian_2:
+            raise serializers.ValidationError(
+                {"error": "Same Custodian cannot be assigned twice"}
+            )
+
+        if custodian_1:
+            validated_data["custodian_1_code"] = token_hex(6).upper()
+        if custodian_2:
+            validated_data["custodian_2_code"] = token_hex(6).upper()
+        if custodian_3:
+            validated_data["custodian_3_code"] = token_hex(6).upper()
 
         return super().create(validated_data)
-    
+
     def update(self, instance, validated_data):
         print(validated_data)
 
-        custodian_1 = validated_data.get('custodian_1')
-        custodian_2 = validated_data.get('custodian_2')
-        custodian_3 = validated_data.get('custodian_3')
+        custodian_1 = validated_data.get("custodian_1")
+        custodian_2 = validated_data.get("custodian_2")
+        custodian_3 = validated_data.get("custodian_3")
 
-        if custodian_1: validated_data['custodian_1_code'] = token_hex(6).upper()
-        if custodian_2: validated_data['custodian_2_code'] = token_hex(6).upper()
-        if custodian_3: validated_data['custodian_3_code'] = token_hex(6).upper()
+        if custodian_1:
+            validated_data["custodian_1_code"] = token_hex(6).upper()
+        if custodian_2:
+            validated_data["custodian_2_code"] = token_hex(6).upper()
+        if custodian_3:
+            validated_data["custodian_3_code"] = token_hex(6).upper()
 
         return super().update(instance, validated_data)
 

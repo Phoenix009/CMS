@@ -114,7 +114,6 @@ class AttendanceList(
 
     ordering_fields = "__all__"
 
-
     def get(self, request, *args, **kwargs):
         params = request.query_params
         start_date = params.get("start_date", datetime.min)
@@ -185,8 +184,6 @@ class AttendanceList(
                 result.append(AttendanceSerializer(attendance).data)
 
         return Response(data=result)
-    
-    
 
 
 class AttendanceDetail(
