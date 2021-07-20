@@ -1,4 +1,5 @@
 from datetime import datetime
+from secrets import token_hex
 
 from django.shortcuts import get_object_or_404
 
@@ -69,6 +70,26 @@ class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        # validated_data = request.data
+        # validated_data["trip_code"] = token_hex(6).upper()
+
+        # custodian_1 = validated_data.get("custodian_1")
+        # custodian_2 = validated_data.get("custodian_2")
+        # custodian_3 = validated_data.get("custodian_3")
+
+        # if custodian_1 and custodian_2 and custodian_1 == custodian_2:
+        #     return Response("!! ERR !!: The custodian ids cannot be same")
+        # if custodian_1 and custodian_3 and custodian_1 == custodian_3:
+        #     return Response("!! ERR !!: The custodian ids cannot be same")
+        # if custodian_3 and custodian_2 and custodian_3 == custodian_2:
+        #     return Response("!! ERR !!: The custodian ids cannot be same")
+
+        # if custodian_1:
+        #     validated_data["custodian_1_code"] = token_hex(6).upper()
+        # if custodian_2:
+        #     validated_data["custodian_2_code"] = token_hex(6).upper()
+        # if custodian_3:
+        #     validated_data["custodian_3_code"] = token_hex(6).upper()
         return self.create(request, *args, **kwargs)
 
 
@@ -85,6 +106,7 @@ class TripDetail(
         return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
+
         return self.update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
@@ -113,7 +135,6 @@ class AttendanceList(
     }
 
     ordering_fields = "__all__"
-
 
     def get(self, request, *args, **kwargs):
         params = request.query_params
@@ -185,8 +206,6 @@ class AttendanceList(
                 result.append(AttendanceSerializer(attendance).data)
 
         return Response(data=result)
-    
-    
 
 
 class AttendanceDetail(
