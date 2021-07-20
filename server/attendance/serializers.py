@@ -77,11 +77,7 @@ class TripSerializer(serializers.ModelSerializer):
         queryset=Custodian.objects.all(), serializer=CustodianSerializer
     )
     custodian_2 = RelatedFieldAlternative(
-<<<<<<< HEAD
         queryset=Custodian.objects.all(), serializer=CustodianSerializer
-=======
-        queryset=Custodian.objects.all(), serializer=CustodianSerializer, required=False
->>>>>>> 551d02804b04960f7f3e228e635cc2425024c8ec
     )
     custodian_3 = RelatedFieldAlternative(
         queryset=Custodian.objects.all(), serializer=CustodianSerializer
@@ -92,15 +88,6 @@ class TripSerializer(serializers.ModelSerializer):
     added_by = RelatedFieldAlternative(
         queryset=User.objects.all(), serializer=UserSerializer
     )
-<<<<<<< HEAD
-    # vehicle = VehicleSerializer(required=False)
-    # custodian_1 = CustodianSerializer(required=False)
-    # custodian_2 = CustodianSerializer(required=False)
-    # custodian_3 = CustodianSerializer(required=False)
-    # branch = BranchSerializer(required=False)
-    # added_by = UserSerializer(required=False)
-=======
->>>>>>> 551d02804b04960f7f3e228e635cc2425024c8ec
 
     class Meta:
         model = Trip
@@ -129,21 +116,6 @@ class TripSerializer(serializers.ModelSerializer):
         custodian_2 = validated_data.get("custodian_2")
         custodian_3 = validated_data.get("custodian_3")
 
-        # if custodian_1 and custodian_2 and custodian_1 == custodian_2:
-        #     raise serializers.ValidationError(
-        #         {"error": "Same Custodian cannot be assigned twice"}
-        #     )
-        # if custodian_1 and custodian_3 and custodian_1 == custodian_3:
-        #     raise serializers.ValidationError(
-        #         {"error": "Same Custodian cannot be assigned twice"}
-        #     )
-        # if custodian_3 and custodian_2 and custodian_3 == custodian_2:
-        #     raise serializers.ValidationError(
-        #         {"error": "Same Custodian cannot be assigned twice"}
-        #     )
-
-        # print(validated_data)
-
         if custodian_1:
             validated_data["custodian_1_code"] = token_hex(6).upper()
         if custodian_2 != custodian_2:
@@ -154,38 +126,38 @@ class TripSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        custodian_1 = validated_data.get('custodian_1')
-        custodian_2 = validated_data.get('custodian_2')
-        custodian_3 = validated_data.get('custodian_3')
-        custodian_1_code = validated_data.get('custodian_1_code')
-        custodian_2_code = validated_data.get('custodian_2_code')
-        custodian_3_code = validated_data.get('custodian_3_code')
+        custodian_1 = validated_data.get("custodian_1")
+        custodian_2 = validated_data.get("custodian_2")
+        custodian_3 = validated_data.get("custodian_3")
+        custodian_1_code = validated_data.get("custodian_1_code")
+        custodian_2_code = validated_data.get("custodian_2_code")
+        custodian_3_code = validated_data.get("custodian_3_code")
 
         if custodian_1_code:
             if custodian_1_code != instance.custodian_1_code:
-                return serializers.ValidationError({'error': 'Code does not match !'})
+                return serializers.ValidationError({"error": "Code does not match !"})
             else:
                 Attendance.objects.create(
-                    custodian= custodian_1,
-                    branch= instance.branch,
+                    custodian=custodian_1,
+                    branch=instance.branch,
                 )
 
-        if custodian_2_code:
+        if custodian_2_code and custodian_2 != custodian_1:
             if custodian_2_code != instance.custodian_2_code:
-                return serializers.ValidationError({'error': 'Code does not match !'})
+                return serializers.ValidationError({"error": "Code does not match !"})
             else:
                 Attendance.objects.create(
-                    custodian= custodian_2,
-                    branch= instance.branch,
+                    custodian=custodian_2,
+                    branch=instance.branch,
                 )
 
-        if custodian_3_code:
+        if custodian_3_code and custodian_3 != custodian_1:
             if custodian_3_code != instance.custodian_3_code:
-                return serializers.ValidationError({'error': 'Code does not match !'})
+                return serializers.ValidationError({"error": "Code does not match !"})
             else:
                 Attendance.objects.create(
-                    custodian= custodian_3,
-                    branch= instance.branch,
+                    custodian=custodian_3,
+                    branch=instance.branch,
                 )
 
         return super().update(instance, validated_data)
