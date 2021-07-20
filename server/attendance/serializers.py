@@ -1,5 +1,4 @@
 from secrets import token_hex
-from typing_extensions import Required
 
 from rest_framework import serializers
 from rest_framework.response import Response
@@ -36,8 +35,8 @@ class AttendanceSheetSerializer(serializers.ModelSerializer):
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    gunmen = RelatedFieldAlternative(
-        queryset=Gunmen.objects.all(), serializer=GunmenSerializer
+    custdian = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer
     )
     attendance_sheet = RelatedFieldAlternative(
         queryset=AttendanceSheet.objects.all(), serializer=AttendanceSheetSerializer
@@ -53,7 +52,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         fields = [
             "id",
-            "gunmen",
+            "custodian",
             "entry_time",
             "exit_time",
             "branch",
@@ -63,37 +62,24 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 
 class TripSerializer(serializers.ModelSerializer):
-    # vehicle = RelatedFieldAlternative(
-    #     queryset=Vehicle.objects.all(), serializer=VehicleSerializer
-    # )
-    # custodian_1 = RelatedFieldAlternative(
-    #     queryset=Custodian.objects.all(), serializer=CustodianSerializer
-    # )
-    # custodian_2 = RelatedFieldAlternative(
-    #     queryset=Custodian.objects.all(), serializer=CustodianSerializer
-    # )
-    # custodian_3 = RelatedFieldAlternative(
-    #     queryset=Custodian.objects.all(), serializer=CustodianSerializer
-    # )
-    # branch = RelatedFieldAlternative(
-    #     queryset=Branch.objects.all(), serializer=BranchSerializer
-    # )
-    # added_by = RelatedFieldAlternative(
-    #     queryset=User.objects.all(), serializer=UserSerializer
-    # )
-    vehicle = VehicleSerializer(required=False)
-    custodian_1 =CustodianSerializer(required=False)
-    custodian_2 = CustodianSerializer(required=False)
-    custodian_3 = CustodianSerializer(required=False)
-    branch = BranchSerializer(required=False)
-    added_by = UserSerializer(required=False)
-
-    # vehicle = VehicleSerializer(required=False)
-    # custodian_1 =CustodianSerializer(required=False)
-    # custodian_2 = CustodianSerializer(required=False)
-    # custodian_3 = CustodianSerializer(required=False)
-    # branch = BranchSerializer(required=False)
-    # added_by = UserSerializer(required=False)
+    vehicle = RelatedFieldAlternative(
+        queryset=Vehicle.objects.all(), serializer=VehicleSerializer
+    )
+    custodian_1 = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer
+    )
+    custodian_2 = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer, required=False
+    )
+    custodian_3 = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer
+    )
+    branch = RelatedFieldAlternative(
+        queryset=Branch.objects.all(), serializer=BranchSerializer
+    )
+    added_by = RelatedFieldAlternative(
+        queryset=User.objects.all(), serializer=UserSerializer
+    )
 
     class Meta:
         model = Trip
@@ -103,6 +89,9 @@ class TripSerializer(serializers.ModelSerializer):
             "custodian_1",
             "custodian_2",
             "custodian_3",
+            "custodian_1_code",
+            "custodian_2_code",
+            "custodian_3_code",
             "entry_time",
             "exit_time",
             "start_location",
@@ -129,15 +118,39 @@ class TripSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
     
     def update(self, instance, validated_data):
-        print(validated_data)
-
         custodian_1 = validated_data.get('custodian_1')
         custodian_2 = validated_data.get('custodian_2')
         custodian_3 = validated_data.get('custodian_3')
+        custodian_1_code = validated_data.get('custodian_1_code')
+        custodian_2_code = validated_data.get('custodian_2_code')
+        custodian_3_code = validated_data.get('custodian_3_code')
 
-        if custodian_1: validated_data['custodian_1_code'] = token_hex(6).upper()
-        if custodian_2: validated_data['custodian_2_code'] = token_hex(6).upper()
-        if custodian_3: validated_data['custodian_3_code'] = token_hex(6).upper()
+        if custodian_1_code:
+            if custodian_1_code != instance.custodian_1_code: 
+                return serializers.ValidationError({'error': 'Code does not match !'})
+            else:
+                Attendance.objects.create(
+                    custodian= custodian_1,
+                    branch= instance.branch,
+                )
+        
+        if custodian_2_code:
+            if custodian_2_code != instance.custodian_2_code: 
+                return serializers.ValidationError({'error': 'Code does not match !'})
+            else:
+                Attendance.objects.create(
+                    custodian= custodian_2,
+                    branch= instance.branch,
+                )
+        
+        if custodian_3_code:
+            if custodian_3_code != instance.custodian_3_code: 
+                return serializers.ValidationError({'error': 'Code does not match !'})
+            else:
+                Attendance.objects.create(
+                    custodian= custodian_3,
+                    branch= instance.branch,
+                )
 
         return super().update(instance, validated_data)
 
