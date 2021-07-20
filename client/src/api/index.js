@@ -122,9 +122,6 @@ export const updateRegion = (id,formData) =>{
 export const deleteRegion = (id) =>{
 	return axiosInstance.delete(`users/region/${id}/`);
 }
-export const deleteBranch = (id) =>{
-	return axiosInstance.delete(`users/branch/${id}/`);
-}
 
 // vendors 
 export const getAllVendors = ()=> axiosInstance.get('vendor/vendor');
@@ -132,12 +129,18 @@ export const addVendor = (formData) => axiosInstance.post('vendor/vendor/', form
 export const updateVendor = (id,formData) =>{
 	return axiosInstance.put (`vendor/vendor/${id}/`, formData);
 }
+export const deleteVendor = (row) =>{ console.log(row);
+	return axiosInstance.delete(`users/vendor/${row}/`);
+}
 
 // branch 
 export const getAllBranch = ()=> axiosInstance.get('users/branch');
 export const addBranch = (formData)=> axiosInstance.post('users/branch/', formData);
 export const updateBranch = (id,formData) =>{
 	return axiosInstance.put(`users/branch/${id}/`, formData);
+}
+export const deleteBranch = (id) =>{
+	return axiosInstance.delete(`users/branch/${id}/`);
 }
 // Issues 
 
