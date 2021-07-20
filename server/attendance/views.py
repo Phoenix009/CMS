@@ -51,7 +51,6 @@ class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         "^custodian_3__last_name",
         "^vehicle__number_plate",
         "^vehicle__model_name",
-        "^vendor__name",
     ]
 
     filterset_fields = {
@@ -61,7 +60,6 @@ class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         "custodian_2": ["exact"],
         "custodian_3": ["exact"],
         "vehicle": ["exact"],
-        "vendor": ["exact"],
         "added_by": ["exact"],
         "branch": ["exact"],
     }
@@ -115,6 +113,7 @@ class AttendanceList(
     }
 
     ordering_fields = "__all__"
+
 
     def get(self, request, *args, **kwargs):
         params = request.query_params
@@ -186,6 +185,8 @@ class AttendanceList(
                 result.append(AttendanceSerializer(attendance).data)
 
         return Response(data=result)
+    
+    
 
 
 class AttendanceDetail(

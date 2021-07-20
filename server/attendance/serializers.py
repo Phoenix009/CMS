@@ -1,6 +1,7 @@
 from secrets import token_hex
 
 from rest_framework import serializers
+from rest_framework.response import Response
 from users.serializers import BranchSerializer, UserSerializer
 from vendors.serializers import VendorSerializer, GunmenSerializer, CustodianSerializer, VehicleSerializer
 
@@ -102,17 +103,25 @@ class TripSerializer(serializers.ModelSerializer):
             "added_by",
         ]
 
-    def create(self, validated_data):
-        validated_data['trip_code'] = token_hex(6).upper()
-        # TODO: Send Mail/Msg and send trip code and otp code
-        validated_data['custodian_1_code'] = token_hex(6).upper()
-        validated_data['custodian_2_code'] = token_hex(6).upper()
-        validated_data['custodian_3_code'] = token_hex(6).upper()
-
-        return super().create(validated_data)
+    # def create(self, validated_data):
+    #     validated_data['trip_code'] = token_hex(6).upper()
     
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+    #     custodian_1 = validated_data.get('custodian_1')
+    #     custodian_2 = validated_data.get('custodian_2')
+    #     custodian_3 = validated_data.get('custodian_3')
+
+    #     if custodian_1 and custodian_2 and custodian_1 == custodian_2: return Response('!! ERR !!: The custodian ids cannot be same')
+    #     if custodian_1 and custodian_3 and custodian_1 == custodian_3: return Response('!! ERR !!: The custodian ids cannot be same')
+    #     if custodian_3 and custodian_2 and custodian_3 == custodian_2: return Response('!! ERR !!: The custodian ids cannot be same')
+        
+    #     if custodian_1: validated_data['custodian_1_code'] = token_hex(6).upper()
+    #     if custodian_2: validated_data['custodian_2_code'] = token_hex(6).upper()
+    #     if custodian_3: validated_data['custodian_3_code'] = token_hex(6).upper()
+
+    #     return super().create(validated_data)
+    
+    # def update(self, instance, validated_data):
+    #     return super().update(instance, validated_data)
 
 
 class IssueSerializer(serializers.ModelSerializer):
