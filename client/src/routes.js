@@ -6,6 +6,7 @@ import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 import Login from "./pages/Login";
 import Gunmen from "./pages/Gunmen/Gunmen";
 import AddTrip from "./pages/Trip/AddTrip";
+import Trip from "./pages/Trip/Trip";
 import Register from "./pages/Register";
 import AddGunman from "./pages/AddGunman";
 import DashboardApp from "./pages/DashboardApp";
@@ -37,6 +38,7 @@ export default function Router() {
 				{ path: "region", element: <Region /> },
 				{ path: "vendors", element: <Vendors /> },
 				{ path: "addtrip", element: <AddTrip/> },
+				{ path: "trip", element: <Trip/> },
 				{ path: "products", element: <Products /> },
 				{ path: "blog", element: <Blog /> },
 			],

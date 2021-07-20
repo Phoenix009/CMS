@@ -302,7 +302,8 @@ export default function User() {
 												{row.name}
 											</TableCell>
 											<TableCell >
-												{row.address}
+											{row.address.length<10?row.address:row.address.substring(0,10)}
+											
 											</TableCell>
 											<TableCell >
 												{`${row.regional_officer?.first_name} ${row.regional_officer?.last_name}`}
