@@ -43,7 +43,7 @@ class AttendanceSheetSerializer(serializers.ModelSerializer):
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    custdian = RelatedFieldAlternative(
+    custodian = RelatedFieldAlternative(
         queryset=Custodian.objects.all(), serializer=CustodianSerializer
     )
     attendance_sheet = RelatedFieldAlternative(
@@ -94,6 +94,8 @@ class TripSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "vehicle",
+            "trip_code",
+            "trip_start",
             "custodian_1",
             "custodian_2",
             "custodian_3",
@@ -132,6 +134,13 @@ class TripSerializer(serializers.ModelSerializer):
         custodian_1_code = validated_data.get("custodian_1_code")
         custodian_2_code = validated_data.get("custodian_2_code")
         custodian_3_code = validated_data.get("custodian_3_code")
+        trip_start = validated_data.get("trip_start")
+
+        if trip_start:
+            Attendance.objects.create(
+                vehicle=custodian_1,
+                branch=instance.branch,
+            )
 
         if custodian_1_code:
             if custodian_1_code != instance.custodian_1_code:
