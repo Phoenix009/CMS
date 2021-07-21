@@ -1,17 +1,18 @@
+from datetime import datetime
 from secrets import token_hex
 from rest_framework import serializers
 from rest_framework.response import Response
 from users.serializers import BranchSerializer, UserSerializer
 from vendors.serializers import (
     VendorSerializer,
-    GunmenSerializer,
     CustodianSerializer,
     VehicleSerializer,
 )
 
-from .models import Attendance, AttendanceSheet, Issue, Trip
+from .models import Attendance, AttendanceSheet, AttendanceVehicle, Issue, Trip
 from users.models import Branch, User
-from vendors.models import Gunmen, Custodian, Vendor, Vehicle
+from vendors.models import Custodian, Vendor, Vehicle
+from attendance.models import AttendanceVehicle
 
 
 class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
@@ -41,8 +42,38 @@ class AttendanceSheetSerializer(serializers.ModelSerializer):
         fields = ["id", "sheet_created", "invoice", "verified"]
 
 
+class AttendanceVehicleSerializer(serializers.ModelSerializer):
+    vehicle = RelatedFieldAlternative(
+        queryset=Vehicle.objects.all(), serializer=VehicleSerializer
+    )
+    attendance_sheet = RelatedFieldAlternative(
+        queryset=AttendanceSheet.objects.all(), serializer=AttendanceSheetSerializer
+    )
+    branch = RelatedFieldAlternative(
+        queryset=Branch.objects.all(), serializer=BranchSerializer
+    )
+    added_by = RelatedFieldAlternative(
+        queryset=User.objects.all(), serializer=UserSerializer
+    )
+
+    class Meta:
+        model = AttendanceVehicle
+        fields = [
+            "id",
+            "vehicle",
+            "entry_time",
+            "exit_time",
+            "branch",
+            "added_by",
+            "attendance_sheet",
+        ]
+    
+
+
+
+
 class AttendanceSerializer(serializers.ModelSerializer):
-    custdian = RelatedFieldAlternative(
+    custodian = RelatedFieldAlternative(
         queryset=Custodian.objects.all(), serializer=CustodianSerializer
     )
     attendance_sheet = RelatedFieldAlternative(
@@ -93,6 +124,8 @@ class TripSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "vehicle",
+            "trip_code",
+            "trip_start",
             "custodian_1",
             "custodian_2",
             "custodian_3",
@@ -131,6 +164,7 @@ class TripSerializer(serializers.ModelSerializer):
         custodian_1_code = validated_data.get("custodian_1_code")
         custodian_2_code = validated_data.get("custodian_2_code")
         custodian_3_code = validated_data.get("custodian_3_code")
+<<<<<<< HEAD
 
         if custodian_1_code:
             if custodian_1_code != instance.custodian_1_code:
@@ -158,6 +192,89 @@ class TripSerializer(serializers.ModelSerializer):
                     custodian=custodian_3,
                     branch=instance.branch,
                 )
+=======
+        trip_start = validated_data.get("trip_start")
+
+        if not instance.trip_start:
+            if custodian_1_code:
+                if custodian_1_code != instance.custodian_1_code:
+                    return serializers.ValidationError(
+                        {"Error": "Code does not match !"}
+                    )
+                else:
+                    Attendance.objects.create(
+                        custodian=custodian_1,
+                        branch=instance.branch,
+                    )
+                    AttendanceVehicle.objects.create(
+                        vehicle=instance.vehicle,
+                        branch=instance.branch,
+                    )
+
+            if custodian_2_code and custodian_2 != custodian_1:
+                if custodian_2_code != instance.custodian_2_code:
+                    return serializers.ValidationError(
+                        {"error": "Code does not match !"}
+                    )
+                else:
+                    Attendance.objects.create(
+                        custodian=custodian_2,
+                        branch=instance.branch,
+                    )
+
+            if custodian_3_code and custodian_3 != custodian_1:
+                if custodian_3_code != instance.custodian_3_code:
+                    return serializers.ValidationError(
+                        {"error": "Code does not match !"}
+                    )
+                else:
+                    Attendance.objects.create(
+                        custodian=custodian_3,
+                        branch=instance.branch,
+                    )
+        if instance.trip_start:
+            today = datetime.now()
+            attendance_1 = Attendance.objects.filter(
+                entry_time__year=today.date().year,
+                entry_time__month=today.date().month,
+                entry_time__day=today.date().day,
+                custodian=custodian_1,
+                branch=instance.branch,
+            ).first()
+            attendance_2 = Attendance.objects.filter(
+                entry_time__year=today.date().year,
+                entry_time__month=today.date().month,
+                entry_time__day=today.date().day,
+                custodian=custodian_2,
+                branch=instance.branch,
+            ).first()
+            attendance_3 = Attendance.objects.filter(
+                entry_time__year=today.date().year,
+                entry_time__month=today.date().month,
+                entry_time__day=today.date().day,
+                custodian=custodian_3,
+                branch=instance.branch,
+            ).first()
+            vehicle_attendance = AttendanceVehicle.objects.filter(
+                entry_time__year=today.date().year,
+                entry_time__month=today.date().month,
+                entry_time__day=today.date().day,
+                vehicle=instance.vehicle,
+                branch=instance.branch,
+            ).first()
+            if attendance_1:
+                attendance_1.exit_time = today
+                attendance_1.save()
+            if attendance_2:
+                attendance_2.exit_time = today
+                attendance_2.save()
+            if attendance_3:
+                attendance_3.exit_time = today
+                attendance_3.save()
+            if vehicle_attendance:
+                vehicle_attendance.exit_time = today
+                vehicle_attendance.save()
+>>>>>>> 6f4814a7afb93950a67ea00a4864645f81b5cd80
 
         return super().update(instance, validated_data)
 
