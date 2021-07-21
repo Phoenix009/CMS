@@ -67,9 +67,6 @@ class AttendanceVehicleSerializer(serializers.ModelSerializer):
             "added_by",
             "attendance_sheet",
         ]
-    
-
-
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
@@ -165,8 +162,13 @@ class TripSerializer(serializers.ModelSerializer):
         custodian_2_code = validated_data.get("custodian_2_code")
         custodian_3_code = validated_data.get("custodian_3_code")
         trip_start = validated_data.get("trip_start")
+        if trip_start and trip_start == True and instance.trip_start == False:
+            AttendanceVehicle.objects.create(
+                vehicle=instance.vehicle,
+                branch=instance.branch,
+            )
 
-        if not instance.trip_start:
+        if instance.trip_start == False and not trip_start:
             if custodian_1_code:
                 if custodian_1_code != instance.custodian_1_code:
                     return serializers.ValidationError(
@@ -175,10 +177,6 @@ class TripSerializer(serializers.ModelSerializer):
                 else:
                     Attendance.objects.create(
                         custodian=custodian_1,
-                        branch=instance.branch,
-                    )
-                    AttendanceVehicle.objects.create(
-                        vehicle=instance.vehicle,
                         branch=instance.branch,
                     )
 
@@ -203,7 +201,7 @@ class TripSerializer(serializers.ModelSerializer):
                         custodian=custodian_3,
                         branch=instance.branch,
                     )
-        if instance.trip_start:
+        if instance.trip_start == False:
             today = datetime.now()
             attendance_1 = Attendance.objects.filter(
                 entry_time__year=today.date().year,
