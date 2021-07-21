@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "django_crontab",
     "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -160,6 +161,14 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
 }
+
+# Run once a month at midnight of the first day of the month	
+# 0 0 20 * *
+
+# for now once every 5 minutes
+CRONJOBS = [
+    ('*/10 * * * *', 'attendance.cron.send_attendance_report')
+]
 
 EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

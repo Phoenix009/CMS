@@ -215,11 +215,7 @@ class AttendanceList(
 
     def get(self, request, *args, **kwargs):
 
-        qs = Attendance.objects.all()
-
-        qs_to_local_csv(qs, fields=['id', 'custodian__first_name', 'custodian__last_name', 'entry_time', 'exit_time'])
-
-
+       
         params = request.query_params
         start_date = params.get("start_date", datetime.min)
         end_date = params.get("end_date", datetime.max)
