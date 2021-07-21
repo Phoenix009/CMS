@@ -13,11 +13,23 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from users.serializers import BranchSerializer, UserSerializer
 from vendors.serializers import CustodianSerializer, VehicleSerializer
-from attendance.serializers import AttendanceSerializer, IssueSerializer, TripSerializer, AttendanceVehicleSerializer
+from attendance.serializers import (
+    AttendanceSerializer,
+    IssueSerializer,
+    TripSerializer,
+    AttendanceVehicleSerializer,
+)
 
 from users.models import Branch, User
 from vendors.models import Custodian, Vehicle, Gunmen
-from attendance.models import Attendance, AttendanceSheet, AttendanceVehicle, Issue, Trip
+from attendance.models import (
+    Attendance,
+    AttendanceSheet,
+    AttendanceVehicle,
+    Issue,
+    Trip,
+)
+from attendance.utils import qs_to_local_csv
 
 
 class CustomPagination(PageNumberPagination):
@@ -140,7 +152,6 @@ class TripDetail(
         return self.destroy(request, *args, **kwargs)
 
 
-
 class AttendanceVehicleList(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
@@ -170,6 +181,7 @@ class AttendanceVehicleList(
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
+
 class AttendanceVehicleDetail(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -187,8 +199,6 @@ class AttendanceVehicleDetail(
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-
-
 
 
 class AttendanceList(
@@ -214,6 +224,7 @@ class AttendanceList(
     ordering_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
+
         params = request.query_params
         start_date = params.get("start_date", datetime.min)
         end_date = params.get("end_date", datetime.max)

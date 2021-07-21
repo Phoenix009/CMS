@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "django_crontab",
     "jazzmin",
     'django_crontab',
     "django.contrib.admin",
@@ -163,14 +164,16 @@ REST_FRAMEWORK = {
     ],
 }
 
-EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+# Run once a month at midnight of the first day of the month
+# 0 0 20 * *
+
+# for now once every 5 minutes
+CRONJOBS = [("*/10 * * * *", "attendance.cron.send_attendance_report")]
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 # TODO: Setup the email and password
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-
-CRONJOBS = [
-    ('0 0 20 * *', 'users.cron.mail_attendance')
-]
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
