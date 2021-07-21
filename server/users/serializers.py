@@ -124,3 +124,13 @@ def mail(subject, message, to_mail):
         recipient_list=[to_mail],
         fail_silently=False,
     )
+
+
+def mail_attendance(subject, message, to_mail):
+    send_mail(
+        subject,
+        message,
+        from_email=None,
+        recipient_list=[to_mail],
+        fail_silently=False,
+    )

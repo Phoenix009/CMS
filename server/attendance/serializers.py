@@ -164,35 +164,6 @@ class TripSerializer(serializers.ModelSerializer):
         custodian_1_code = validated_data.get("custodian_1_code")
         custodian_2_code = validated_data.get("custodian_2_code")
         custodian_3_code = validated_data.get("custodian_3_code")
-<<<<<<< HEAD
-
-        if custodian_1_code:
-            if custodian_1_code != instance.custodian_1_code:
-                return serializers.ValidationError({"Error": "Code does not match !"})
-            else:
-                Attendance.objects.create(
-                    custodian=custodian_1,
-                    branch=instance.branch,
-                )
-
-        if custodian_2_code and custodian_2 != custodian_1:
-            if custodian_2_code != instance.custodian_2_code:
-                return serializers.ValidationError({"error": "Code does not match !"})
-            else:
-                Attendance.objects.create(
-                    custodian=custodian_2,
-                    branch=instance.branch,
-                )
-
-        if custodian_3_code and custodian_3 != custodian_1:
-            if custodian_3_code != instance.custodian_3_code:
-                return serializers.ValidationError({"error": "Code does not match !"})
-            else:
-                Attendance.objects.create(
-                    custodian=custodian_3,
-                    branch=instance.branch,
-                )
-=======
         trip_start = validated_data.get("trip_start")
 
         if not instance.trip_start:
@@ -274,7 +245,6 @@ class TripSerializer(serializers.ModelSerializer):
             if vehicle_attendance:
                 vehicle_attendance.exit_time = today
                 vehicle_attendance.save()
->>>>>>> 6f4814a7afb93950a67ea00a4864645f81b5cd80
 
         return super().update(instance, validated_data)
 
