@@ -4,14 +4,14 @@ from rest_framework.response import Response
 from users.serializers import BranchSerializer, UserSerializer
 from vendors.serializers import (
     VendorSerializer,
-    GunmenSerializer,
     CustodianSerializer,
     VehicleSerializer,
 )
 
 from .models import Attendance, AttendanceSheet, Issue, Trip
 from users.models import Branch, User
-from vendors.models import Gunmen, Custodian, Vendor, Vehicle
+from vendors.models import Custodian, Vendor, Vehicle
+from attendance.models import AttendanceVehicle
 
 
 class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
@@ -39,6 +39,36 @@ class AttendanceSheetSerializer(serializers.ModelSerializer):
     class Meta:
         model = AttendanceSheet
         fields = ["id", "sheet_created", "invoice", "verified"]
+
+
+class AttendanceVehicleSerializer(serializers.ModelSerializer):
+    vehicle = RelatedFieldAlternative(
+        queryset=Vehicle.objects.all(), serializer=VehicleSerializer
+    )
+    attendance_sheet = RelatedFieldAlternative(
+        queryset=AttendanceSheet.objects.all(), serializer=AttendanceSheetSerializer
+    )
+    branch = RelatedFieldAlternative(
+        queryset=Branch.objects.all(), serializer=BranchSerializer
+    )
+    added_by = RelatedFieldAlternative(
+        queryset=User.objects.all(), serializer=UserSerializer
+    )
+
+    class Meta:
+        model = AttendanceVehicle
+        fields = [
+            "id",
+            "vehicle",
+            "entry_time",
+            "exit_time",
+            "branch",
+            "added_by",
+            "attendance_sheet",
+        ]
+    
+
+
 
 
 class AttendanceSerializer(serializers.ModelSerializer):

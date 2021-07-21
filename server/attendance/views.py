@@ -13,11 +13,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from users.serializers import BranchSerializer, UserSerializer
 from vendors.serializers import CustodianSerializer, VehicleSerializer
-from attendance.serializers import AttendanceSerializer, IssueSerializer, TripSerializer
+from attendance.serializers import AttendanceSerializer, IssueSerializer, TripSerializer, AttendanceVehicleSerializer
 
 from users.models import Branch, User
 from vendors.models import Custodian, Vehicle, Gunmen
-from attendance.models import Attendance, AttendanceSheet, Issue, Trip
+from attendance.models import Attendance, AttendanceSheet, AttendanceVehicle, Issue, Trip
 
 
 class CustomPagination(PageNumberPagination):
@@ -140,22 +140,72 @@ class TripDetail(
         return self.destroy(request, *args, **kwargs)
 
 
-class AttendanceList(
+
+class AttendanceVehicleList(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
     generics.GenericAPIView,
     # filters.FilterSet,
 ):
-    queryset = Attendance.objects.all()
-    serializer_class = AttendanceSerializer
+    queryset = AttendanceVehicle.objects.all()
+    serializer_class = AttendanceVehicleSerializer
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    search_fields = ["^gunmen__first_name", "^gunmen__last_name"]
+    search_fields = ["^vehicle__model_name", "^vehicle__number_plate"]
 
     filterset_fields = {
         "entry_time": ["gte", "lte", "exact", "gt", "lt"],
         "exit_time": ["gte", "lte", "exact", "gt", "lt"],
-        "gunmen": ["exact"],
+        "vehicle": ["exact"],
+        "added_by": ["exact"],
+        "branch": ["exact"],
+        "attendance_sheet": ["exact"],
+    }
+
+    ordering_fields = "__all__"
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class AttendanceVehicleDetail(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
+):
+    queryset = AttendanceVehicle.objects.all()
+    serializer_class = AttendanceVehicleSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+
+
+class AttendanceList(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    generics.GenericAPIView,
+):
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
+    pagination_class = CustomPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ["^custodian__first_name", "^custodian__last_name"]
+
+    filterset_fields = {
+        "entry_time": ["gte", "lte", "exact", "gt", "lt"],
+        "exit_time": ["gte", "lte", "exact", "gt", "lt"],
+        "custodian": ["exact"],
         "added_by": ["exact"],
         "branch": ["exact"],
         "attendance_sheet": ["exact"],
@@ -183,19 +233,18 @@ class AttendanceList(
         data = request.data
         branch_id = data.get("branch")
         added_by_id = data.get("added_by")
-        gunmen_ids = data.get("gunmen_id")
+        custodian_ids = data.get("custodian_id")
         attendance_sheet = data.get("attendance_sheet")
 
         result = []
 
-        for gunmen_id in gunmen_ids:
+        for custodian_id in custodian_ids:
             data = {
-                "gunmen": gunmen_id,
+                "custodian": custodian_id,
                 "branch": branch_id,
                 "added_by": added_by_id,
                 "attendance_sheet": attendance_sheet,
             }
-            print(data)
             new_attendance = AttendanceSerializer(data=data)
             if not new_attendance.is_valid():
                 return Response(data="invalid request")
@@ -205,7 +254,7 @@ class AttendanceList(
                 entry_time__year=today.date().year,
                 entry_time__month=today.date().month,
                 entry_time__day=today.date().day,
-                gunmen=new_attendance.data["gunmen"]["id"],
+                custodian=new_attendance.data["custodian"]["id"],
                 branch=new_attendance.data["branch"]["id"],
             ).first()
 
@@ -217,14 +266,14 @@ class AttendanceList(
                 attendance.save()
                 result.append(AttendanceSerializer(attendance).data)
             else:
-                gunmen_ = get_object_or_404(Gunmen, pk=data.pop("gunmen"))
+                custodian_ = get_object_or_404(Custodian, pk=data.pop("custodian"))
                 added_by_ = get_object_or_404(User, pk=data.pop("added_by"))
                 branch_ = get_object_or_404(Branch, pk=data.pop("branch"))
                 attendance_sheet_ = get_object_or_404(
                     AttendanceSheet, pk=data.pop("attendance_sheet")
                 )
                 attendance = Attendance(
-                    gunmen=gunmen_,
+                    custodian=custodian_,
                     added_by=added_by_,
                     branch=branch_,
                     attendance_sheet=attendance_sheet_,

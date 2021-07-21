@@ -49,6 +49,7 @@ class IssueAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Attendance, AttendanceAdmin)
+admin.site.register(AttendanceVehicle, AttendanceVehicleAdmin)
 admin.site.register(Trip, TripAdmin)
 admin.site.register(AttendanceSheet, AttendanceSheetAdmin)
 admin.site.register(Issue, IssueAdmin)
