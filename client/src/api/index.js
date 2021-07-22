@@ -154,5 +154,13 @@ export const deleteBranch = (id) =>{
 }
 // Issues 
 
-
+//Trip
+export const getTrip = ()=> axiosInstance.get('attendance/trip');
+export const addTrip = (formData)=> axiosInstance.post('attendance/trip/', formData);
+export const updateTrip= (id,formData) =>{
+	return axiosInstance.put(`attendance/trip/${id}/`, formData);
+}
+export const deleteTrip = (id) =>{
+	return axiosInstance.delete(`attendance/trip/${id}/`);
+}
 
