@@ -1,5 +1,4 @@
 from secrets import token_hex
-from django.core.mail import send_mail
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -114,23 +113,3 @@ class BranchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
         fields = ["id", "name", "address", "branch_manager", "region"]
-
-
-def mail(subject, message, to_mail):
-    send_mail(
-        subject,
-        message,
-        from_email=None,
-        recipient_list=[to_mail],
-        fail_silently=False,
-    )
-
-
-def mail_attendance(subject, message, to_mail):
-    send_mail(
-        subject,
-        message,
-        from_email=None,
-        recipient_list=[to_mail],
-        fail_silently=False,
-    )

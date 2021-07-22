@@ -104,3 +104,5 @@ def qs_to_local_csv(qs, fields=None, path=None):
         for data_item in dataset:
             writer.writerow(data_item)
             rows_done += 1
+    
+    return filepath
