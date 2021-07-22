@@ -32,6 +32,7 @@ import {
 import {
   getAllEmployees, 
   addRegion,
+  getGunmens,
 } from '../../api/index';
 // ----------------------------------------------------------------------
 
@@ -58,6 +59,7 @@ export default function ShopFilterSidebar({
     'address' : ''
   });
   const [employees, setEmployees] = useState([]);
+  const [gunmen, setGunmen] = useState([]);
   const handleChange = (e)=>{
     setRegion({...region, [e.target.name] : e.target.value});
     console.log(region);
@@ -129,9 +131,41 @@ export default function ShopFilterSidebar({
 			});
 		}
 	}
+  const getAllGunmen = async ()=>{
+		try{
+			const data = await getGunmens();
+			console.log(data);
+			if(data.status === 200 ){
+				setGunmen(data?.data?.results);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
   
   useEffect(() => {
 		getUsers();
+    getAllGunmen();
+    console.log(gunmen)
 	}, []);
   return (
     <>
@@ -161,8 +195,17 @@ export default function ShopFilterSidebar({
             <Grid container spacing={2} sx={{ px: 5, py: 10 }}>
                 <Grid item xs={12} sm={12} lg={6}>
                     <TextField
-                        label="Region Name"
-                        name="name"
+                        label="From"
+                        name="from"
+                        onChange={handleChange}
+                        fullWidth
+                    >
+                    </TextField>
+                </Grid>
+                <Grid item xs={12} sm={12} lg={6}>
+                    <TextField
+                        label="To"
+                        name="to"
                         onChange={handleChange}
                         fullWidth
                     >
@@ -171,7 +214,7 @@ export default function ShopFilterSidebar({
                
                 <Grid item xs={12} sm={12} lg={6}>
                   <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="demo-simple-select-outlined-label">Regional Manager</InputLabel>
+                      <InputLabel id="demo-simple-select-outlined-label">Gunman</InputLabel>
                       <Select
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
@@ -179,7 +222,7 @@ export default function ShopFilterSidebar({
                         onChange={handleChange}
                       >
                         {
-                          employees.map((instance)=>(
+                          gunmen.map((instance)=>(
                             <MenuItem value={instance.id}>{instance.email}</MenuItem>
                           ))
                         }
@@ -187,17 +230,7 @@ export default function ShopFilterSidebar({
                   </FormControl>
                 </Grid>
                 
-                <Grid item xs={12} sm={12} lg={12}>
-                    <TextField
-                        label="Address"
-                        name="address"
-                        onChange={handleChange}
-                        multiline
-                        rows={3}
-                        fullWidth
-                    >
-                    </TextField>
-                </Grid>
+             
                 <Grid item xs={12} sm={12} lg={12} align="center">
                     <Button variant="contained" color="primary" onClick={handleSubmit}>Add Region</Button>
                 </Grid>

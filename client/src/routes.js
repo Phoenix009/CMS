@@ -5,7 +5,7 @@ import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 //
 import Login from "./pages/Login";
 import Gunmen from "./pages/Gunmen/Gunmen";
-// import AddTrip from "./pages/Trip/AddTrip";
+import AddTrip from "src/components/Trip/AddTrip.js";
 import Trip from "./pages/Trip";
 import Register from "./pages/Register";
 import AddGunman from "./pages/AddGunman";
