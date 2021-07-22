@@ -30,9 +30,10 @@ import {
 } from '@material-ui/core';
 //
 import {
-  getAllEmployees, 
-  addRegion,
+  
+  addTrip,
   getGunmens,
+  getAllVehicles,
 } from '../../api/index';
 // ----------------------------------------------------------------------
 
@@ -53,23 +54,30 @@ export default function ShopFilterSidebar({
   onOpenFilter,
   onCloseFilter,
 }) {
-  const [region, setRegion] = useState({
-    'name' : '',
-    'regional_officer' : '',
-    'address' : ''
+  const [trip, setTrip] = useState({
+    'start_location' : '',
+    'end_location' : '',
+    'custodian_1' : '',
+    'custodian_2' : '',
+    'custodian_3' : '',
+    'added_by' : '',
+    'branch' : '',
+    'vehicle' : '',
+
   });
-  const [employees, setEmployees] = useState([]);
+
   const [gunmen, setGunmen] = useState([]);
+  const [vehicle, setVehicle] = useState([]);
   const handleChange = (e)=>{
-    setRegion({...region, [e.target.name] : e.target.value});
-    console.log(region);
+    setTrip({...trip, [e.target.name] : e.target.value});
+    console.log(trip);
   }
   const handleSubmit = async ()=>{
     try{
-			const data = await addRegion(region);
+			const data = await addTrip(trip);
 			console.log(data);
 			if(data.status === 201){
-				toast('Region Added', {
+				toast('Trip Added', {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -101,36 +109,7 @@ export default function ShopFilterSidebar({
 			});
 		}
   }
-  const getUsers = async ()=>{
-		try{
-			const data = await getAllEmployees();
-			console.log(data);
-			if(data.status === 200 ){
-				setEmployees(data?.data?.results);
-			}else{
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			} 
-		}catch(error){
-			console.log(error);
-			toast.error('Something went wrong!', {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
-	}
+  
   const getAllGunmen = async ()=>{
 		try{
 			const data = await getGunmens();
@@ -161,10 +140,41 @@ export default function ShopFilterSidebar({
 			});
 		}
 	}
+  const getVehicles= async ()=>{
+		try{
+			const data = await getAllVehicles();
+			console.log(data);
+			if(data.status === 200 ){
+				setVehicle(data?.data?.results);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
   
   useEffect(() => {
-		getUsers();
+		
     getAllGunmen();
+    getVehicles();
     console.log(gunmen)
 	}, []);
   return (
@@ -184,7 +194,7 @@ export default function ShopFilterSidebar({
               sx={{ px: 1, py: 2 }}
             >
               <Typography variant="subtitle1" sx={{ ml: 1 }}>
-                Add Region
+                Add Trip
               </Typography>
               <IconButton onClick={onCloseFilter}>
                 <Icon icon={closeFill} width={20} height={20} />
@@ -211,19 +221,73 @@ export default function ShopFilterSidebar({
                     >
                     </TextField>
                 </Grid>
-               
                 <Grid item xs={12} sm={12} lg={6}>
                   <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="demo-simple-select-outlined-label">Gunman</InputLabel>
+                      <InputLabel id="demo-simple-select-outlined-label">Vehicle</InputLabel>
                       <Select
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
                         name = 'regional_officer'
                         onChange={handleChange}
                       >
+                        <MenuItem value = {null}>None</MenuItem>
+                        {
+                          vehicle.map((instance)=>(
+                            <MenuItem value={instance.id}>{instance.id}</MenuItem>
+                          ))
+                        }
+                      </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={12} lg={6}>
+                  <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="demo-simple-select-outlined-label">Custodian 1</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        name = 'regional_officer'
+                        onChange={handleChange}
+                      >
+                        <MenuItem value = {null}>None</MenuItem>
                         {
                           gunmen.map((instance)=>(
-                            <MenuItem value={instance.id}>{instance.email}</MenuItem>
+                            <MenuItem value={instance.id}>{instance.first_name} {instance.last_name}</MenuItem>
+                          ))
+                        }
+                      </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={12} lg={6}>
+                  <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="demo-simple-select-outlined-label">Custodian 2</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        name = 'regional_officer'
+                        onChange={handleChange}
+                      >
+                        <MenuItem value = {null}>None</MenuItem>
+                        {
+                          gunmen.map((instance)=>(
+                            <MenuItem value={instance.id}>{instance.first_name} {instance.last_name}</MenuItem>
+                          ))
+                        }
+                      </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={12} lg={6}>
+                  <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="demo-simple-select-outlined-label">Custodian 3</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        name = 'regional_officer'
+                        onChange={handleChange}
+                      >
+                        <MenuItem value = {null}>None</MenuItem>
+                        {
+                          gunmen.map((instance)=>(
+                            <MenuItem value={instance.id}>{instance.first_name} {instance.last_name}</MenuItem>
                           ))
                         }
                       </Select>
