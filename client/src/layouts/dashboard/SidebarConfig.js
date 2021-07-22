@@ -38,6 +38,11 @@ const sidebarConfig = [
 		icon: getIcon(peopleFill),
 	},
 	{
+		title: "Vehicle",
+		path: "/dashboard/vehicle",
+		icon: getIcon(peopleFill),
+	},
+	{
 		title: "Region",
 		path: "/dashboard/region",
 		icon: getIcon(peopleFill),

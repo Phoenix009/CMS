@@ -17,6 +17,7 @@ import NotFound from "./pages/Page404";
 import Branch from "./pages/branch";
 import Region from "./pages/Region";
 import Vendors from "./pages/Vendors";
+import Vehicle from "./pages/Vehicle";
 import VendorsAttendanceDetails from './pages/VendorsAttendanceDetails/VendorsAttendanceDetails';
 import VehicleAndGunMenAttendance from './pages/VehicleAndGunmenAttendance/VehicleAndAttendance';
 // ----------------------------------------------------------------------
@@ -39,6 +40,8 @@ export default function Router() {
 				{ path: "vendors", element: <Vendors /> },
 				// { path: "addtrip", element: <AddTrip/> },
 				{ path: "trip", element: <Trip/> },
+				{ path: "vehicle", element: <Vehicle /> },
+				{ path: "addtrip", element: <AddTrip/> },
 				{ path: "products", element: <Products /> },
 				{ path: "blog", element: <Blog /> },
 			],

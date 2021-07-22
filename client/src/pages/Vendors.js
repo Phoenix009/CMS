@@ -36,7 +36,7 @@ import {
 import USERLIST from "../_mocks_/user";
 import AddVendor from '../components/AddVendor/AddVendor';
 import UpdateVendor from "../components/updateVendor/updateVendor";
-import { getAllEmployees,getAllVendors } from "../api/index";
+import { getAllEmployees,getAllVendors, deleteVendor } from "../api/index";
 
 // ----------------------------------------------------------------------
 
@@ -162,6 +162,46 @@ export default function User() {
 		setVendorInfo(row);
 		setUpdateVendorOpen(true);
 	}
+	const handleDeleteVendor = async (vendor)=>{
+		try{
+				const data = await deleteVendor(
+			vendor?.id,
+			);
+				console.log(data);
+				if(data.status === 204){
+					toast('Vendor Deleted', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+					});
+					getData();
+				}else{
+					toast.error('Something went wrong!', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+					});
+				} 
+			}catch(error){
+				console.log(error);
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
+	  }
 
 	const getData = async ()=>{
 		try{
@@ -289,7 +329,10 @@ export default function User() {
 												</Button>
 											</TableCell>
 											<TableCell align="right">
-												<UserMoreMenu onClick={()=>{openUpdateVendorDrawer(row)}}/>
+												<UserMoreMenu 
+													handleEdit={()=>{openUpdateVendorDrawer(row)}}
+												handleDelete={()=>{handleDeleteVendor(row)}}
+												/>
 											</TableCell>
 											</TableRow>
 										))
