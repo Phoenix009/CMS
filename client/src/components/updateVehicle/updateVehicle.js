@@ -32,6 +32,7 @@ import {
 import {
   getAllVehicles, 
   updateVehicle,
+  getAllVendors
 } from '../../api/index';
 // ----------------------------------------------------------------------
 
@@ -55,7 +56,7 @@ export default function UpdateEmployee({
   vehicleInfo
 }) {
   const [vehicle, setVehicle] = useState(vehicleInfo);
-  // const [employees, setEmployees] = useState([]);
+  const [vendors, setVendor] = useState([]);
 
   const handleChange = (e)=>{
     setVehicle({...vehicle, [e.target.name] : e.target.value});
@@ -67,9 +68,9 @@ export default function UpdateEmployee({
 			const data = await updateVehicle(
         vehicle?.id,
         {
-          name : vehicle?.name,
-          address : vehicle?.address,
-          regional_officer : vehicle?.regional_officer?.id
+          model_name : vehicle?.name,
+          number_plate : vehicle?.address,
+          vendor : vehicle?.vendor?.name
         }
         );
 			console.log(data);
@@ -136,9 +137,40 @@ export default function UpdateEmployee({
 			});
 		}
 	}
+  const getVendor = async () => {
+    try {
+      const data = await getAllVendors();
+      console.log(data);
+      if (data.status === 200) {
+        setVendor(data?.data?.results);
+      } else {
+        toast.error('Something went wrong!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Something went wrong!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
   
   useEffect(() => {
 		getUsers();
+    getVendor();
     setVehicle(vehicleInfo);
 	}, [vehicleInfo]);
   return (
@@ -170,45 +202,46 @@ export default function UpdateEmployee({
                 <Grid item xs={12} sm={12} lg={6}>
                     <TextField
                         label="Vehicle Name"
-                        name="name"
+                        name="model_name"
                         onChange={handleChange}
                         fullWidth
                         value={vehicle?.name}
                     >
                     </TextField>
                 </Grid>
+
+                <Grid item xs={12} sm={12} lg={6}>
+                    <TextField
+                        label="Vehicle Number"
+                        name="number_plate"
+                        onChange={handleChange}
+                        multiline
+                        rows={3}
+                        fullWidth
+                        value={vehicle?.number_plate}
+                    >
+                    </TextField>
+                </Grid>
                
                 <Grid item xs={12} sm={12} lg={6}>
                   <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="demo-simple-select-outlined-label"> Manager</InputLabel>
+                      <InputLabel id="demo-simple-select-outlined-label"> Vendor</InputLabel>
                       <Select
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
                         name = 'regional_officer'
-                        value={vehicle?.regional_officer?.id}
+                        value={vehicle?.vendor?.name}
                         onChange={handleChange}
                       >
                         {
-                          vehicle.map((instance)=>(
+                          vendors.map((instance)=>(
                             <MenuItem value={instance.id}>{instance.email}</MenuItem>
                           ))
                         }
                       </Select>
                   </FormControl>
                 </Grid>
-                
-                <Grid item xs={12} sm={12} lg={12}>
-                    <TextField
-                        label="Address"
-                        name="address"
-                        onChange={handleChange}
-                        multiline
-                        rows={3}
-                        fullWidth
-                        value={vehicle?.address}
-                    >
-                    </TextField>
-                </Grid>
+              
                 <Grid item xs={12} sm={12} lg={12} align="center">
                     <Button variant="contained" color="primary" onClick={handleSubmit}>Update Vehicle</Button>
                 </Grid>

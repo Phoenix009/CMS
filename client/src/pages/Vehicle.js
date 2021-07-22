@@ -36,16 +36,15 @@ import {
 import USERLIST from "../_mocks_/user";
 import AddVehicle from '../components/AddVehicle/AddVehicle';
 import updateVehicle from "src/components/updateVehicle/updateVehicle";
-import { getAllEmployees,getAllVehicles,deleteVehicle } from "../api/index";
+import { getAllVendors,getAllVehicles,deleteVehicle } from "../api/index";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
 	{ id: "id", label : 'ID' },
-	{ id: "name", label: "Name Of Vehicle", alignRight: false },
-	{ id: "address", label: "Vehicle Number", alignRight: false },
-	{ id: "regional_officer", label: "Vehicle Description", alignRight: false },
-	{ id: "regional_officer_email", label: "Manager's Email", alignRight: false },
+	{ id: "model_name", label: "Name Of Vehicle", alignRight: false },
+	{ id: "number_plate", label: "Vehicle Number", alignRight: false },
+	{ id: "vendor", label: "Vendor", alignRight: false },
 	{ id: "" },
 	{ id: "" },
 ];
@@ -296,19 +295,16 @@ export default function User() {
 										vehicle.map((row)=>(
 											<TableRow>
 											<TableCell component="th" scope="row">
-												{row.id}
+												{row?.id}
 											</TableCell>
 											<TableCell >
-												{row.name}
+												{row?.model_name}
 											</TableCell>
 											<TableCell >
-												{row.address}
+												{row?.number_plate}
 											</TableCell>
 											<TableCell >
-												{`${row.regional_officer?.first_name} ${row.regional_officer?.last_name}`}
-											</TableCell>
-											<TableCell >
-												{`${row.regional_officer?.email}`}
+												{`${row.vendor?.name}`}
 											</TableCell>
 									
 											<TableCell align="right">

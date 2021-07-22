@@ -5,7 +5,7 @@ import { Form, FormikProvider } from 'formik';
 import closeFill from '@iconify/icons-eva/close-fill';
 import roundClearAll from '@iconify/icons-ic/round-clear-all';
 import roundFilterList from '@iconify/icons-ic/round-filter-list';
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 // material
 import {
   Box,
@@ -30,8 +30,9 @@ import {
 } from '@material-ui/core';
 //
 import {
-  getAllVehicles, 
+  getAllVehicles,
   AddVehicle,
+  getAllVendors
 } from '../../api/index';
 // ----------------------------------------------------------------------
 
@@ -53,156 +54,191 @@ export default function ShopFilterSidebar({
   onCloseFilter,
 }) {
   const [vehicle, setVehicle] = useState({
-    'name' : '',
-    'regional_officer' : '',
-    'address' : ''
+    'model_name': '',
+    'number_plate': '',
+    'vendor': ''
   });
-  // const [vehicles, setVehicle] = useState([]);
-  const handleChange = (e)=>{
-    setVehicle({...vehicle, [e.target.name] : e.target.value});
+   const [vendors, setVendor] = useState([]);
+  const handleChange = (e) => {
+    setVehicle({ ...vehicle, [e.target.name]: e.target.value });
     console.log(vehicle);
   }
-  const handleSubmit = async ()=>{
-    try{
-			const data = await AddVehicle(vehicle);
-			console.log(data);
-			if(data.status === 201){
-				toast('Vehicle Added', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-				});
-			}else{
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			} 
-		}catch(error){
-			console.log(error);
-			toast.error('Something went wrong!', {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
+  const handleSubmit = async () => {
+    try {
+      const data = await AddVehicle(vehicle);
+      console.log(data);
+      if (data.status === 201) {
+        toast('Vehicle Added', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      } else {
+        toast.error('Something went wrong!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Something went wrong!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   }
-  const getUsers = async ()=>{
-		try{
-			const data = await getAllVehicles();
-			console.log(data);
-			if(data.status === 200 ){
-				setVehicle(data?.data?.results);
-			}else{
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			} 
-		}catch(error){
-			console.log(error);
-			toast.error('Something went wrong!', {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
-	}
-  
+  const getUsers = async () => {
+    try {
+      const data = await getAllVehicles();
+      console.log(data);
+      if (data.status === 200) {
+        setVehicle(data?.data?.results);
+      } else {
+        toast.error('Something went wrong!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Something went wrong!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
+
+  const getVendor = async () => {
+    try {
+      const data = await getAllVendors();
+      console.log(data);
+      if (data.status === 200) {
+        setVendor(data?.data?.results);
+      } else {
+        toast.error('Something went wrong!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Something went wrong!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
+
+
   useEffect(() => {
-		getUsers();
-	}, []);
+    getUsers();
+    getVendor();
+  }, []);
   return (
     <>
-          <Drawer
-            anchor="right"
-            open={isOpenFilter}
-            onClose={onCloseFilter}
-            PaperProps={{
-              sx: { width: '300', border: 'none', overflow: 'hidden' }
-            }}
-          >
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              sx={{ px: 1, py: 2 }}
-            >
-              <Typography variant="subtitle1" sx={{ ml: 1 }}>
-                Add Vehicle
-              </Typography>
-              <IconButton onClick={onCloseFilter}>
-                <Icon icon={closeFill} width={20} height={20} />
-              </IconButton>
-            </Stack>
+      <Drawer
+        anchor="right"
+        open={isOpenFilter}
+        onClose={onCloseFilter}
+        PaperProps={{
+          sx: { width: '300', border: 'none', overflow: 'hidden' }
+        }}
+      >
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ px: 1, py: 2 }}
+        >
+          <Typography variant="subtitle1" sx={{ ml: 1 }}>
+            Add Vehicle
+          </Typography>
+          <IconButton onClick={onCloseFilter}>
+            <Icon icon={closeFill} width={20} height={20} />
+          </IconButton>
+        </Stack>
 
-            <Divider />
-            <Grid container spacing={2} sx={{ px: 5, py: 10 }}>
-                <Grid item xs={12} sm={12} lg={6}>
-                    <TextField
-                        label="Vehicle Name"
-                        name="name"
-                        onChange={handleChange}
-                        fullWidth
-                    >
-                    </TextField>
-                </Grid>
-               
-                {/* <Grid item xs={12} sm={12} lg={6}>
-                  <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="demo-simple-select-outlined-label"> Manager</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-outlined-label"
-                        id="demo-simple-select-outlined"
-                        name = 'regional_officer'
-                        onChange={handleChange}
-                      >
-                        {
-                          vehicle.map((instance)=>(
-                            <MenuItem value={instance.id}>{instance.email}</MenuItem>
-                          ))
-                        }
-                      </Select>
-                  </FormControl>
-                </Grid> */}
-                
-                <Grid item xs={12} sm={12} lg={12}>
-                    <TextField
-                        label="Address"
-                        name="address"
-                        onChange={handleChange}
-                        multiline
-                        rows={3}
-                        fullWidth
-                    >
-                    </TextField>
-                </Grid>
-                <Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Vehicle</Button>
-                </Grid>
+        <Divider />
+        <Grid container spacing={2} sx={{ px: 5, py: 10 }}>
+          <Grid item xs={12} sm={12} lg={6}>
+            <TextField
+              label="Vehicle Name"
+              name="model_name"
+              onChange={handleChange}
+              fullWidth
+            >
+            </TextField>
+          </Grid>
+
+          <Grid container spacing={2} sx={{ px: 5, py: 10 }}>
+            <Grid item xs={12} sm={12} lg={6}>
+              <TextField
+                label="Vehicle Number"
+                name="number_plate"
+                onChange={handleChange}
+                fullWidth
+              >
+              </TextField>
             </Grid>
-          </Drawer>
+
+            <Grid item xs={12} sm={12} lg={6}>
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel id="demo-simple-select-outlined-label"> Vendor </InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  name='vendor'
+                  onChange={handleChange}
+                >
+                  {
+                    vendors.map((instance) => (
+                      <MenuItem value={instance.id}>{instance.email}</MenuItem>
+                    ))
+                  }
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={12} lg={12} align="center">
+              <Button variant="contained" color="primary" onClick={handleSubmit}>Add Vehicle</Button>
+            </Grid>
+          </Grid>
+
+        </Grid>
+      </Drawer>
     </>
   );
 }

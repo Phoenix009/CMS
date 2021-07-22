@@ -168,7 +168,7 @@ export default function Branch() {
 			);
 				console.log(data);
 				if(data.status === 204){
-					toast('Region Deleted', {
+					toast('Branch Deleted', {
 						position: "top-right",
 						autoClose: 5000,
 						hideProgressBar: false,

@@ -134,13 +134,13 @@ export const deleteVendor = (row) =>{ console.log(row);
 }
 
 // Vehicle 
-export const getAllVehicles = () => axiosInstance.get('users/vehicle');
-export const AddVehicle = (formData) => axiosInstance.post('users/vehicle/', formData);
+export const getAllVehicles = () => axiosInstance.get('vendor/vehicle');
+export const AddVehicle = (formData) => axiosInstance.post('vendor/vehicle/', formData);
 export const updateVehicle = (id,formData) =>{
-	return axiosInstance.put(`users/vehicle/${id}/`, formData);
+	return axiosInstance.put(`vendor/vehicle/${id}/`, formData);
 }
 export const deleteVehicle = (id) =>{
-	return axiosInstance.delete(`users/vehicle/${id}/`);
+	return axiosInstance.delete(`vendor/vehicle/${id}/`);
 }
 
 // branch 
