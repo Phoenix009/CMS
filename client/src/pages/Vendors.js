@@ -34,18 +34,19 @@ import {
 } from "../components/_dashboard/user";
 //
 import USERLIST from "../_mocks_/user";
-import AddEmployee from '../components/AddRegion/AddRegion';
-import UpdateEmployee from "src/components/updateRegion/updateRegion";
-import { getAllEmployees,getAllRegions,deleteRegion } from "../api/index";
+import AddVendor from '../components/AddVendor/AddVendor';
+import UpdateVendor from "../components/updateVendor/updateVendor";
+import { getAllEmployees,getAllVendors, deleteVendor } from "../api/index";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
 	{ id: "id", label : 'ID' },
-	{ id: "name", label: "Name Of Region", alignRight: false },
-	{ id: "address", label: "Address of Region", alignRight: false },
-	{ id: "regional_officer", label: "Regional Manager", alignRight: false },
-	{ id: "regional_officer_email", label: "Regional Manager's Email", alignRight: false },
+	{ id: "name", label: "Name Of Vendor", alignRight: false },
+	{ id: "address", label: "Address", alignRight: false },
+	{ id: "email", label: "Vendor's Email", alignRight: false },
+	{ id: "contact", label: "Contact", alignRight: false },
+	{ id: "officer_incharge", label: "Officer Incharge", alignRight: false },
 	{ id: "" },
 	{ id: "" },
 ];
@@ -92,10 +93,10 @@ export default function User() {
 	const [orderBy, setOrderBy] = useState("name");
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
-	const [isAddEmployeeOpen, setAddEmployeeOpen] = useState(false);
-	const [isUpdateEmployeeOpen, setUpdateEmployeeOpen] = useState(false);
-	const [regions, setRegions] = useState([]);
-	const [regionInfo, setRegionInfo] = useState({});
+	const [isAddVendorOpen, setAddVendorOpen] = useState(false);
+	const [vendors, setVendors] = useState([]);
+	const [isUpdateVendorOpen, setUpdateVendorOpen] = useState(false);
+	const [vendorInfo, setVendorInfo] = useState({});
 
 	
 	
@@ -157,18 +158,18 @@ export default function User() {
 	);
 
 	const isUserNotFound = filteredUsers.length === 0;
-	const openUpdateRegionDrawer = (row)=>{
-		setRegionInfo(row);
-		setUpdateEmployeeOpen(true);
+	const openUpdateVendorDrawer = (row)=>{
+		setVendorInfo(row);
+		setUpdateVendorOpen(true);
 	}
-	const handleDeleteRegion = async (region)=>{
+	const handleDeleteVendor = async (vendor)=>{
 		try{
-				const data = await deleteRegion(
-			region?.id,
+				const data = await deleteVendor(
+			vendor?.id,
 			);
 				console.log(data);
 				if(data.status === 204){
-					toast('Region Deleted', {
+					toast('Vendor Deleted', {
 						position: "top-right",
 						autoClose: 5000,
 						hideProgressBar: false,
@@ -201,12 +202,13 @@ export default function User() {
 				});
 			}
 	  }
+
 	const getData = async ()=>{
 		try{
-			const data = await getAllRegions();
+			const data = await getAllVendors();
 			console.log(data);
 			if(data.status === 200 ){
-				setRegions(data?.data?.results);
+				setVendors(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -238,7 +240,7 @@ export default function User() {
 
 
 	return (
-		<Page title="Regions">
+		<Page title="User | Minimal-UI">
 			<Container>
 				<Stack
 					direction="row"
@@ -250,27 +252,30 @@ export default function User() {
 						<RouterLink color="inherit" to="/" onClick={handleClick}>
 							Dashboard
 						</RouterLink>
-						<Typography color="textPrimary">Regions</Typography>
+						<Typography color="textPrimary">Vendors</Typography>
 						</Breadcrumbs>
 					<Button
 						variant="contained"
-						onClick={()=>{setAddEmployeeOpen(true)}}
+						onClick={()=>{setAddVendorOpen(true)}}
 						startIcon={<Icon icon={plusFill} />}
 					>
-						New Region
+						New Vendor
 					</Button>
 				</Stack>
-				<AddEmployee
-					isOpenFilter={isAddEmployeeOpen}
-					onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
-					onCloseFilter={()=>{setAddEmployeeOpen(false)}}
-					regionInfo = {{}}
+				<AddVendor
+							isOpenFilter={isAddVendorOpen}
+							onOpenFilter= {()=>{setAddVendorOpen(true)}}
+							onCloseFilter={async ()=>{
+								setAddVendorOpen(false)
+								await getData();
+								}
+							}
 				/>
-				<UpdateEmployee
-					isOpenFilter={isUpdateEmployeeOpen}
-					onOpenFilter= {()=>{setUpdateEmployeeOpen(true)}}
-					onCloseFilter={()=>{setUpdateEmployeeOpen(false)}}
-					regionInfo={regionInfo}
+				<UpdateVendor
+					isOpenFilter={isUpdateVendorOpen}
+					onOpenFilter= {()=>{setUpdateVendorOpen(true)}}
+					onCloseFilter={()=>{setUpdateVendorOpen(false)}}
+					vendorInfo={vendorInfo}
 				/>
 				<Card>
 					<UserListToolbar
@@ -293,7 +298,7 @@ export default function User() {
 								/>
 								<TableBody>
 									{
-										regions.map((row)=>(
+										vendors.map((row)=>(
 											<TableRow>
 											<TableCell component="th" scope="row">
 												{row.id}
@@ -302,41 +307,37 @@ export default function User() {
 												{row.name}
 											</TableCell>
 											<TableCell >
-											{row.address.length<10?row.address:row.address.substring(0,10)}
-											
+												{row.address}
 											</TableCell>
 											<TableCell >
-												{`${row.regional_officer?.first_name} ${row.regional_officer?.last_name}`}
+												{row.email}
 											</TableCell>
 											<TableCell >
-												{`${row.regional_officer?.email}`}
+												{row.contact}
 											</TableCell>
-									
+											<TableCell >
+												{row.officer_incharge}
+											</TableCell>
+											<TableCell >
+												<Button 
+													variant="contained" 
+													color="primary" 
+													size="small"
+													onClick={()=>{openUpdateVendorDrawer(row)}}
+												>
+													Update
+												</Button>
+											</TableCell>
 											<TableCell align="right">
 												<UserMoreMenu 
-													handleEdit={()=>{openUpdateRegionDrawer(row)}}
-													handleDelete={()=>{handleDeleteRegion(row)}}
+													handleEdit={()=>{openUpdateVendorDrawer(row)}}
+												handleDelete={()=>{handleDeleteVendor(row)}}
 												/>
 											</TableCell>
 											</TableRow>
 										))
 									}
 								</TableBody>
-								{isUserNotFound && (
-									<TableBody>
-										<TableRow>
-											<TableCell
-												align="center"
-												colSpan={6}
-												sx={{ py: 3 }}
-											>
-												<SearchNotFound
-													searchQuery={filterName}
-												/>
-											</TableCell>
-										</TableRow>
-									</TableBody>
-								)}
 							</Table>
 						</TableContainer>
 					</Scrollbar>

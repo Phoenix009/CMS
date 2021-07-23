@@ -5,6 +5,7 @@ import { useState,useEffect } from "react";
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
 import {toast} from 'react-toastify';
+import moment from 'moment';
 // material
 import {
 	Card,
@@ -30,7 +31,8 @@ import {
 	Select,
 	FormControl,
 	MenuItem,
-	FormHelperText
+	FormHelperText,
+	Box
 } from "@material-ui/core";
 // components
 import Page from "../../components/Page";
@@ -38,26 +40,37 @@ import Label from "../../components/Label";
 import Scrollbar from "../../components/Scrollbar";
 import SearchNotFound from "../../components/SearchNotFound";
 import {
+	addGunmen,
+	getAllVendors
+} from '../../api/index';
+
+import {
 	UserListHead,
 	UserListToolbar,
 	UserMoreMenu,
 } from "../../components/_dashboard/user";
 //
 import USERLIST from "../../_mocks_/user";
-import {viewAllAttendance} from '../../api/index';
+import {viewAllAttendance,getGunmens} from '../../api/index';
+
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+	{ id: "id", label: "ID" },
 	{ id: "name", label: "Name" },
 	{ id: "email", label: "Email"},
 	{ id: "vendor", label: "Vendor"},
-	{ id: "branch", label: "Branch" },
-	{ id: "checkin", label: "Check-in"},
-	{ id: "checkout", label: "Check-Out"},
 	{ id: "" },
 ];
 
+const ADD_ATTENDANCE_TABLE_HEAD = [
+	{ id: "id", label: "ID" },
+	{ id: "name", label: "Name" },
+	{ id: "email", label: "Email"},
+	{ id: "vendor", label: "Vendor"},
+	{ id: "" },
+];
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
@@ -101,8 +114,10 @@ export default function User() {
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [attendance, setAttendance] = useState([]);
+	const [gunmensAttendance, setGunmensAttendance] = useState([]);
 
-
+	const [vendor, setVendor] = useState([]);
+	const [gunmens, setGunmens] = useState([]);
 	const handleRequestSort = (event, property) => {
 		const isAsc = orderBy === property && order === "asc";
 		setOrder(isAsc ? "desc" : "asc");
@@ -135,20 +150,65 @@ export default function User() {
 		}
 		setSelected(newSelected);
 	};
+	const addAttendance = (row)=>{
+		const isAlreadyPresent = attendance.filter((value)=>{return value.id===row.id});
+		if(isAlreadyPresent.length > 0) return;
+		setAttendance([...attendance, row])
+	}
+	const removeAttendance = (row)=>{
+		const newAttendance = attendance.filter((value)=>{return value.id!==row.id});
+		setAttendance(newAttendance);
+	}
 	const [gunmen, setGunmen] = useState({
 		first_name : '',
 		last_name : '',
 		email : '',
-		value : ''
-	  });
+		vendor : ''
+	});
 	
-	  const handleChange = (e)=>{
+	const handleChange = (e)=>{
 		setGunmen({...gunmen, [e.target.name] : e.target.value});
 		console.log(gunmen);
+	}
+	const handleSubmit = async ()=>{
+		try{
+				const data = await addGunmen(gunmen);
+				console.log(data);
+				if(data.status === 201){
+					await getData();
+					toast('Gunman Added', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+					});
+				}else{
+					toast.error('Something went wrong!', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+					});
+				} 
+			}catch(error){
+				console.log(error);
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
 	  }
-	  const handleSubmit = ()=>{
-		console.log(gunmen);
-	  }
+
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
@@ -171,13 +231,75 @@ export default function User() {
 		filterName
 	);
 
+	
+
 	const isUserNotFound = filteredUsers.length === 0;
+	const getVendors = async ()=>{
+		try{
+			const data = await getAllVendors();
+			console.log(data);
+			if(data.status === 200 ){
+				setVendor(data?.data?.results);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
 	const getData = async ()=>{
+		try{
+			const data = await getGunmens();
+			console.log(data);
+			if(data.status === 200 ){
+				setGunmens(data?.data?.results);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
+	const getAttendanceData = async ()=>{
 		try{
 			const data = await viewAllAttendance();
 			console.log(data);
 			if(data.status === 200 ){
-				setAttendance(data?.data);
+				setGunmensAttendance(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -205,7 +327,10 @@ export default function User() {
 
 	useEffect(() => {
 		getData();
+		getAttendanceData();
+		getVendors();
 	}, []);
+
 	return (
 		<>
 		
@@ -219,25 +344,6 @@ export default function User() {
 				</RouterLink>
 				<Typography color="textPrimary">Gunmen's Attendance</Typography>
 			</Breadcrumbs></Container>
-
-				{/* <Stack
-					direction="row"
-					alignItems="center"
-					justifyContent="space-between"
-					mb={5}
-				>
-					<Typography variant="h4" gutterBottom>
-						User
-					</Typography>
-					<Button
-						variant="contained"
-						component={RouterLink}
-						to="/forms/gunmen"
-						startIcon={<Icon icon={plusFill} />}
-					>
-						New Gunman
-					</Button>
-				</Stack> */}
 				
 				<Card style={{padding:'20px', marginBottom : '10px'}}>
 					<Grid container spacing={3} direction={{ xs: 'column', sm: 'row' }}>
@@ -272,14 +378,14 @@ export default function User() {
 									labelId="demo-simple-select-outlined-label"
 									id="demo-simple-select-outlined"
 									label="Age"
+									name="vendor"
 									onChange={handleChange}
 									>
-								<MenuItem value="">
-									<em>None</em>
-								</MenuItem>
-								<MenuItem value={10}>Ten</MenuItem>
-								<MenuItem value={20}>Twenty</MenuItem>
-								<MenuItem value={30}>Thirty</MenuItem>
+								{
+                          			vendor.map((instance)=>(
+                            		<MenuItem value={instance.id}>{instance.name}</MenuItem>
+                         			 ))
+                        		}
 								</Select>
 							</FormControl>
 						</Grid>
@@ -290,7 +396,7 @@ export default function User() {
 				</Card>
 				
 
-				<Card>
+				<Card >
 					<UserListToolbar
 						numSelected={selected.length}
 						filterName={filterName}
@@ -310,23 +416,30 @@ export default function User() {
 									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-									{attendance.map((row)=>(
+									{gunmens.map((row)=>(
 										<TableRow key={row.name}>
 											<TableCell component="th" scope="row">
 												{row.id}
 											</TableCell>
 											<TableCell >
-												{`${row.gunmen.first_name} ${row.gunmen.last_name}`}
+												{`${row?.first_name} ${row?.last_name}`}
 											</TableCell>
 											<TableCell >
-												{row.gunmen.email}
+												{row?.email}
 											</TableCell>
-											<TableCell >
-												{row.gunmen.vendor.name}
+											<TableCell>
+												{row?.vendor.name}
 											</TableCell>
-											<TableCell >
-												{row.branch.name}
+											<TableCell>
+												<Button 
+													color="secondary" 
+													variant="contained"
+													onClick={()=>{addAttendance(row)}}
+												>
+													Add Attendance
+												</Button>
 											</TableCell>
+
 									  </TableRow>
 									))}
 								</TableBody>
@@ -344,6 +457,128 @@ export default function User() {
 						onRowsPerPageChange={handleChangeRowsPerPage}
 					/>
 				</Card>
+				<Box sx={{my:5}}>
+					<Card >
+					
+						<Typography variant="h5" align="center"sx={{py:2}}>
+							Add Attendance
+						</Typography>
+
+						<Scrollbar>
+							<TableContainer sx={{ minWidth: 800 }}>
+								<Table>
+								<UserListHead
+									order={order}
+									orderBy={orderBy}
+									headLabel={TABLE_HEAD}
+									rowCount={USERLIST.length}
+									numSelected={selected.length}
+									onRequestSort={handleRequestSort}
+									onSelectAllClick={handleSelectAllClick}
+								/>
+									<TableBody>
+										{attendance.map((row)=>(
+											<TableRow key={row.name}>
+												<TableCell component="th" scope="row">
+													{row.id}
+												</TableCell>
+												<TableCell >
+													{`${row?.first_name} ${row?.last_name}`}
+												</TableCell>
+												<TableCell >
+													{row?.email}
+												</TableCell>
+												<TableCell>
+													{row?.vendor.name}
+												</TableCell>
+												<TableCell>
+												<Button 
+													color="secondary" 
+													variant="contained"
+													sx = {{backgroundColor : "red"}}
+													onClick={()=>{removeAttendance(row)}}
+												>
+													Remove
+												</Button>
+											</TableCell>
+
+										</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</Scrollbar>
+					</Card>
+				</Box>
+				<Box sx={{my:5}}>
+					<Card >
+					
+						<Typography variant="h5" align="center"sx={{py:2}}>
+							Todays Attendance
+						</Typography>
+
+						<Scrollbar>
+							<TableContainer sx={{ minWidth: 800 }}>
+								<Table>
+								<UserListHead
+									order={order}
+									orderBy={orderBy}
+									headLabel={TABLE_HEAD}
+									rowCount={USERLIST.length}
+									numSelected={selected.length}
+									onRequestSort={handleRequestSort}
+									onSelectAllClick={handleSelectAllClick}
+								/>
+									<TableBody>
+										{gunmensAttendance.map((row)=>(
+											<TableRow key={row.name}>
+												<TableCell component="th" scope="row">
+													{row.id}
+												</TableCell>
+												<TableCell >
+													{`${row?.gunmen?.first_name} ${row?.gunmen?.last_name}`}
+												</TableCell>
+												<TableCell >
+													{row?.gunmen?.email}
+												</TableCell>
+												<TableCell>
+													{moment(row?.entry_time).format('hh:mm on DD-MM-YYYY')}
+												</TableCell>
+												<TableCell>
+													{
+														row?.exit_time || 
+														<Button 
+															color="secondary" 
+															variant="contained"
+															
+														>
+															CheckOut
+														</Button>
+													}
+												</TableCell>
+												<TableCell>
+													{row?.branch?.name}
+												</TableCell>
+												<TableCell>
+													{row?.vendor?.name}
+												</TableCell>
+												<TableCell>
+													{row?.added_by?.email}
+												</TableCell>
+												<TableCell>
+													{row?.branch?.name}
+												</TableCell>
+												<TableCell>
+											</TableCell>
+
+										</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</Scrollbar>
+					</Card>
+				</Box>
 			</Container>
 		</Page>
 		</>

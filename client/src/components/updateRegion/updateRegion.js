@@ -31,7 +31,7 @@ import {
 //
 import {
   getAllEmployees, 
-  addRegion,
+  updateRegion,
 } from '../../api/index';
 // ----------------------------------------------------------------------
 
@@ -39,35 +39,41 @@ import {
 
 // ----------------------------------------------------------------------
 
-ShopFilterSidebar.propTypes = {
+UpdateEmployee.propTypes = {
   isOpenFilter: PropTypes.bool,
   onResetFilter: PropTypes.func,
   onOpenFilter: PropTypes.func,
   onCloseFilter: PropTypes.func,
+  regionInfo : PropTypes.object
 };
 
-export default function ShopFilterSidebar({
+export default function UpdateEmployee({
   isOpenFilter,
   onResetFilter,
   onOpenFilter,
   onCloseFilter,
+  regionInfo
 }) {
-  const [region, setRegion] = useState({
-    'name' : '',
-    'regional_officer' : '',
-    'address' : ''
-  });
+  const [region, setRegion] = useState(regionInfo);
   const [employees, setEmployees] = useState([]);
   const handleChange = (e)=>{
     setRegion({...region, [e.target.name] : e.target.value});
     console.log(region);
   }
   const handleSubmit = async ()=>{
+    console.log(region);
     try{
-			const data = await addRegion(region);
+			const data = await updateRegion(
+        region?.id,
+        {
+          name : region?.name,
+          address : region?.address,
+          regional_officer : region?.regional_officer?.id
+        }
+        );
 			console.log(data);
-			if(data.status === 201){
-				toast('Region Added', {
+			if(data.status === 200){
+				toast('Region Updated', {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -132,7 +138,8 @@ export default function ShopFilterSidebar({
   
   useEffect(() => {
 		getUsers();
-	}, []);
+    setRegion(regionInfo);
+	}, [regionInfo]);
   return (
     <>
           <Drawer
@@ -150,7 +157,7 @@ export default function ShopFilterSidebar({
               sx={{ px: 1, py: 2 }}
             >
               <Typography variant="subtitle1" sx={{ ml: 1 }}>
-                Add Region
+                Update Region
               </Typography>
               <IconButton onClick={onCloseFilter}>
                 <Icon icon={closeFill} width={20} height={20} />
@@ -165,6 +172,7 @@ export default function ShopFilterSidebar({
                         name="name"
                         onChange={handleChange}
                         fullWidth
+                        value={region?.name}
                     >
                     </TextField>
                 </Grid>
@@ -176,6 +184,7 @@ export default function ShopFilterSidebar({
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
                         name = 'regional_officer'
+                        value={region?.regional_officer?.id}
                         onChange={handleChange}
                       >
                         {
@@ -195,11 +204,12 @@ export default function ShopFilterSidebar({
                         multiline
                         rows={3}
                         fullWidth
+                        value={region?.address}
                     >
                     </TextField>
                 </Grid>
                 <Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Region</Button>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Update Region</Button>
                 </Grid>
             </Grid>
           </Drawer>

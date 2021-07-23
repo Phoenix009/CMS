@@ -29,9 +29,9 @@ import {
   Select
 } from '@material-ui/core';
 //
-import {
-  getAllEmployees, 
-  addRegion,
+import { 
+  addVendor,
+  getAllVendors,
 } from '../../api/index';
 // ----------------------------------------------------------------------
 
@@ -52,22 +52,24 @@ export default function ShopFilterSidebar({
   onOpenFilter,
   onCloseFilter,
 }) {
-  const [region, setRegion] = useState({
+  const [vendor, setVendor] = useState({
     'name' : '',
-    'regional_officer' : '',
-    'address' : ''
+    'address' : '',
+    'email' : '',
+    'contact':'',
+    'officer_incharge': ''
   });
-  const [employees, setEmployees] = useState([]);
+  // const [employees, setEmployees] = useState([]);
   const handleChange = (e)=>{
-    setRegion({...region, [e.target.name] : e.target.value});
-    console.log(region);
+    setVendor({...vendor, [e.target.name] : e.target.value});
+    console.log(vendor);
   }
   const handleSubmit = async ()=>{
     try{
-			const data = await addRegion(region);
+			const data = await addVendor (vendor);      
 			console.log(data);
 			if(data.status === 201){
-				toast('Region Added', {
+				toast('Vendor Added', {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -101,10 +103,10 @@ export default function ShopFilterSidebar({
   }
   const getUsers = async ()=>{
 		try{
-			const data = await getAllEmployees();
+			const data = await getAllVendors();
 			console.log(data);
 			if(data.status === 200 ){
-				setEmployees(data?.data?.results);
+				setVendor(data?.data);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -150,7 +152,7 @@ export default function ShopFilterSidebar({
               sx={{ px: 1, py: 2 }}
             >
               <Typography variant="subtitle1" sx={{ ml: 1 }}>
-                Add Region
+                Add Vendor
               </Typography>
               <IconButton onClick={onCloseFilter}>
                 <Icon icon={closeFill} width={20} height={20} />
@@ -161,33 +163,46 @@ export default function ShopFilterSidebar({
             <Grid container spacing={2} sx={{ px: 5, py: 10 }}>
                 <Grid item xs={12} sm={12} lg={6}>
                     <TextField
-                        label="Region Name"
+                        label="Vendor Name"
                         name="name"
                         onChange={handleChange}
                         fullWidth
                     >
                     </TextField>
                 </Grid>
-               
+                
                 <Grid item xs={12} sm={12} lg={6}>
-                  <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="demo-simple-select-outlined-label">Regional Manager</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-outlined-label"
-                        id="demo-simple-select-outlined"
-                        name = 'regional_officer'
+                    <TextField
+                        label="Name of Officer Incharge"
+                        name="officer_incharge"
                         onChange={handleChange}
-                      >
-                        {
-                          employees.map((instance)=>(
-                            <MenuItem value={instance.id}>{instance.email}</MenuItem>
-                          ))
-                        }
-                      </Select>
-                  </FormControl>
+                        fullWidth
+                    >
+                    </TextField>
                 </Grid>
                 
-                <Grid item xs={12} sm={12} lg={12}>
+               
+                
+                <Grid item xs={12} sm={12} lg={6}>
+                    <TextField
+                        label="Contact"
+                        name="contact"
+                        onChange={handleChange}
+                        fullWidth
+                    >
+                    </TextField>
+                  </Grid>
+                    <Grid item xs={12} sm={12} lg={6}>
+                      <TextField
+                          label="Email"
+                          name="email"
+                          onChange={handleChange}
+                          fullWidth
+                      >
+                      </TextField>
+                    </Grid>
+
+                    <Grid item xs={12} sm={12} lg={12}>
                     <TextField
                         label="Address"
                         name="address"
@@ -195,11 +210,11 @@ export default function ShopFilterSidebar({
                         multiline
                         rows={3}
                         fullWidth
-                    >
-                    </TextField>
+                    ></TextField>
                 </Grid>
+
                 <Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Region</Button>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Vendor</Button>
                 </Grid>
             </Grid>
           </Drawer>

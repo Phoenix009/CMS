@@ -5,6 +5,8 @@ import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 //
 import Login from "./pages/Login";
 import Gunmen from "./pages/Gunmen/Gunmen";
+import AddTrip from "src/components/Trip/AddTrip.js";
+import Trip from "./pages/Trip";
 import Register from "./pages/Register";
 import AddGunman from "./pages/AddGunman";
 import DashboardApp from "./pages/DashboardApp";
@@ -12,8 +14,12 @@ import Products from "./pages/Products";
 import Blog from "./pages/Blog";
 import User from "./pages/User";
 import NotFound from "./pages/Page404";
-import Branch from "./pages/branch"
-import Region from "./pages/Region"
+import Branch from "./pages/branch";
+import Region from "./pages/Region";
+import Vendors from "./pages/Vendors";
+import Vehicle from "./pages/Vehicle";
+import VendorsAttendanceDetails from './pages/VendorsAttendanceDetails/VendorsAttendanceDetails';
+import VehicleAndGunMenAttendance from './pages/VehicleAndGunmenAttendance/VehicleAndAttendance';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -31,9 +37,27 @@ export default function Router() {
 				{ path: "gunmen", element: <Gunmen /> },
 				{ path: "branch", element: <Branch /> },
 				{ path: "region", element: <Region /> },
-				// { path: "gunmen/forms", element: <GunmanForm /> },
+				{ path: "vendors", element: <Vendors /> },
+				// { path: "addtrip", element: <AddTrip/> },
+				{ path: "trip", element: <Trip/> },
+				{ path: "vehicle", element: <Vehicle /> },
+				{ path: "addtrip", element: <AddTrip/> },
 				{ path: "products", element: <Products /> },
 				{ path: "blog", element: <Blog /> },
+			],
+		},
+		{
+			path: "/vendors",
+			element: <LogoOnlyLayout />,
+			children: [
+				{ path: "attendance", element: <VendorsAttendanceDetails /> },
+			],
+		},
+		{
+			path: "/vehicles",
+			element: <LogoOnlyLayout />,
+			children: [
+				{ path: "attendance", element: <VehicleAndGunMenAttendance /> },
 			],
 		},
 		{

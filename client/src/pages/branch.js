@@ -2,9 +2,10 @@ import { filter } from "lodash";
 import { Icon } from "@iconify/react";
 import { sentenceCase } from "change-case";
 import { useState,useEffect } from "react";
+import {toast} from 'react-toastify';
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
-// material
+import UpdateEmployee from "src/components/updateBranch/updateBranch";
 import {
 	Card,
 	Table,
@@ -34,11 +35,12 @@ import {
 //
 import USERLIST from "../_mocks_/user";
 import AddBranch from '../components/AddBranch/AddBranch';
-import { getAllEmployees } from "../api/index";
+import { getAllEmployees,getAllBranch,deleteBranch } from "../api/index";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+	{ id: "id", label: "ID" },
 	{ id: "name", label: "Name", alignRight: false },
 	{ id: "address", label: "Address", alignRight: false },
 	{ id: "branch_manager", label: "Branch Manager", alignRight: false },
@@ -90,7 +92,9 @@ export default function Branch() {
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [isAddBranchOpen, setAddBranchOpen] = useState(false);
-	const [employees, setEmployees] = useState([]);
+	const [isUpdateEmployeeOpen, setUpdateEmployeeOpen] = useState(false);
+	const [branch, setBranch] = useState([]);
+	const [branchInfo, setBranchInfo] = useState({});
 
 	
 	
@@ -152,25 +156,88 @@ export default function Branch() {
 	);
 
 	const isUserNotFound = filteredUsers.length === 0;
-
-
+    const openUpdateBranchDrawer = (row)=>{
+		console.log(row);
+		setBranchInfo(row);
+		setUpdateEmployeeOpen(true);
+	}
+	const handleDeleteBranch = async (branch)=>{
+		try{
+				const data = await deleteBranch(
+			branch?.id,
+			);
+				console.log(data);
+				if(data.status === 204){
+					toast('Branch Deleted', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+					});
+					getData();
+				}else{
+					toast.error('Something went wrong!', {
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+					});
+				} 
+			}catch(error){
+				console.log(error);
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
+	  }
 	const getData = async ()=>{
 		try{
-			
-			const data = await getAllEmployees();
+			const data = await getAllBranch();
 			console.log(data);
+			if(data.status === 200 ){
+				setBranch(data?.data?.results);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
 		}catch(error){
 			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
 		}
 	}
-
 	useEffect(() => {
 		getData();
 	}, []);
 
 
 	return (
-		<Page title="User | Minimal-UI">
+		<Page title="Branch">
 			<Container>
 				<Stack
 					direction="row"
@@ -197,6 +264,12 @@ export default function Branch() {
 							onOpenFilter= {()=>{setAddBranchOpen(true)}}
 							onCloseFilter={()=>{setAddBranchOpen(false)}}
 				/>
+				<UpdateEmployee
+					isOpenFilter={isUpdateEmployeeOpen}
+					onOpenFilter= {()=>{setUpdateEmployeeOpen(true)}}
+					onCloseFilter={()=>{setUpdateEmployeeOpen(false)}}
+					branchInfo={branchInfo}
+				/>
 				<Card>
 					<UserListToolbar
 						numSelected={selected.length}
@@ -217,110 +290,35 @@ export default function Branch() {
 									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-									{filteredUsers
-										.slice(
-											page * rowsPerPage,
-											page * rowsPerPage + rowsPerPage
-										)
-										.map((row) => {
-											const {
-												id,
-												name,
-												role,
-												status,
-												company,
-												avatarUrl,
-												isVerified,
-											} = row;
-											const isItemSelected =
-												selected.indexOf(name) !== -1;
-
-											return (
-												<TableRow
-													hover
-													key={id}
-													tabIndex={-1}
-													role="checkbox"
-													selected={isItemSelected}
-													aria-checked={
-														isItemSelected
-													}
-												>
-													<TableCell padding="checkbox">
-														<Checkbox
-															checked={
-																isItemSelected
-															}
-															onChange={(event) =>
-																handleClick(
-																	event,
-																	name
-																)
-															}
-														/>
-													</TableCell>
-													<TableCell
-														component="th"
-														scope="row"
-														padding="none"
-													>
-														<Stack
-															direction="row"
-															alignItems="center"
-															spacing={2}
-														>
-															<Avatar
-																alt={name}
-																src={avatarUrl}
-															/>
-															<Typography
-																variant="subtitle2"
-																noWrap
-															>
-																{name}
-															</Typography>
-														</Stack>
-													</TableCell>
-													<TableCell align="left">
-														{company}
-													</TableCell>
-													<TableCell align="left">
-														{role}
-													</TableCell>
-													<TableCell align="left">
-														{isVerified
-															? "Yes"
-															: "No"}
-													</TableCell>
-													<TableCell align="left">
-														<Label
-															variant="ghost"
-															color={
-																(status ===
-																	"banned" &&
-																	"error") ||
-																"success"
-															}
-														>
-															{sentenceCase(
-																status
-															)}
-														</Label>
-													</TableCell>
-
-													<TableCell align="right">
-														<UserMoreMenu />
-													</TableCell>
-												</TableRow>
-											);
-										})}
-									{emptyRows > 0 && (
-										<TableRow
-											style={{ height: 53 * emptyRows }}
-										>
-											<TableCell colSpan={6} />
-										</TableRow>
-									)}
+								{
+										branch.map((row)=>(
+											<TableRow>
+											<TableCell component="th" scope="row">
+												{row.id}
+											</TableCell>
+											<TableCell >
+												{row.name}
+											</TableCell>
+											<TableCell >
+												{row.address}
+											</TableCell>
+											<TableCell >
+											{`${row.branch_manager?.first_name} ${row.branch_manager?.last_name}`}
+											</TableCell>
+											<TableCell >
+											{`${row.region?.name}`}
+											</TableCell>
+											<TableCell align="right">
+												<UserMoreMenu 
+													handleEdit={()=>{openUpdateBranchDrawer(row)}}
+													handleDelete={()=>{handleDeleteBranch(row)}}
+												/>
+											</TableCell>
+											
+										
+											</TableRow>
+										))
+									}
 								</TableBody>
 								{isUserNotFound && (
 									<TableBody>

@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Form, FormikProvider } from 'formik';
 import closeFill from '@iconify/icons-eva/close-fill';
 import roundClearAll from '@iconify/icons-ic/round-clear-all';
 import roundFilterList from '@iconify/icons-ic/round-filter-list';
+import {toast} from 'react-toastify';
 // material
 import {
   Box,
@@ -27,7 +28,11 @@ import {
   MenuItem,
   Select
 } from '@material-ui/core';
-//
+import {
+  getAllRegions, 
+  getAllEmployees,
+  addBranch,
+} from '../../api/index';
 
 // ----------------------------------------------------------------------
 
@@ -48,21 +53,120 @@ export default function ShopFilterSidebar({
   onOpenFilter,
   onCloseFilter,
 }) {
-  const [employee, setEmployee] = useState({
-    first_name : '',
-    last_name : '',
-    email : '',
-    employee_id : '',
-    age : '',
-    role : ''
+  const [employee_info, setEmployee_info] = useState([]);
+  const [region_info,setRegion_info]=useState([]);
+  const [branch, setBranch] = useState({
+   'name' :'' ,
+    'address' :'',
+    'branch_manager' :'',
+    'region':''
   });
   const handleChange = (e)=>{
-    setEmployee({...employee, [e.target.name] : e.target.value});
-    console.log(employee);
+    setBranch({...branch, [e.target.name] : e.target.value});
+    console.log(branch);
   }
-  const handleSubmit = ()=>{
-    console.log(employee);
+    const handleSubmit = async ()=>{
+    try{
+			const data = await addBranch(branch);
+			console.log(data);
+			if(data.status === 201){
+				toast('Branch Added', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				});
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
   }
+  const getRegion = async ()=>{
+		try{
+			const data = await getAllRegions();
+			console.log(data);
+			if(data.status === 200 ){
+				setRegion_info(data?.data?.results);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
+  const getEmployees = async ()=>{
+		try{
+			const data = await getAllEmployees();
+			console.log(data);
+			if(data.status === 200 ){
+				setEmployee_info(data?.data?.results);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
+
+  useEffect(() => {
+		getRegion();
+    getEmployees();
+	}, []);
   return (
     <>
           <Drawer
@@ -90,11 +194,7 @@ export default function ShopFilterSidebar({
             <Divider />
             <Grid container spacing={3} sx={{ px: 5, py: 10 }}>
                 <Grid item xs={12} sm={12} lg={4}>
-                  {/* name = models.CharField(max_length=200)
-    address = models.CharField(max_length=1000)
-    branch_manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
- */}
+                  
                     <TextField
                         label="Branch Name"
                         name="name"
@@ -114,16 +214,18 @@ export default function ShopFilterSidebar({
                 </Grid>
                 <Grid item xs={12} sm={12} lg={4}>
                 <FormControl variant="outlined" fullWidth>
-                    <InputLabel id="demo-simple-select-outlined-label">Branch Manager</InputLabel>
+                    <InputLabel id="demo-simple-select-outlined-label">Branch Manager Email</InputLabel>
                     <Select
                       labelId="demo-simple-select-outlined-label"
                       id="demo-simple-select-outlined"
                       label="Age"
                       onChange={handleChange}
                     >
-                    <MenuItem value={'admin'}>Admin</MenuItem>
-                    <MenuItem value={'employee'}>Employee</MenuItem>
-                    <MenuItem value={'superadmin'}>SuperAdmin</MenuItem>
+                        {
+                          employee_info.map((instance)=>(
+                            <MenuItem value={instance.id}>{instance.email}</MenuItem>
+                          ))
+                        }
                     </Select>
                 </FormControl>
                 </Grid>
@@ -138,9 +240,11 @@ export default function ShopFilterSidebar({
                       label="Age"
                       onChange={handleChange}
                     >
-                    <MenuItem value={'admin'}>Admin</MenuItem>
-                    <MenuItem value={'employee'}>Employee</MenuItem>
-                    <MenuItem value={'superadmin'}>SuperAdmin</MenuItem>
+                    {
+                          region_info.map((instance)=>(
+                            <MenuItem value={instance.id}>{instance.name}</MenuItem>
+                          ))
+                      }
                     </Select>
                 </FormControl>
                 </Grid>

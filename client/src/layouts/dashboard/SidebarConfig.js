@@ -28,8 +28,18 @@ const sidebarConfig = [
 		icon: getIcon(peopleFill),
 	},
 	{
+		title: "Vendors",
+		path: "/dashboard/vendors",
+		icon: getIcon(peopleFill),
+	},
+	{
 		title: "Branch",
 		path: "/dashboard/branch",
+		icon: getIcon(peopleFill),
+	},
+	{
+		title: "Vehicle",
+		path: "/dashboard/vehicle",
 		icon: getIcon(peopleFill),
 	},
 	{
@@ -38,30 +48,36 @@ const sidebarConfig = [
 		icon: getIcon(peopleFill),
 	},
 	{
-		title: "product",
-		path: "/dashboard/products",
+		title: "trip",
+		path: "/dashboard/trip",
 		icon: getIcon(shoppingBagFill),
-	},
-	{
-		title: "blog",
-		path: "/dashboard/blog",
-		icon: getIcon(fileTextFill),
-	},
-	{
-		title: "login",
-		path: "/login",
-		icon: getIcon(lockFill),
-	},
-	//   {
-	//     title: 'register',
-	//     path: '/register',
-	//     icon: getIcon(personAddFill)
-	//   },
-	{
-		title: "Not found",
-		path: "/404",
-		icon: getIcon(alertTriangleFill),
-	},
+	}
 ];
+// 	{
+// 		title: "product",
+// 		path: "/dashboard/products",
+// 		icon: getIcon(shoppingBagFill),
+// 	},
+// 	{
+// 		title: "blog",
+// 		path: "/dashboard/blog",
+// 		icon: getIcon(fileTextFill),
+// 	},
+// 	{
+// 		title: "login",
+// 		path: "/login",
+// 		icon: getIcon(lockFill),
+// 	},
+// 	//   {
+// 	//     title: 'register',
+// 	//     path: '/register',
+// 	//     icon: getIcon(personAddFill)
+// 	//   },
+// 	{
+// 		title: "Not found",
+// 		path: "/404",
+// 		icon: getIcon(alertTriangleFill),
+// 	},
+// ];
 
 export default sidebarConfig;
