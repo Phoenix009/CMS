@@ -222,7 +222,10 @@ export default function User() {
 				<AddEmployee
 							isOpenFilter={isAddEmployeeOpen}
 							onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
-							onCloseFilter={()=>{setAddEmployeeOpen(false)}}
+							onCloseFilter={async ()=>{
+								setAddEmployeeOpen(false)
+								await getData();
+							}}
 				/>
 				<Card>
 					<UserListToolbar

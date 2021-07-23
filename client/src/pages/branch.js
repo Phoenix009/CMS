@@ -270,8 +270,9 @@ export default function Branch() {
 					onOpenFilter={() => {
 						setAddBranchOpen(true);
 					}}
-					onCloseFilter={() => {
+					onCloseFilter={async() => {
 						setAddBranchOpen(false);
+						await getData();
 					}}
 				/>
 				<UpdateEmployee
@@ -279,8 +280,9 @@ export default function Branch() {
 					onOpenFilter={() => {
 						setUpdateEmployeeOpen(true);
 					}}
-					onCloseFilter={() => {
+					onCloseFilter={async() => {
 						setUpdateEmployeeOpen(false);
+						await getData();
 					}}
 					branchInfo={branchInfo}
 				/>

@@ -258,19 +258,23 @@ export default function User() {
           isOpenFilter={isAddVehicleOpen}
           onOpenFilter={() => {
             setAddVehicleOpen(true);
+            
           }}
-          onCloseFilter={() => {
+          onCloseFilter={async() => {
             setAddVehicleOpen(false);
+            await getData();
           }}
           vehicleInfo={{}}
         />
         <UpdateEmployee
           isOpenFilter={isUpdateVehicleOpen}
-          onOpenFilter={() => {
+          onOpenFilter={async() => {
             setUpdateVehicleOpen(true);
           }}
-          onCloseFilter={() => {
+          onCloseFilter={async() => {
             setUpdateVehicleOpen(false);
+            await getData();
+
           }}
           vehicleInfo={vehicleInfo}
         />

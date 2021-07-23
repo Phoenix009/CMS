@@ -131,7 +131,7 @@ export const deleteRegion = (id) => {
 export const getAllVendors = () => axiosInstance.get("vendor/vendor");
 export const addVendor = (formData) =>
 	axiosInstance.post("vendor/vendor/", formData);
-export const updateVendor = (id, formData) => {
+	export const updateVendor = (id, formData) => {
 	return axiosInstance.put(`vendor/vendor/${id}/`, formData);
 };
 export const deleteVendor = (row) => {

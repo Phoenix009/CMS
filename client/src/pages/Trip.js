@@ -263,8 +263,9 @@ export default function User() {
           onOpenFilter={() => {
             setAddEmployeeOpen(true);
           }}
-          onCloseFilter={() => {
+          onCloseFilter={async() => {
             setAddEmployeeOpen(false);
+            await getData();
           }}
           tripInfo={{}}
         />
@@ -273,8 +274,9 @@ export default function User() {
           onOpenFilter={() => {
             setUpdateEmployeeOpen(true);
           }}
-          onCloseFilter={() => {
+          onCloseFilter={async () => {
             setUpdateEmployeeOpen(false);
+            await getData();
           }}
           tripInfo={tripInfo}
         />
