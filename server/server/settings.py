@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_filters",
     "corsheaders",
+    "rest_framework.authtoken",
     "users.apps.UsersConfig",
     "vendors.apps.VendorsConfig",
     "attendance.apps.AttendanceConfig",
@@ -147,7 +148,7 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
     "VERIFYING_KEY": None,
-    "AUTH_HEADER_TYPES": ("JWT",),
+    "AUTH_HEADER_TYPES": ("JWT", "Bearer"),
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
@@ -158,9 +159,13 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.permissions.IsAuthenticated",
     ],
 }
 
@@ -170,10 +175,9 @@ REST_FRAMEWORK = {
 # for now once every 10 minutes
 CRONJOBS = [("*/10 * * * *", "attendance.cron.send_attendance_report")]
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""

@@ -8,6 +8,11 @@ from rest_framework import generics
 from rest_framework import filters
 
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import (
+    BasicAuthentication,
+    SessionAuthentication,
+    TokenAuthentication,
+)
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
@@ -52,7 +57,14 @@ class CustomPagination(PageNumberPagination):
         )
 
 
+# @csrf_exempt
 class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+
+    # authentication_classes = [
+    #     TokenAuthentication,
+    #     SessionAuthentication,
+    #     BasicAuthentication,
+    # ]
     permission_classes = [IsAuthenticated]
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
