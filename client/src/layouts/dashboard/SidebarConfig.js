@@ -23,7 +23,7 @@ const sidebarConfig = [
 		icon: getIcon(peopleFill),
 	},
 	{
-		title: "gunmen",
+		title: "Custodians",
 		path: "/dashboard/gunmen",
 		icon: getIcon(peopleFill),
 	},
@@ -51,7 +51,7 @@ const sidebarConfig = [
 		title: "trip",
 		path: "/dashboard/trip",
 		icon: getIcon(shoppingBagFill),
-	}
+	},
 ];
 // 	{
 // 		title: "product",
