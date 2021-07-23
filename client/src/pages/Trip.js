@@ -36,6 +36,7 @@ import {
 import USERLIST from "../_mocks_/user";
 import AddEmployee from "../components/Trip/AddTrip";
 import UpdateEmployee from "../components/Trip/updateTrip";
+import { getAllVehicles } from "../api/index";
 import { getTrip, deleteTrip } from "../api/index";
 
 // ----------------------------------------------------------------------
