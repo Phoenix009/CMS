@@ -30,8 +30,9 @@ import {
 } from '@material-ui/core';
 //
 import {
-  getAllEmployees, 
-  updateRegion,
+  getGunmens,
+  getAllVehicles, 
+  updateTrip,
 } from '../../api/index';
 // ----------------------------------------------------------------------
 
@@ -44,7 +45,7 @@ UpdateEmployee.propTypes = {
   onResetFilter: PropTypes.func,
   onOpenFilter: PropTypes.func,
   onCloseFilter: PropTypes.func,
-  regionInfo : PropTypes.object
+  tripInfo : PropTypes.object
 };
 
 export default function UpdateEmployee({
@@ -52,65 +53,23 @@ export default function UpdateEmployee({
   onResetFilter,
   onOpenFilter,
   onCloseFilter,
-  regionInfo
+  tripInfo
 }) {
-  const [region, setRegion] = useState(regionInfo);
-  const [employees, setEmployees] = useState([]);
+  const [trip, setTrip] = useState(tripInfo);
+  const [gunmen, setGunmen] = useState([]);
+  const [vehicle, setVehicle] = useState([]);
   const handleChange = (e)=>{
-    setRegion({...region, [e.target.name] : e.target.value});
-    console.log(region);
+    setTrip({...trip, [e.target.name] : e.target.value});
+    console.log(trip);
   }
-  const handleSubmit = async ()=>{
-    console.log(region);
-    try{
-			const data = await updateRegion(
-        region?.id,
-        {
-          name : region?.name,
-          address : region?.address,
-          regional_officer : region?.regional_officer?.id
-        }
-        );
-			console.log(data);
-			if(data.status === 200){
-				toast('Region Updated', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-				});
-			}else{
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			} 
-		}catch(error){
-			console.log(error);
-			toast.error('Something went wrong!', {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
-  }
-  const getUsers = async ()=>{
+  
+  
+  const getAllGunmen = async ()=>{
 		try{
-			const data = await getAllEmployees();
+			const data = await getGunmens();
 			console.log(data);
 			if(data.status === 200 ){
-				setEmployees(data?.data?.results);
+				setGunmen(data?.data?.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -135,11 +94,93 @@ export default function UpdateEmployee({
 			});
 		}
 	}
+  const getVehicles= async ()=>{
+		try{
+			const data = await getAllVehicles();
+			console.log(data);
+			if(data.status === 200 ){
+				setVehicle(data?.data?.results);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
+  const handleSubmit = async ()=>{
+    console.log(trip);
+    try{
+			const data = await updateTrip(
+        trip?.id,
+        {
+          start_location : trip.start_location,
+          end_location: trip.end_location,
+          custodian_1 : trip.custodian_1,
+          custodian_2 : trip.custodian_2,
+          custodian_3 : trip.custodian_3,
+          vehicle : trip.vehicle,
+          
+        }
+        );
+			console.log(data);
+			if(data.status === 200){
+				toast('Trip Updated', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				});
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+  }
+  
   
   useEffect(() => {
-		getUsers();
-    setRegion(regionInfo);
-	}, [regionInfo]);
+    getAllGunmen();
+    getVehicles();
+  
+    setTrip(tripInfo);
+	}, [tripInfo]);
   return (
     <>
           <Drawer
@@ -157,7 +198,7 @@ export default function UpdateEmployee({
               sx={{ px: 1, py: 2 }}
             >
               <Typography variant="subtitle1" sx={{ ml: 1 }}>
-                Update Region
+                Update Trip
               </Typography>
               <IconButton onClick={onCloseFilter}>
                 <Icon icon={closeFill} width={20} height={20} />
@@ -168,48 +209,104 @@ export default function UpdateEmployee({
             <Grid container spacing={2} sx={{ px: 5, py: 10 }}>
                 <Grid item xs={12} sm={12} lg={6}>
                     <TextField
-                        label="Region Name"
-                        name="name"
+                        label="From"
+                        name="start_location"
                         onChange={handleChange}
                         fullWidth
-                        value={region?.name}
+                        value={trip?.start_location}
                     >
                     </TextField>
                 </Grid>
-               
+                <Grid item xs={12} sm={12} lg={6}>
+                    <TextField
+                        label="To"
+                        name="end_location"
+                        onChange={handleChange}
+                        fullWidth
+                        value={trip?.end_location}
+                    >
+                    </TextField>
+                </Grid>
                 <Grid item xs={12} sm={12} lg={6}>
                   <FormControl variant="outlined" fullWidth>
-                      <InputLabel id="demo-simple-select-outlined-label">Regional Manager</InputLabel>
+                      <InputLabel id="demo-simple-select-outlined-label">Vehicle</InputLabel>
                       <Select
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
-                        name = 'regional_officer'
-                        value={region?.regional_officer?.id}
+                        name = 'vehicle'
                         onChange={handleChange}
+                        value={trip?.vehicle}
                       >
+                        <MenuItem value = {null}>None</MenuItem>
                         {
-                          employees.map((instance)=>(
-                            <MenuItem value={instance.id}>{instance.email}</MenuItem>
+                          vehicle.map((instance)=>(
+                            <MenuItem value={instance.id}>{instance.number_plate}</MenuItem>
+                          ))
+                        }
+                      </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={12} lg={6}>
+                  <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="demo-simple-select-outlined-label">Custodian 1</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        name = 'custodian_1'
+                        onChange={handleChange}
+                        value={trip?.custodian_1}
+                      >
+                        <MenuItem value = {null}>None</MenuItem>
+                        {
+                          gunmen.map((instance)=>(
+                            <MenuItem value={instance.id}>{instance.first_name} {instance.last_name}</MenuItem>
+                          ))
+                        }
+                      </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={12} lg={6}>
+                  <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="demo-simple-select-outlined-label">Custodian 2</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        name = 'custodian_2'
+                        onChange={handleChange}
+                        value={trip?.custodian_2}
+                      >
+                        <MenuItem value = {null}>None</MenuItem>
+                        {
+                          gunmen.map((instance)=>(
+                            <MenuItem value={instance.id}>{instance.first_name} {instance.last_name}</MenuItem>
+                          ))
+                        }
+                      </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={12} lg={6}>
+                  <FormControl variant="outlined" fullWidth>
+                      <InputLabel id="demo-simple-select-outlined-label">Custodian 3</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        name = 'custodian_3'
+                        onChange={handleChange}
+                        value={trip?.custodian_3}
+                      >
+                        <MenuItem value = {null}>None</MenuItem>
+                        {
+                          gunmen.map((instance)=>(
+                            <MenuItem value={instance.id}>{instance.first_name} {instance.last_name}</MenuItem>
                           ))
                         }
                       </Select>
                   </FormControl>
                 </Grid>
                 
-                <Grid item xs={12} sm={12} lg={12}>
-                    <TextField
-                        label="Address"
-                        name="address"
-                        onChange={handleChange}
-                        multiline
-                        rows={3}
-                        fullWidth
-                        value={region?.address}
-                    >
-                    </TextField>
-                </Grid>
+             
                 <Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Update Region</Button>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Update Trip</Button>
                 </Grid>
             </Grid>
           </Drawer>
