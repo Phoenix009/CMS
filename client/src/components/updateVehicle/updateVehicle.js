@@ -57,13 +57,11 @@ export default function UpdateEmployee({
 		console.log(vehicle);
 	};
 	const handleSubmit = async () => {
+		console.log("I hate living")
 		console.log(vehicle);
 		try {
-			const data = await updateVehicle(vehicle?.id, {
-				model_name: vehicle?.model_name,
-				number_plate: vehicle?.number_plate,
-				vendor: vehicle?.vendor?.id,
-			});
+			let x = JSON.stringify(vehicle)
+			const data = await updateVehicle(vehicle?.id, x);
 			console.log(data);
 			if (data.status === 200) {
 				toast("Vehicle Updated", {
@@ -99,36 +97,7 @@ export default function UpdateEmployee({
 			});
 		}
 	};
-	const getUsers = async () => {
-		try {
-			const data = await getAllVehicles();
-			console.log(data);
-			if (data.status === 200) {
-				setVehicle(data?.data?.results);
-			} else {
-				toast.error("Something went wrong!", {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			}
-		} catch (error) {
-			console.log(error);
-			toast.error("Something went wrong!", {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
-	};
+
 	const getVendor = async () => {
 		try {
 			const data = await getAllVendors();
@@ -161,7 +130,7 @@ export default function UpdateEmployee({
 	};
 
 	useEffect(() => {
-		getUsers();
+		
 		getVendor();
 		setVehicle(vehicleInfo);
 	}, [vehicleInfo]);

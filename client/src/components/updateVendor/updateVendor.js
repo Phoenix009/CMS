@@ -66,15 +66,10 @@ export default function UpdateEmployee({
 	const handleSubmit = async () => {
 		console.log(vendor);
 		try {
-			const data = await updateVendor(vendor?.id, {
-				name: vendor?.name,
-				address: vendor?.address,
-				email: vendor?.email,
-				contact: vendor?.contact,
-				officer_incharge: vendor?.officer_incharge?.id,
-			});
+			let x = JSON.stringify(vendor)
+			const data = await updateVendor(vendor?.id, vendor);
 			console.log(data);
-			if (data.status === 201) {
+			if (data.status === 200) {
 				toast("Vendor Updated", {
 					position: "top-right",
 					autoClose: 5000,
