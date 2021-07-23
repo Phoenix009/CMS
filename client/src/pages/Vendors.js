@@ -34,6 +34,8 @@ import {
 } from "../components/_dashboard/user";
 //
 import USERLIST from "../_mocks_/user";
+import AddEmployee from '../components/AddVendor/AddVendor';
+import UpdateEmployee from "src/components/updateVendor/updateVendor";
 import AddVendor from '../components/AddVendor/AddVendor';
 import UpdateVendor from "../components/updateVendor/updateVendor";
 import { getAllEmployees,getAllVendors, deleteVendor } from "../api/index";
@@ -93,9 +95,9 @@ export default function User() {
 	const [orderBy, setOrderBy] = useState("name");
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
-	const [isAddVendorOpen, setAddVendorOpen] = useState(false);
+	const [isAddEmployeeOpen, setAddEmployeeOpen] = useState(false);
+	const [isUpdateEmployeeOpen, setUpdateEmployeeOpen] = useState(false);	
 	const [vendors, setVendors] = useState([]);
-	const [isUpdateVendorOpen, setUpdateVendorOpen] = useState(false);
 	const [vendorInfo, setVendorInfo] = useState({});
 
 	
@@ -160,7 +162,7 @@ export default function User() {
 	const isUserNotFound = filteredUsers.length === 0;
 	const openUpdateVendorDrawer = (row)=>{
 		setVendorInfo(row);
-		setUpdateVendorOpen(true);
+		setUpdateEmployeeOpen(true);
 	}
 	const handleDeleteVendor = async (vendor)=>{
 		try{
@@ -240,7 +242,7 @@ export default function User() {
 
 
 	return (
-		<Page title="User | Minimal-UI">
+		<Page title="Vendors">
 			<Container>
 				<Stack
 					direction="row"
@@ -256,25 +258,25 @@ export default function User() {
 						</Breadcrumbs>
 					<Button
 						variant="contained"
-						onClick={()=>{setAddVendorOpen(true)}}
+						onClick={()=>{setAddEmployeeOpen(true)}}
 						startIcon={<Icon icon={plusFill} />}
 					>
 						New Vendor
 					</Button>
 				</Stack>
-				<AddVendor
-							isOpenFilter={isAddVendorOpen}
-							onOpenFilter= {()=>{setAddVendorOpen(true)}}
+				<AddEmployee
+							isOpenFilter={isAddEmployeeOpen}
+							onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
 							onCloseFilter={async ()=>{
-								setAddVendorOpen(false)
+								setAddEmployeeOpen(false)
 								await getData();
 								}
 							}
 				/>
-				<UpdateVendor
-					isOpenFilter={isUpdateVendorOpen}
-					onOpenFilter= {()=>{setUpdateVendorOpen(true)}}
-					onCloseFilter={()=>{setUpdateVendorOpen(false)}}
+				<UpdateEmployee
+					isOpenFilter={isUpdateEmployeeOpen}
+					onOpenFilter= {()=>{setUpdateEmployeeOpen(true)}}
+					onCloseFilter={()=>{setUpdateEmployeeOpen(false)}}
 					vendorInfo={vendorInfo}
 				/>
 				<Card>
@@ -318,16 +320,7 @@ export default function User() {
 											<TableCell >
 												{row.officer_incharge}
 											</TableCell>
-											<TableCell >
-												<Button 
-													variant="contained" 
-													color="primary" 
-													size="small"
-													onClick={()=>{openUpdateVendorDrawer(row)}}
-												>
-													Update
-												</Button>
-											</TableCell>
+
 											<TableCell align="right">
 												<UserMoreMenu 
 													handleEdit={()=>{openUpdateVendorDrawer(row)}}

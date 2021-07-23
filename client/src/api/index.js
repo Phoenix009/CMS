@@ -136,7 +136,7 @@ export const updateVendor = (id, formData) => {
 };
 export const deleteVendor = (row) => {
 	console.log(row);
-	return axiosInstance.delete(`users/vendor/${row}/`);
+	return axiosInstance.delete(`vendor/vendor/${row}/`);
 };
 
 // Vehicle
