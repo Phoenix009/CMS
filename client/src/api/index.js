@@ -108,19 +108,11 @@ export const addEmployee = (formData) =>
 export const viewAllAttendance = () =>
 	axiosInstance.get("attendance/attendance");
 
-// gunmen
-export const addGunmen = (formData)=> axiosInstance.post('vendor/custodian/',formData);
-// export const updateGunmen = (formData)=> axiosInstance.put('vendor/custodian/',formData);
-export const updateGunme = (id,formData) =>{
-	return axiosInstance.put(`vendor/custodian/${id}/`, formData);
-}
-export const deleteGunmen = ()=> axiosInstance.delete('vendor/custodian/');
-export const getGunmens = ()=> axiosInstance.get('vendor/custodian');
-
 // regions
-export const getAllRegions = () => axiosInstance.get('users/region');
-export const addRegion = (formData) => axiosInstance.post('users/region/', formData);
-export const updateRegion = (id,formData) =>{
+export const getAllRegions = () => axiosInstance.get("users/region");
+export const addRegion = (formData) =>
+	axiosInstance.post("users/region/", formData);
+export const updateRegion = (id, formData) => {
 	return axiosInstance.put(`users/region/${id}/`, formData);
 };
 export const deleteRegion = (id) => {
@@ -129,6 +121,7 @@ export const deleteRegion = (id) => {
 
 // vendors
 export const getAllVendors = () => axiosInstance.get("vendor/vendor");
+export const getAVendors = (id) => axiosInstance.get(`vendor/vendor/${id}/`);
 export const addVendor = (formData) =>
 	axiosInstance.post("vendor/vendor/", formData);
 	export const updateVendor = (id, formData) => {
@@ -137,6 +130,17 @@ export const addVendor = (formData) =>
 export const deleteVendor = (row) => {
 	console.log(row);
 	return axiosInstance.delete(`vendor/vendor/${row}/`);
+};
+
+//custodian api
+export const getAllGunmen = () => axiosInstance.get("vendor/custodian");
+export const addGunmen = (formData) =>
+	axiosInstance.post("vendor/custodian/", formData);
+export const updateGunmen = (id, formData) => {
+	return axiosInstance.put(`vendor/custodian/${id}/`, formData);
+};
+export const deleteGunmen = (row) => {
+	return axiosInstance.delete(`vendor/custodian/${row}/`);
 };
 
 // Vehicle

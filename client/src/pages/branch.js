@@ -232,6 +232,7 @@ export default function Branch() {
 			});
 		}
 	};
+
 	useEffect(() => {
 		getData();
 	}, []);

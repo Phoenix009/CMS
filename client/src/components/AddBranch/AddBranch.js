@@ -34,14 +34,14 @@ import { getAllRegions, getAllEmployees, addBranch } from "../../api/index";
 
 // ----------------------------------------------------------------------
 
-ShopFilterSidebar.propTypes = {
+AddBranch.propTypes = {
 	isOpenFilter: PropTypes.bool,
 	onResetFilter: PropTypes.func,
 	onOpenFilter: PropTypes.func,
 	onCloseFilter: PropTypes.func,
 };
 
-export default function ShopFilterSidebar({
+export default function AddBranch({
 	isOpenFilter,
 	onResetFilter,
 	onOpenFilter,
