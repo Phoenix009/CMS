@@ -63,7 +63,7 @@ export default function UpdateEmployee({
 		console.log(branch);
 		try {
 			let x = JSON.stringify(branch)
-			const data = await updateBranch(branch?.id, branch);
+			const data = await updateBranch(branch?.id, x);
 			console.log(data);
 			if (data.status === 200) {
 				toast("Branch Updated", {
