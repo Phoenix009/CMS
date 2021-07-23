@@ -45,7 +45,8 @@ const TABLE_HEAD = [
   { id: "id", label: "ID" },
   { id: "from", label: "From", alignRight: false },
   { id: "to", label: "To", alignRight: false },
-  { id: "vehicle", label: "vehicle", alignRight: false },
+  { id: "vehicle", label: "Vehicle", alignRight: false },
+  { id: "branch", label: "Branch", alignRight: false },
   { id: "gunman_1", label: "Gunman 1", alignRight: false },
   { id: "gunman_2", label: "Gunman 2", alignRight: false },
   { id: "gunman_3", label: "Gunman 3", alignRight: false },
@@ -306,6 +307,7 @@ export default function User() {
                       <TableCell>{row.start_location}</TableCell>
                       <TableCell>{row.end_location}</TableCell>
                       <TableCell>{row.vehicle?.number_plate}</TableCell>
+                      <TableCell>{row.branch?.name}</TableCell>
                       <TableCell>
                         {`${row.custodian_1?row.custodian_1.first_name+" "+row.custodian_1.last_name:'None'} `}
                       </TableCell>

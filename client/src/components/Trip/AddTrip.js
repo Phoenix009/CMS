@@ -29,7 +29,7 @@ import {
 	Select,
 } from "@material-ui/core";
 //
-import { addTrip, getGunmens, getAllVehicles } from "../../api/index";
+import { addTrip, getGunmens, getAllVehicles, getAllBranch } from "../../api/index";
 // ----------------------------------------------------------------------
 
 // ----------------------------------------------------------------------
@@ -53,6 +53,8 @@ export default function ShopFilterSidebar({
 		custodian_1: "",
 		custodian_2: "",
 		custodian_3: "",
+		branch:"",
+		added_by:1,
 
 		// 'branch' : '',
 		vehicle: "",
@@ -60,6 +62,7 @@ export default function ShopFilterSidebar({
 
 	const [gunmen, setGunmen] = useState([]);
 	const [vehicle, setVehicle] = useState([]);
+	const [branch, setBranch] = useState([]);
 	const handleChange = (e) => {
 		setTrip({ ...trip, [e.target.name]: e.target.value });
 		console.log(trip);
@@ -164,10 +167,41 @@ export default function ShopFilterSidebar({
 			});
 		}
 	};
+	const getBranches = async () => {
+		try {
+			const data = await getAllBranch();
+			console.log(data);
+			if (data.status === 200) {
+				setBranch(data?.data?.results);
+			} else {
+				toast.error("Something went wrong!", {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
+		} catch (error) {
+			console.log(error);
+			toast.error("Something went wrong!", {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	};
 
 	useEffect(() => {
 		getAllGunmen();
 		getVehicles();
+		getBranches();
 		console.log(gunmen);
 	}, []);
 	return (
@@ -227,6 +261,26 @@ export default function ShopFilterSidebar({
 								{vehicle.map((instance) => (
 									<MenuItem value={instance.id}>
 										{instance.number_plate}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Grid>
+					<Grid item xs={12} sm={12} lg={6}>
+						<FormControl variant="outlined" fullWidth>
+							<InputLabel id="demo-simple-select-outlined-label">
+								Branch
+							</InputLabel>
+							<Select
+								labelId="demo-simple-select-outlined-label"
+								id="demo-simple-select-outlined"
+								name="branch"
+								onChange={handleChange}
+							>
+								<MenuItem value={null}>None</MenuItem>
+								{branch.map((instance) => (
+									<MenuItem value={instance.id}>
+										{instance.name}
 									</MenuItem>
 								))}
 							</Select>

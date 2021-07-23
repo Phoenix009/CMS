@@ -29,7 +29,7 @@ import {
 	Select,
 } from "@material-ui/core";
 //
-import { getGunmens, getAllVehicles, updateTrip } from "../../api/index";
+import { getGunmens, getAllVehicles,getAllBranch, updateTrip } from "../../api/index";
 // ----------------------------------------------------------------------
 
 // ----------------------------------------------------------------------
@@ -51,6 +51,7 @@ export default function UpdateEmployee({
 }) {
 	const [trip, setTrip] = useState(tripInfo);
 	const [gunmen, setGunmen] = useState([]);
+	const [branch, setBranch] = useState([]);
 	const [vehicle, setVehicle] = useState([]);
 	const handleChange = (e) => {
 		setTrip({ ...trip, [e.target.name]: e.target.value });
@@ -118,16 +119,44 @@ export default function UpdateEmployee({
 			});
 		}
 	};
-	const handleSubmit = async () => {
-		console.log(trip);
+	const getBranches = async () => {
 		try {
+			const data = await getAllBranch();
+			console.log(data);
+			if (data.status === 200) {
+				setBranch(data?.data?.results);
+			} else {
+				toast.error("Something went wrong!", {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
+		} catch (error) {
+			console.log(error);
+			toast.error("Something went wrong!", {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	};
+	const handleSubmit = async () => {
+		
+		try {
+			console.log(trip.trip_code);
+			let x = JSON.stringify(trip)
+			console.log(x);
 			const data = await updateTrip(trip?.id, {
-				start_location: trip.start_location,
-				end_location: trip.end_location,
-				custodian_1: trip.custodian_1,
-				custodian_2: trip.custodian_2,
-				custodian_3: trip.custodian_3,
-				vehicle: trip.vehicle,
+				
 			});
 			console.log(data);
 			if (data.status === 200) {
@@ -167,7 +196,7 @@ export default function UpdateEmployee({
 	useEffect(() => {
 		getAllGunmen();
 		getVehicles();
-
+		getBranches();
 		setTrip(tripInfo);
 	}, [tripInfo]);
 	return (
@@ -202,7 +231,7 @@ export default function UpdateEmployee({
 							name="start_location"
 							onChange={handleChange}
 							fullWidth
-							value={trip?.start_location}
+							value={trip.start_location}
 						></TextField>
 					</Grid>
 					<Grid item xs={12} sm={12} lg={6}>
@@ -211,7 +240,7 @@ export default function UpdateEmployee({
 							name="end_location"
 							onChange={handleChange}
 							fullWidth
-							value={trip?.end_location}
+							value={trip.end_location}
 						></TextField>
 					</Grid>
 					<Grid item xs={12} sm={12} lg={6}>
@@ -224,12 +253,33 @@ export default function UpdateEmployee({
 								id="demo-simple-select-outlined"
 								name="vehicle"
 								onChange={handleChange}
-								value={trip?.vehicle}
+								value={trip.vehicle}
 							>
 								<MenuItem value={null}>None</MenuItem>
 								{vehicle.map((instance) => (
 									<MenuItem value={instance.id}>
 										{instance.number_plate}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Grid>
+					<Grid item xs={12} sm={12} lg={6}>
+						<FormControl variant="outlined" fullWidth>
+							<InputLabel id="demo-simple-select-outlined-label">
+								Branch
+							</InputLabel>
+							<Select
+								labelId="demo-simple-select-outlined-label"
+								id="demo-simple-select-outlined"
+								name="branch"
+								onChange={handleChange}
+								value={trip?.branch?.name}
+							>
+								<MenuItem value={null}>None</MenuItem>
+								{branch.map((instance) => (
+									<MenuItem value={instance.id}>
+										{instance.name}
 									</MenuItem>
 								))}
 							</Select>
@@ -245,7 +295,7 @@ export default function UpdateEmployee({
 								id="demo-simple-select-outlined"
 								name="custodian_1"
 								onChange={handleChange}
-								value={trip?.custodian_1}
+								value={trip?.custodian_1?.name}
 							>
 								<MenuItem value={null}>None</MenuItem>
 								{gunmen.map((instance) => (
@@ -267,7 +317,7 @@ export default function UpdateEmployee({
 								id="demo-simple-select-outlined"
 								name="custodian_2"
 								onChange={handleChange}
-								value={trip?.custodian_2}
+								value={trip?.custodian_2?.name}
 							>
 								<MenuItem value={null}>None</MenuItem>
 								{gunmen.map((instance) => (
@@ -289,7 +339,7 @@ export default function UpdateEmployee({
 								id="demo-simple-select-outlined"
 								name="custodian_3"
 								onChange={handleChange}
-								value={trip?.custodian_3}
+								value={trip?.custodian_3?.name}
 							>
 								<MenuItem value={null}>None</MenuItem>
 								{gunmen.map((instance) => (
