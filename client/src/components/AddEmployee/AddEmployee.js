@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Form, FormikProvider } from 'formik';
 import closeFill from '@iconify/icons-eva/close-fill';
 import roundClearAll from '@iconify/icons-ic/round-clear-all';
 import roundFilterList from '@iconify/icons-ic/round-filter-list';
+import {toast} from 'react-toastify';
 // material
 import {
   Box,
@@ -27,6 +28,7 @@ import {
   MenuItem,
   Select
 } from '@material-ui/core';
+import { addEmployee, getAllEmployees } from 'src/api/index';
 //
 
 // ----------------------------------------------------------------------
@@ -60,9 +62,77 @@ export default function ShopFilterSidebar({
     setEmployee({...employee, [e.target.name] : e.target.value});
     console.log(employee);
   }
-  const handleSubmit = ()=>{
-    console.log(employee);
+  const handleSubmit = async ()=>{
+    try{
+			const data = await addEmployee(employee);
+			console.log(data);
+			if(data.status === 201){
+				toast('Employee Added', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				});
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
   }
+  const getUsers = async ()=>{
+		try{
+			const data = await getAllEmployees();
+			console.log(data);
+			if(data.status === 200 ){
+				setEmployee(data?.data?.results);
+			}else{
+				toast.error('Something went wrong!', {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			} 
+		}catch(error){
+			console.log(error);
+			toast.error('Something went wrong!', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	}
+  
+  useEffect(() => {
+		getUsers();
+	}, []);
   return (
     <>
           <Drawer
