@@ -96,7 +96,6 @@ export default function User() {
 	const [isUpdateEmployeeOpen, setUpdateEmployeeOpen] = useState(false);
 	const [regions, setRegions] = useState([]);
 	const [regionInfo, setRegionInfo] = useState({});
-
 	
 	
 	// const handleClose
@@ -263,7 +262,11 @@ export default function User() {
 				<AddEmployee
 					isOpenFilter={isAddEmployeeOpen}
 					onOpenFilter= {()=>{setAddEmployeeOpen(true)}}
-					onCloseFilter={()=>{setAddEmployeeOpen(false)}}
+					onCloseFilter={async ()=>{
+						setAddEmployeeOpen(false)
+						await getData();
+					}
+				}
 					regionInfo = {{}}
 				/>
 				<UpdateEmployee
@@ -303,7 +306,7 @@ export default function User() {
 											</TableCell>
 											<TableCell >
 											{row.address.length<10?row.address:row.address.substring(0,10)}
-											
+											   
 											</TableCell>
 											<TableCell >
 												{`${row.regional_officer?.first_name} ${row.regional_officer?.last_name}`}
