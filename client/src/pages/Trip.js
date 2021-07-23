@@ -305,7 +305,7 @@ export default function User() {
                       </TableCell>
                       <TableCell>{row.start_location}</TableCell>
                       <TableCell>{row.end_location}</TableCell>
-                      <TableCell>{row.vehicle.number_plate}</TableCell>
+                      <TableCell>{row.vehicle?.number_plate}</TableCell>
                       <TableCell>
                         {`${row.custodian_1?row.custodian_1.first_name+" "+row.custodian_1.last_name:'None'} `}
                       </TableCell>
