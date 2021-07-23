@@ -158,7 +158,9 @@ export default function Branch() {
 	const openUpdateBranchDrawer = (row) => {
 		console.log(row);
 		setBranchInfo(row);
+		getData();
 		setUpdateEmployeeOpen(true);
+		
 	};
 
 	const handleDeleteBranch = async (branch) => {

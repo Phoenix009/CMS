@@ -163,7 +163,7 @@ export default function User() {
 	const getData = async ()=>{
 		try{
 			const data = await getAllEmployees();
-			console.log(data);
+			console.log(data.data.results);
 			if(data.status === 200 ){
 				setEmployees(data?.data?.results);
 			}else{
