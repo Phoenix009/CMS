@@ -28,110 +28,43 @@ import {
 	MenuItem,
 	Select,
 } from "@material-ui/core";
-//
-import { getAllGunmen, getAllVehicles, updateTrip } from "../../api/index";
-// ----------------------------------------------------------------------
+import { getAllRegions, getAllEmployees, addBranch } from "../../api/index";
 
 // ----------------------------------------------------------------------
 
-UpdateEmployee.propTypes = {
+// ----------------------------------------------------------------------
+
+AddGunmen.propTypes = {
 	isOpenFilter: PropTypes.bool,
 	onResetFilter: PropTypes.func,
 	onOpenFilter: PropTypes.func,
 	onCloseFilter: PropTypes.func,
-	tripInfo: PropTypes.object,
 };
 
-export default function UpdateEmployee({
+export default function AddGunmen({
 	isOpenFilter,
 	onResetFilter,
 	onOpenFilter,
 	onCloseFilter,
-	tripInfo,
 }) {
-	const [trip, setTrip] = useState(tripInfo);
-	const [gunmen, setGunmen] = useState([]);
-	const [vehicle, setVehicle] = useState([]);
+	const [employee_info, setEmployee_info] = useState([]);
+	const [region_info, setRegion_info] = useState([]);
+	const [branch, setBranch] = useState({
+		name: "",
+		address: "",
+		branch_manager: "",
+		region: "",
+	});
 	const handleChange = (e) => {
-		setTrip({ ...trip, [e.target.name]: e.target.value });
-		console.log(trip);
-	};
-
-	const getAllGunmen = async () => {
-		try {
-			const data = await getAllGunmen();
-			console.log(data);
-			if (data.status === 200) {
-				setGunmen(data?.data?.results);
-				onCloseFilter();
-			} else {
-				toast.error("Something went wrong!", {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			}
-		} catch (error) {
-			console.log(error);
-			toast.error("Something went wrong!", {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
-	};
-	const getVehicles = async () => {
-		try {
-			const data = await getAllVehicles();
-			console.log(data);
-			if (data.status === 200) {
-				setVehicle(data?.data?.results);
-			} else {
-				toast.error("Something went wrong!", {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			}
-		} catch (error) {
-			console.log(error);
-			toast.error("Something went wrong!", {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
+		setBranch({ ...branch, [e.target.name]: e.target.value });
+		console.log(branch);
 	};
 	const handleSubmit = async () => {
-		console.log(trip);
 		try {
-			const data = await updateTrip(trip?.id, {
-				start_location: trip.start_location,
-				end_location: trip.end_location,
-				custodian_1: trip.custodian_1,
-				custodian_2: trip.custodian_2,
-				custodian_3: trip.custodian_3,
-				vehicle: trip.vehicle,
-			});
+			const data = await addBranch(branch);
 			console.log(data);
-			if (data.status === 200) {
-				toast("Trip Updated", {
+			if (data.status === 201) {
+				toast("Branch Added", {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -139,6 +72,67 @@ export default function UpdateEmployee({
 					pauseOnHover: true,
 					draggable: true,
 				});
+				isOpenFilter();
+			} else {
+				toast.error("Something went wrong!", {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
+		} catch (error) {
+			console.log(error);
+			toast.error("Something went wrong!", {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	};
+	const getRegion = async () => {
+		try {
+			const data = await getAllRegions();
+			console.log(data);
+			if (data.status === 200) {
+				setRegion_info(data?.data?.results);
+			} else {
+				toast.error("Something went wrong!", {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
+		} catch (error) {
+			console.log(error);
+			toast.error("Something went wrong!", {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	};
+	const getEmployees = async () => {
+		try {
+			const data = await getAllEmployees();
+			console.log(data);
+			if (data.status === 200) {
+				setEmployee_info(data?.data?.results);
 			} else {
 				toast.error("Something went wrong!", {
 					position: "top-right",
@@ -165,11 +159,9 @@ export default function UpdateEmployee({
 	};
 
 	useEffect(() => {
-		getAllGunmen();
-		getVehicles();
-
-		setTrip(tripInfo);
-	}, [tripInfo]);
+		getRegion();
+		getEmployees();
+	}, []);
 	return (
 		<>
 			<Drawer
@@ -187,7 +179,7 @@ export default function UpdateEmployee({
 					sx={{ px: 1, py: 2 }}
 				>
 					<Typography variant="subtitle1" sx={{ ml: 1 }}>
-						Update Trip
+						Add Branch
 					</Typography>
 					<IconButton onClick={onCloseFilter}>
 						<Icon icon={closeFill} width={20} height={20} />
@@ -195,120 +187,71 @@ export default function UpdateEmployee({
 				</Stack>
 
 				<Divider />
-				<Grid container spacing={2} sx={{ px: 5, py: 10 }}>
-					<Grid item xs={12} sm={12} lg={6}>
+				<Grid container spacing={3} sx={{ px: 5, py: 10 }}>
+					<Grid item xs={12} sm={12} lg={4}>
 						<TextField
-							label="From"
-							name="start_location"
+							label="Branch Name"
+							name="name"
 							onChange={handleChange}
 							fullWidth
-							value={trip?.start_location}
 						></TextField>
 					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
+					<Grid item xs={12} sm={12} lg={8}>
 						<TextField
-							label="To"
-							name="end_location"
+							label="Address"
+							name="address"
 							onChange={handleChange}
 							fullWidth
-							value={trip?.end_location}
 						></TextField>
 					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
+					<Grid item xs={12} sm={12} lg={4}>
 						<FormControl variant="outlined" fullWidth>
 							<InputLabel id="demo-simple-select-outlined-label">
-								Vehicle
+								Branch Manager Email
 							</InputLabel>
 							<Select
 								labelId="demo-simple-select-outlined-label"
 								id="demo-simple-select-outlined"
-								name="vehicle"
+								name="branch_manager"
+								label="Age"
 								onChange={handleChange}
-								value={trip?.vehicle}
 							>
-								<MenuItem value={null}>None</MenuItem>
-								{vehicle.map((instance) => (
+								{employee_info.map((instance) => (
 									<MenuItem value={instance.id}>
-										{instance.number_plate}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
-						<FormControl variant="outlined" fullWidth>
-							<InputLabel id="demo-simple-select-outlined-label">
-								Custodian 1
-							</InputLabel>
-							<Select
-								labelId="demo-simple-select-outlined-label"
-								id="demo-simple-select-outlined"
-								name="custodian_1"
-								onChange={handleChange}
-								value={trip?.custodian_1}
-							>
-								<MenuItem value={null}>None</MenuItem>
-								{gunmen.map((instance) => (
-									<MenuItem value={instance.id}>
-										{instance.first_name}{" "}
-										{instance.last_name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
-						<FormControl variant="outlined" fullWidth>
-							<InputLabel id="demo-simple-select-outlined-label">
-								Custodian 2
-							</InputLabel>
-							<Select
-								labelId="demo-simple-select-outlined-label"
-								id="demo-simple-select-outlined"
-								name="custodian_2"
-								onChange={handleChange}
-								value={trip?.custodian_2}
-							>
-								<MenuItem value={null}>None</MenuItem>
-								{gunmen.map((instance) => (
-									<MenuItem value={instance.id}>
-										{instance.first_name}{" "}
-										{instance.last_name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
-						<FormControl variant="outlined" fullWidth>
-							<InputLabel id="demo-simple-select-outlined-label">
-								Custodian 3
-							</InputLabel>
-							<Select
-								labelId="demo-simple-select-outlined-label"
-								id="demo-simple-select-outlined"
-								name="custodian_3"
-								onChange={handleChange}
-								value={trip?.custodian_3}
-							>
-								<MenuItem value={null}>None</MenuItem>
-								{gunmen.map((instance) => (
-									<MenuItem value={instance.id}>
-										{instance.first_name}{" "}
-										{instance.last_name}
+										{instance.email}
 									</MenuItem>
 								))}
 							</Select>
 						</FormControl>
 					</Grid>
 
+					<Grid item xs={12} sm={12} lg={4}>
+						<FormControl variant="outlined" fullWidth>
+							<InputLabel id="demo-simple-select-outlined-label">
+								Region
+							</InputLabel>
+							<Select
+								labelId="demo-simple-select-outlined-label"
+								id="demo-simple-select-outlined"
+								name="region"
+								label="Age"
+								onChange={handleChange}
+							>
+								{region_info.map((instance) => (
+									<MenuItem value={instance.id}>
+										{instance.name}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Grid>
 					<Grid item xs={12} sm={12} lg={12} align="center">
 						<Button
 							variant="contained"
 							color="primary"
 							onClick={handleSubmit}
 						>
-							Update Trip
+							Add Branch
 						</Button>
 					</Grid>
 				</Grid>

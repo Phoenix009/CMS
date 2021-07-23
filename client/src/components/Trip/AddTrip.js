@@ -29,7 +29,7 @@ import {
 	Select,
 } from "@material-ui/core";
 //
-import { addTrip, getGunmens, getAllVehicles } from "../../api/index";
+import { addTrip, getAllGunmen, getAllVehicles } from "../../api/index";
 // ----------------------------------------------------------------------
 
 // ----------------------------------------------------------------------
@@ -105,7 +105,7 @@ export default function ShopFilterSidebar({
 
 	const getAllGunmen = async () => {
 		try {
-			const data = await getGunmens();
+			const data = await getAllGunmen();
 			console.log(data);
 			if (data.status === 200) {
 				setGunmen(data?.data?.results);

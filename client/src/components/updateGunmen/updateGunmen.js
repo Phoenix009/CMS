@@ -29,40 +29,56 @@ import {
 	Select,
 } from "@material-ui/core";
 //
-import { getAllGunmen, getAllVehicles, updateTrip } from "../../api/index";
+import { getAllEmployees, getAllRegions, updateBranch } from "../../api/index";
 // ----------------------------------------------------------------------
 
 // ----------------------------------------------------------------------
 
-UpdateEmployee.propTypes = {
+UpdateGunmen.propTypes = {
 	isOpenFilter: PropTypes.bool,
 	onResetFilter: PropTypes.func,
 	onOpenFilter: PropTypes.func,
 	onCloseFilter: PropTypes.func,
-	tripInfo: PropTypes.object,
+	branchInfo: PropTypes.object,
 };
 
-export default function UpdateEmployee({
+export default function UpdateGunmen({
 	isOpenFilter,
 	onResetFilter,
 	onOpenFilter,
 	onCloseFilter,
-	tripInfo,
+	branchInfo,
 }) {
-	const [trip, setTrip] = useState(tripInfo);
-	const [gunmen, setGunmen] = useState([]);
-	const [vehicle, setVehicle] = useState([]);
+	console.log(branchInfo);
+	const [branch, setBranch] = useState(branchInfo);
+	const [region_info, setRegion_info] = useState([]);
+	const [employees, setEmployees] = useState([]);
 	const handleChange = (e) => {
-		setTrip({ ...trip, [e.target.name]: e.target.value });
-		console.log(trip);
+		setBranch({ ...branch, [e.target.name]: e.target.value });
+		console.log(branch);
+		console.log(e);
 	};
-
-	const getAllGunmen = async () => {
+	const handleSubmit = async () => {
+		console.log("----------==========--------");
+		console.log(branch);
 		try {
-			const data = await getAllGunmen();
+			const data = await updateBranch(branch?.id, {
+				name: branch?.name,
+				address: branch?.address,
+				branch_manager: branch.branch_manager.id,
+				region: branch.region.id,
+				// regional_officer : region?.regional_officer?.id
+			});
 			console.log(data);
 			if (data.status === 200) {
-				setGunmen(data?.data?.results);
+				toast("Branch Updated", {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				});
 				onCloseFilter();
 			} else {
 				toast.error("Something went wrong!", {
@@ -88,12 +104,12 @@ export default function UpdateEmployee({
 			});
 		}
 	};
-	const getVehicles = async () => {
+	const getUsers = async () => {
 		try {
-			const data = await getAllVehicles();
+			const data = await getAllEmployees();
 			console.log(data);
 			if (data.status === 200) {
-				setVehicle(data?.data?.results);
+				setEmployees(data?.data?.results);
 			} else {
 				toast.error("Something went wrong!", {
 					position: "top-right",
@@ -118,27 +134,12 @@ export default function UpdateEmployee({
 			});
 		}
 	};
-	const handleSubmit = async () => {
-		console.log(trip);
+	const getRegion = async () => {
 		try {
-			const data = await updateTrip(trip?.id, {
-				start_location: trip.start_location,
-				end_location: trip.end_location,
-				custodian_1: trip.custodian_1,
-				custodian_2: trip.custodian_2,
-				custodian_3: trip.custodian_3,
-				vehicle: trip.vehicle,
-			});
+			const data = await getAllRegions();
 			console.log(data);
 			if (data.status === 200) {
-				toast("Trip Updated", {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-				});
+				setRegion_info(data?.data?.results);
 			} else {
 				toast.error("Something went wrong!", {
 					position: "top-right",
@@ -165,11 +166,11 @@ export default function UpdateEmployee({
 	};
 
 	useEffect(() => {
-		getAllGunmen();
-		getVehicles();
-
-		setTrip(tripInfo);
-	}, [tripInfo]);
+		getUsers();
+		getRegion();
+		setBranch(branchInfo);
+		console.log(branchInfo);
+	}, [branchInfo]);
 	return (
 		<>
 			<Drawer
@@ -187,7 +188,7 @@ export default function UpdateEmployee({
 					sx={{ px: 1, py: 2 }}
 				>
 					<Typography variant="subtitle1" sx={{ ml: 1 }}>
-						Update Trip
+						Update Branch
 					</Typography>
 					<IconButton onClick={onCloseFilter}>
 						<Icon icon={closeFill} width={20} height={20} />
@@ -198,104 +199,58 @@ export default function UpdateEmployee({
 				<Grid container spacing={2} sx={{ px: 5, py: 10 }}>
 					<Grid item xs={12} sm={12} lg={6}>
 						<TextField
-							label="From"
-							name="start_location"
+							label="Branch Name"
+							name="name"
 							onChange={handleChange}
 							fullWidth
-							value={trip?.start_location}
+							value={branch?.name}
 						></TextField>
 					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
+					<Grid item xs={12} sm={12} lg={8}>
 						<TextField
-							label="To"
-							name="end_location"
+							label="Address"
+							name="address"
 							onChange={handleChange}
 							fullWidth
-							value={trip?.end_location}
+							value={branch?.address}
 						></TextField>
 					</Grid>
 					<Grid item xs={12} sm={12} lg={6}>
 						<FormControl variant="outlined" fullWidth>
 							<InputLabel id="demo-simple-select-outlined-label">
-								Vehicle
+								Branch Manager Email
 							</InputLabel>
 							<Select
 								labelId="demo-simple-select-outlined-label"
 								id="demo-simple-select-outlined"
-								name="vehicle"
+								name="branch_manager"
+								value={branch?.id}
 								onChange={handleChange}
-								value={trip?.vehicle}
 							>
-								<MenuItem value={null}>None</MenuItem>
-								{vehicle.map((instance) => (
+								{employees.map((instance) => (
 									<MenuItem value={instance.id}>
-										{instance.number_plate}
+										{instance.email}
 									</MenuItem>
 								))}
 							</Select>
 						</FormControl>
 					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
+					<Grid item xs={12} sm={12} lg={4}>
 						<FormControl variant="outlined" fullWidth>
 							<InputLabel id="demo-simple-select-outlined-label">
-								Custodian 1
+								Region
 							</InputLabel>
 							<Select
 								labelId="demo-simple-select-outlined-label"
 								id="demo-simple-select-outlined"
-								name="custodian_1"
+								label="Region"
+								name="region"
+								value={branch?.region?.id}
 								onChange={handleChange}
-								value={trip?.custodian_1}
 							>
-								<MenuItem value={null}>None</MenuItem>
-								{gunmen.map((instance) => (
+								{region_info.map((instance) => (
 									<MenuItem value={instance.id}>
-										{instance.first_name}{" "}
-										{instance.last_name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
-						<FormControl variant="outlined" fullWidth>
-							<InputLabel id="demo-simple-select-outlined-label">
-								Custodian 2
-							</InputLabel>
-							<Select
-								labelId="demo-simple-select-outlined-label"
-								id="demo-simple-select-outlined"
-								name="custodian_2"
-								onChange={handleChange}
-								value={trip?.custodian_2}
-							>
-								<MenuItem value={null}>None</MenuItem>
-								{gunmen.map((instance) => (
-									<MenuItem value={instance.id}>
-										{instance.first_name}{" "}
-										{instance.last_name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
-						<FormControl variant="outlined" fullWidth>
-							<InputLabel id="demo-simple-select-outlined-label">
-								Custodian 3
-							</InputLabel>
-							<Select
-								labelId="demo-simple-select-outlined-label"
-								id="demo-simple-select-outlined"
-								name="custodian_3"
-								onChange={handleChange}
-								value={trip?.custodian_3}
-							>
-								<MenuItem value={null}>None</MenuItem>
-								{gunmen.map((instance) => (
-									<MenuItem value={instance.id}>
-										{instance.first_name}{" "}
-										{instance.last_name}
+										{instance.name}
 									</MenuItem>
 								))}
 							</Select>
@@ -308,7 +263,7 @@ export default function UpdateEmployee({
 							color="primary"
 							onClick={handleSubmit}
 						>
-							Update Trip
+							Update Branch
 						</Button>
 					</Grid>
 				</Grid>

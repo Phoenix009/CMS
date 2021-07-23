@@ -1,12 +1,11 @@
 import { filter } from "lodash";
 import { Icon } from "@iconify/react";
 import { sentenceCase } from "change-case";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
-import {toast} from 'react-toastify';
-import moment from 'moment';
-// material
+import UpdateEmployee from "src/components/updateBranch/updateBranch";
 import {
 	Card,
 	Table,
@@ -22,55 +21,36 @@ import {
 	TableContainer,
 	TablePagination,
 	Breadcrumbs,
-	Link,
-	TextField,
-	Paper,
-	Grid,
-	FormLabel,
-	InputLabel,
-	Select,
-	FormControl,
-	MenuItem,
-	FormHelperText,
-	Box
 } from "@material-ui/core";
 // components
-import Page from "../../components/Page";
-import Label from "../../components/Label";
-import Scrollbar from "../../components/Scrollbar";
-import SearchNotFound from "../../components/SearchNotFound";
-import {
-	addGunmen,
-	getAllVendors
-} from '../../api/index';
-
+import Page from "src/components/Page";
+import Label from "src/components/Label";
+import Scrollbar from "src/components/Scrollbar";
+import SearchNotFound from "src/components/SearchNotFound";
 import {
 	UserListHead,
 	UserListToolbar,
 	UserMoreMenu,
-} from "../../components/_dashboard/user";
+} from "src/components/_dashboard/user";
 //
-import USERLIST from "../../_mocks_/user";
-import {viewAllAttendance,getGunmens} from '../../api/index';
-
+import users from "src/_mocks_/user";
+import AddGunmen from "src/components/AddGunman/AddGunman";
+import UpdateGunmen from "src/components/updateGunmen/updateGunmen";
+import { deleteGunmen, getAllGunmen } from "src/api";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
 	{ id: "id", label: "ID" },
-	{ id: "name", label: "Name" },
-	{ id: "email", label: "Email"},
-	{ id: "vendor", label: "Vendor"},
+	{ id: "first_name", label: "First Name", alignRight: false },
+	{ id: "last_name", label: "Last Name", alignRight: false },
+	{ id: "phone_number", label: "Phone No.", alignRight: false },
+	{ id: "email", label: "Email", alignRight: false },
+	{ id: "vendor", label: "Vendor", alignRight: false },
+	// { id: "status", label: "Status", alignRight: false },
 	{ id: "" },
 ];
 
-const ADD_ATTENDANCE_TABLE_HEAD = [
-	{ id: "id", label: "ID" },
-	{ id: "name", label: "Name" },
-	{ id: "email", label: "Email"},
-	{ id: "vendor", label: "Vendor"},
-	{ id: "" },
-];
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
@@ -106,18 +86,20 @@ function applySortFilter(array, comparator, query) {
 	return stabilizedThis.map((el) => el[0]);
 }
 
-export default function User() {
+export default function Branch() {
 	const [page, setPage] = useState(0);
 	const [order, setOrder] = useState("asc");
 	const [selected, setSelected] = useState([]);
 	const [orderBy, setOrderBy] = useState("name");
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
-	const [attendance, setAttendance] = useState([]);
-	const [gunmensAttendance, setGunmensAttendance] = useState([]);
+	const [isAddGunmenOpen, setAddGunmenOpen] = useState(false);
+	const [isUpdateEmployeeOpen, setUpdateEmployeeOpen] = useState(false);
+	const [gunmen, setGunmen] = useState([]);
+	const [gunmenInfo, setGunmensInfo] = useState({});
 
-	const [vendor, setVendor] = useState([]);
-	const [gunmens, setGunmens] = useState([]);
+	// const handleClose
+
 	const handleRequestSort = (event, property) => {
 		const isAsc = orderBy === property && order === "asc";
 		setOrder(isAsc ? "desc" : "asc");
@@ -126,7 +108,7 @@ export default function User() {
 
 	const handleSelectAllClick = (event) => {
 		if (event.target.checked) {
-			const newSelecteds = USERLIST.map((n) => n.name);
+			const newSelecteds = users.map((n) => n.name);
 			setSelected(newSelecteds);
 			return;
 		}
@@ -150,64 +132,6 @@ export default function User() {
 		}
 		setSelected(newSelected);
 	};
-	const addAttendance = (row)=>{
-		const isAlreadyPresent = attendance.filter((value)=>{return value.id===row.id});
-		if(isAlreadyPresent.length > 0) return;
-		setAttendance([...attendance, row])
-	}
-	const removeAttendance = (row)=>{
-		const newAttendance = attendance.filter((value)=>{return value.id!==row.id});
-		setAttendance(newAttendance);
-	}
-	const [gunmen, setGunmen] = useState({
-		first_name : '',
-		last_name : '',
-		email : '',
-		vendor : ''
-	});
-	
-	const handleChange = (e)=>{
-		setGunmen({...gunmen, [e.target.name] : e.target.value});
-		console.log(gunmen);
-	}
-	const handleSubmit = async ()=>{
-		try{
-				const data = await addGunmen(gunmen);
-				console.log(data);
-				if(data.status === 201){
-					await getData();
-					toast('Gunman Added', {
-						position: "top-right",
-						autoClose: 5000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-					});
-				}else{
-					toast.error('Something went wrong!', {
-						position: "top-right",
-						autoClose: 5000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-						progress: undefined,
-					});
-				} 
-			}catch(error){
-				console.log(error);
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			}
-	  }
 
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
@@ -223,25 +147,38 @@ export default function User() {
 	};
 
 	const emptyRows =
-		page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+		page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
 
 	const filteredUsers = applySortFilter(
-		USERLIST,
+		users,
 		getComparator(order, orderBy),
 		filterName
 	);
 
-	
-
 	const isUserNotFound = filteredUsers.length === 0;
-	const getVendors = async ()=>{
-		try{
-			const data = await getAllVendors();
+
+	const openUpdateBranchDrawer = (row) => {
+		console.log(row);
+		setGunmensInfo(row);
+		setUpdateEmployeeOpen(true);
+	};
+
+	const handleDeleteBranch = async (gunmen) => {
+		try {
+			const data = await deleteGunmen(gunmen?.id);
 			console.log(data);
-			if(data.status === 200 ){
-				setVendor(data?.data?.results);
-			}else{
-				toast.error('Something went wrong!', {
+			if (data.status === 204) {
+				toast("Custodian Deleted", {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				});
+				getData();
+			} else {
+				toast.error("Something went wrong!", {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -250,10 +187,10 @@ export default function User() {
 					draggable: true,
 					progress: undefined,
 				});
-			} 
-		}catch(error){
+			}
+		} catch (error) {
 			console.log(error);
-			toast.error('Something went wrong!', {
+			toast.error("Something went wrong!", {
 				position: "top-right",
 				autoClose: 5000,
 				hideProgressBar: false,
@@ -263,15 +200,17 @@ export default function User() {
 				progress: undefined,
 			});
 		}
-	}
-	const getData = async ()=>{
-		try{
-			const data = await getGunmens();
+	};
+
+	const getData = async () => {
+		try {
+			const data = await getAllGunmen();
+			console.log("Gunmen");
 			console.log(data);
-			if(data.status === 200 ){
-				setGunmens(data?.data?.results);
-			}else{
-				toast.error('Something went wrong!', {
+			if (data.status === 200) {
+				setGunmen(data?.data?.results);
+			} else {
+				toast.error("Something went wrong!", {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -280,10 +219,10 @@ export default function User() {
 					draggable: true,
 					progress: undefined,
 				});
-			} 
-		}catch(error){
+			}
+		} catch (error) {
 			console.log(error);
-			toast.error('Something went wrong!', {
+			toast.error("Something went wrong!", {
 				position: "top-right",
 				autoClose: 5000,
 				hideProgressBar: false,
@@ -293,110 +232,62 @@ export default function User() {
 				progress: undefined,
 			});
 		}
-	}
-	const getAttendanceData = async ()=>{
-		try{
-			const data = await viewAllAttendance();
-			console.log(data);
-			if(data.status === 200 ){
-				setGunmensAttendance(data?.data?.results);
-			}else{
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			} 
-		}catch(error){
-			console.log(error);
-			toast.error('Something went wrong!', {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
-	}
+	};
 
 	useEffect(() => {
 		getData();
-		getAttendanceData();
-		getVendors();
+		// getVendor();
 	}, []);
 
 	return (
-		<>
-		
-		<Page title="Gunmen">
-			
-			<Container >
-			
-			<Container style={{padding:'20px', margin:'20px'}}><Breadcrumbs aria-label="breadcrumb">
-				<RouterLink color="inherit" to="/" onClick={handleClick}>
-					Dashbord
-				</RouterLink>
-				<Typography color="textPrimary">Gunmen's Attendance</Typography>
-			</Breadcrumbs></Container>
-				
-				<Card style={{padding:'20px', marginBottom : '10px'}}>
-					<Grid container spacing={3} direction={{ xs: 'column', sm: 'row' }}>
-						<Grid item xs={12} sm={12} lg={3}>
-							<TextField
-								fullWidth
-								name="first_name"
-								label="First name"
-								onChange={handleChange}
-							/>
-						</Grid>
-						<Grid item xs={12} sm={12} lg={3}>
-							<TextField
-								fullWidth
-								name="last_name"
-								label="Last name"
-								onChange={handleChange}
-							/>
-						</Grid>
-						<Grid item xs={12} sm={12} lg={3}>
-							<TextField
-								fullWidth
-								name="email"
-								label="Email"
-								onChange={handleChange}
-							/>
-						</Grid>
-						<Grid item xs={12} sm={12} lg={3}>
-							<FormControl variant="outlined" fullWidth >
-								<InputLabel id="demo-simple-select-outlined-label">Vendor</InputLabel>
-									<Select
-									labelId="demo-simple-select-outlined-label"
-									id="demo-simple-select-outlined"
-									label="Age"
-									name="vendor"
-									onChange={handleChange}
-									>
-								{
-                          			vendor.map((instance)=>(
-                            		<MenuItem value={instance.id}>{instance.name}</MenuItem>
-                         			 ))
-                        		}
-								</Select>
-							</FormControl>
-						</Grid>
-						<Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Gunman </Button>
-                </Grid>
-					</Grid>
-				</Card>
-				
-
-				<Card >
+		<Page title="Custodian">
+			<Container>
+				<Stack
+					direction="row"
+					alignItems="center"
+					justifyContent="space-between"
+					mb={5}
+				>
+					<Breadcrumbs aria-label="breadcrumb">
+						<RouterLink
+							color="inherit"
+							to="/"
+							onClick={handleClick}
+						>
+							Dashboard
+						</RouterLink>
+						<Typography color="textPrimary">Custodian</Typography>
+					</Breadcrumbs>
+					<Button
+						variant="contained"
+						onClick={() => {
+							setAddGunmenOpen(true);
+						}}
+						startIcon={<Icon icon={plusFill} />}
+					>
+						New Custodian
+					</Button>
+				</Stack>
+				<AddGunmen
+					isOpenFilter={isAddGunmenOpen}
+					onOpenFilter={() => {
+						setAddGunmenOpen(true);
+					}}
+					onCloseFilter={() => {
+						setAddGunmenOpen(false);
+					}}
+				/>
+				<UpdateGunmen
+					isOpenFilter={isUpdateEmployeeOpen}
+					onOpenFilter={() => {
+						setUpdateEmployeeOpen(true);
+					}}
+					onCloseFilter={() => {
+						setUpdateEmployeeOpen(false);
+					}}
+					gunmenInfo={gunmenInfo}
+				/>
+				<Card>
 					<UserListToolbar
 						numSelected={selected.length}
 						filterName={filterName}
@@ -410,39 +301,63 @@ export default function User() {
 									order={order}
 									orderBy={orderBy}
 									headLabel={TABLE_HEAD}
-									rowCount={USERLIST.length}
+									rowCount={users.length}
 									numSelected={selected.length}
 									onRequestSort={handleRequestSort}
 									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-									{gunmens.map((row)=>(
-										<TableRow key={row.name}>
-											<TableCell component="th" scope="row">
+									{gunmen.map((row) => (
+										<TableRow>
+											<TableCell
+												component="th"
+												scope="row"
+											>
 												{row.id}
 											</TableCell>
-											<TableCell >
-												{`${row?.first_name} ${row?.last_name}`}
-											</TableCell>
-											<TableCell >
-												{row?.email}
+											<TableCell>
+												{row.first_name}
 											</TableCell>
 											<TableCell>
-												{row?.vendor.name}
+												{row.last_name}
 											</TableCell>
 											<TableCell>
-												<Button 
-													color="secondary" 
-													variant="contained"
-													onClick={()=>{addAttendance(row)}}
-												>
-													Add Attendance
-												</Button>
+												{row.phone_number}
 											</TableCell>
-
-									  </TableRow>
+											<TableCell>{row.email}</TableCell>
+											<TableCell>
+												{`${row.vendor.name}`}
+											</TableCell>
+											<TableCell align="right">
+												<UserMoreMenu
+													handleEdit={() => {
+														openUpdateBranchDrawer(
+															row
+														);
+													}}
+													handleDelete={() => {
+														handleDeleteBranch(row);
+													}}
+												/>
+											</TableCell>
+										</TableRow>
 									))}
 								</TableBody>
+								{isUserNotFound && (
+									<TableBody>
+										<TableRow>
+											<TableCell
+												align="center"
+												colSpan={6}
+												sx={{ py: 3 }}
+											>
+												<SearchNotFound
+													searchQuery={filterName}
+												/>
+											</TableCell>
+										</TableRow>
+									</TableBody>
+								)}
 							</Table>
 						</TableContainer>
 					</Scrollbar>
@@ -450,137 +365,14 @@ export default function User() {
 					<TablePagination
 						rowsPerPageOptions={[5, 10, 25]}
 						component="div"
-						count={USERLIST.length}
+						count={users.length}
 						rowsPerPage={rowsPerPage}
 						page={page}
 						onPageChange={handleChangePage}
 						onRowsPerPageChange={handleChangeRowsPerPage}
 					/>
 				</Card>
-				<Box sx={{my:5}}>
-					<Card >
-					
-						<Typography variant="h5" align="center"sx={{py:2}}>
-							Add Attendance
-						</Typography>
-
-						<Scrollbar>
-							<TableContainer sx={{ minWidth: 800 }}>
-								<Table>
-								<UserListHead
-									order={order}
-									orderBy={orderBy}
-									headLabel={TABLE_HEAD}
-									rowCount={USERLIST.length}
-									numSelected={selected.length}
-									onRequestSort={handleRequestSort}
-									onSelectAllClick={handleSelectAllClick}
-								/>
-									<TableBody>
-										{attendance.map((row)=>(
-											<TableRow key={row.name}>
-												<TableCell component="th" scope="row">
-													{row.id}
-												</TableCell>
-												<TableCell >
-													{`${row?.first_name} ${row?.last_name}`}
-												</TableCell>
-												<TableCell >
-													{row?.email}
-												</TableCell>
-												<TableCell>
-													{row?.vendor.name}
-												</TableCell>
-												<TableCell>
-												<Button 
-													color="secondary" 
-													variant="contained"
-													sx = {{backgroundColor : "red"}}
-													onClick={()=>{removeAttendance(row)}}
-												>
-													Remove
-												</Button>
-											</TableCell>
-
-										</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
-						</Scrollbar>
-					</Card>
-				</Box>
-				<Box sx={{my:5}}>
-					<Card >
-					
-						<Typography variant="h5" align="center"sx={{py:2}}>
-							Todays Attendance
-						</Typography>
-
-						<Scrollbar>
-							<TableContainer sx={{ minWidth: 800 }}>
-								<Table>
-								<UserListHead
-									order={order}
-									orderBy={orderBy}
-									headLabel={TABLE_HEAD}
-									rowCount={USERLIST.length}
-									numSelected={selected.length}
-									onRequestSort={handleRequestSort}
-									onSelectAllClick={handleSelectAllClick}
-								/>
-									<TableBody>
-										{gunmensAttendance.map((row)=>(
-											<TableRow key={row.name}>
-												<TableCell component="th" scope="row">
-													{row.id}
-												</TableCell>
-												<TableCell >
-													{`${row?.gunmen?.first_name} ${row?.gunmen?.last_name}`}
-												</TableCell>
-												<TableCell >
-													{row?.gunmen?.email}
-												</TableCell>
-												<TableCell>
-													{moment(row?.entry_time).format('hh:mm on DD-MM-YYYY')}
-												</TableCell>
-												<TableCell>
-													{
-														row?.exit_time || 
-														<Button 
-															color="secondary" 
-															variant="contained"
-															
-														>
-															CheckOut
-														</Button>
-													}
-												</TableCell>
-												<TableCell>
-													{row?.branch?.name}
-												</TableCell>
-												<TableCell>
-													{row?.vendor?.name}
-												</TableCell>
-												<TableCell>
-													{row?.added_by?.email}
-												</TableCell>
-												<TableCell>
-													{row?.branch?.name}
-												</TableCell>
-												<TableCell>
-											</TableCell>
-
-										</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
-						</Scrollbar>
-					</Card>
-				</Box>
 			</Container>
 		</Page>
-		</>
 	);
 }
