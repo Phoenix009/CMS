@@ -6,7 +6,7 @@
   },
   "include": [
     "src/**/*"
-  ],
+, "src/components/updateBranch copy/.jsateBranch.js"  ],
   "exclude": [
     "node_modules"
   ]
