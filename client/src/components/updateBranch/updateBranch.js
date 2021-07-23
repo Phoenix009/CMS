@@ -80,7 +80,7 @@ export default function UpdateEmployee({
         );
 			console.log(data);
 			if(data.status === 200){
-				toast('Region Updated', {
+				toast('Branch Updated', {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -178,7 +178,7 @@ export default function UpdateEmployee({
 		getUsers();
     getRegion();
     setBranch(branchInfo);
-    console.log(region_info)
+    console.log(branchInfo)
 	}, [branchInfo]);
   return (
     <>
@@ -232,7 +232,7 @@ export default function UpdateEmployee({
                       <Select
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
-                        name = 'regional_officer'
+                        name = 'branch_manager'
                         value={branch?.id}
                         onChange={handleChange}
                       >
@@ -250,7 +250,8 @@ export default function UpdateEmployee({
                     <Select
                       labelId="demo-simple-select-outlined-label"
                       id="demo-simple-select-outlined"
-                      label="Age"
+                      label="Region"
+                      name='region'
                       value={branch?.region?.id}
                       onChange={handleChange}
                     >
@@ -265,7 +266,11 @@ export default function UpdateEmployee({
                 </Grid>
                 
                 <Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Update Region</Button>
+                    <Button 
+                    variant="contained" 
+                    color="primary" 
+                    onClick={handleSubmit}>
+                      Update Branch</Button>
                 </Grid>
             </Grid>
           </Drawer>
