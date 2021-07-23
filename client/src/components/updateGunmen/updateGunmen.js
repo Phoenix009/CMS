@@ -29,89 +29,56 @@ import {
 	Select,
 } from "@material-ui/core";
 //
-import { addTrip, getGunmens, getAllVehicles, getAllBranch } from "../../api/index";
+import { getAllEmployees, getAllRegions, updateBranch } from "../../api/index";
 // ----------------------------------------------------------------------
 
 // ----------------------------------------------------------------------
 
-ShopFilterSidebar.propTypes = {
+UpdateGunmen.propTypes = {
 	isOpenFilter: PropTypes.bool,
 	onResetFilter: PropTypes.func,
 	onOpenFilter: PropTypes.func,
 	onCloseFilter: PropTypes.func,
+	branchInfo: PropTypes.object,
 };
 
-export default function ShopFilterSidebar({
+export default function UpdateGunmen({
 	isOpenFilter,
 	onResetFilter,
 	onOpenFilter,
 	onCloseFilter,
+	branchInfo,
 }) {
-	const [trip, setTrip] = useState({
-		start_location: "",
-		end_location: "",
-		custodian_1: "",
-		custodian_2: "",
-		custodian_3: "",
-		branch:"",
-		added_by:1,
-
-		// 'branch' : '',
-		vehicle: "",
-	});
-
-	const [gunmen, setGunmen] = useState([]);
-	const [vehicle, setVehicle] = useState([]);
-	const [branch, setBranch] = useState([]);
+	console.log(branchInfo);
+	const [branch, setBranch] = useState(branchInfo);
+	const [region_info, setRegion_info] = useState([]);
+	const [employees, setEmployees] = useState([]);
 	const handleChange = (e) => {
-		setTrip({ ...trip, [e.target.name]: e.target.value });
-		console.log(trip);
+		setBranch({ ...branch, [e.target.name]: e.target.value });
+		console.log(branch);
+		console.log(e);
 	};
 	const handleSubmit = async () => {
+		console.log("----------==========--------");
+		console.log(branch);
 		try {
-			console.log(trip);
-			const data = await addTrip(trip);
-			console.log(data);
-			if (data.status === 201) {
-				toast("Trip Added", {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-				});
-			} else {
-				toast.error("Something went wrong!", {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			}
-		} catch (error) {
-			console.log(error);
-			toast.error("Something went wrong!", {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
+			const data = await updateBranch(branch?.id, {
+				name: branch?.name,
+				address: branch?.address,
+				branch_manager: branch.branch_manager.id,
+				region: branch.region.id,
+				// regional_officer : region?.regional_officer?.id
 			});
-		}
-	};
-
-	const getAllGunmen = async () => {
-		try {
-			const data = await getAllGunmen();
 			console.log(data);
 			if (data.status === 200) {
-				setGunmen(data?.data?.results);
+				toast("Branch Updated", {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				});
 				onCloseFilter();
 			} else {
 				toast.error("Something went wrong!", {
@@ -137,12 +104,12 @@ export default function ShopFilterSidebar({
 			});
 		}
 	};
-	const getVehicles = async () => {
+	const getUsers = async () => {
 		try {
-			const data = await getAllVehicles();
+			const data = await getAllEmployees();
 			console.log(data);
 			if (data.status === 200) {
-				setVehicle(data?.data?.results);
+				setEmployees(data?.data?.results);
 			} else {
 				toast.error("Something went wrong!", {
 					position: "top-right",
@@ -167,12 +134,12 @@ export default function ShopFilterSidebar({
 			});
 		}
 	};
-	const getBranches = async () => {
+	const getRegion = async () => {
 		try {
-			const data = await getAllBranch();
+			const data = await getAllRegions();
 			console.log(data);
 			if (data.status === 200) {
-				setBranch(data?.data?.results);
+				setRegion_info(data?.data?.results);
 			} else {
 				toast.error("Something went wrong!", {
 					position: "top-right",
@@ -199,11 +166,11 @@ export default function ShopFilterSidebar({
 	};
 
 	useEffect(() => {
-		getAllGunmen();
-		getVehicles();
-		getBranches();
-		console.log(gunmen);
-	}, []);
+		getUsers();
+		getRegion();
+		setBranch(branchInfo);
+		console.log(branchInfo);
+	}, [branchInfo]);
 	return (
 		<>
 			<Drawer
@@ -221,7 +188,7 @@ export default function ShopFilterSidebar({
 					sx={{ px: 1, py: 2 }}
 				>
 					<Typography variant="subtitle1" sx={{ ml: 1 }}>
-						Add Trip
+						Update Branch
 					</Typography>
 					<IconButton onClick={onCloseFilter}>
 						<Icon icon={closeFill} width={20} height={20} />
@@ -232,118 +199,58 @@ export default function ShopFilterSidebar({
 				<Grid container spacing={2} sx={{ px: 5, py: 10 }}>
 					<Grid item xs={12} sm={12} lg={6}>
 						<TextField
-							label="From"
-							name="start_location"
+							label="Branch Name"
+							name="name"
 							onChange={handleChange}
 							fullWidth
+							value={branch?.name}
 						></TextField>
 					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
+					<Grid item xs={12} sm={12} lg={8}>
 						<TextField
-							label="To"
-							name="end_location"
+							label="Address"
+							name="address"
 							onChange={handleChange}
 							fullWidth
+							value={branch?.address}
 						></TextField>
 					</Grid>
 					<Grid item xs={12} sm={12} lg={6}>
 						<FormControl variant="outlined" fullWidth>
 							<InputLabel id="demo-simple-select-outlined-label">
-								Vehicle
+								Branch Manager Email
 							</InputLabel>
 							<Select
 								labelId="demo-simple-select-outlined-label"
 								id="demo-simple-select-outlined"
-								name="vehicle"
+								name="branch_manager"
+								value={branch?.id}
 								onChange={handleChange}
 							>
-								<MenuItem value={null}>None</MenuItem>
-								{vehicle.map((instance) => (
+								{employees.map((instance) => (
 									<MenuItem value={instance.id}>
-										{instance.number_plate}
+										{instance.email}
 									</MenuItem>
 								))}
 							</Select>
 						</FormControl>
 					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
+					<Grid item xs={12} sm={12} lg={4}>
 						<FormControl variant="outlined" fullWidth>
 							<InputLabel id="demo-simple-select-outlined-label">
-								Branch
+								Region
 							</InputLabel>
 							<Select
 								labelId="demo-simple-select-outlined-label"
 								id="demo-simple-select-outlined"
-								name="branch"
+								label="Region"
+								name="region"
+								value={branch?.region?.id}
 								onChange={handleChange}
 							>
-								<MenuItem value={null}>None</MenuItem>
-								{branch.map((instance) => (
+								{region_info.map((instance) => (
 									<MenuItem value={instance.id}>
 										{instance.name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
-						<FormControl variant="outlined" fullWidth>
-							<InputLabel id="demo-simple-select-outlined-label">
-								Custodian 1
-							</InputLabel>
-							<Select
-								labelId="demo-simple-select-outlined-label"
-								id="demo-simple-select-outlined"
-								name="custodian_1"
-								onChange={handleChange}
-							>
-								<MenuItem value={null}>None</MenuItem>
-								{gunmen.map((instance) => (
-									<MenuItem value={instance.id}>
-										{instance.first_name}{" "}
-										{instance.last_name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
-						<FormControl variant="outlined" fullWidth>
-							<InputLabel id="demo-simple-select-outlined-label">
-								Custodian 2
-							</InputLabel>
-							<Select
-								labelId="demo-simple-select-outlined-label"
-								id="demo-simple-select-outlined"
-								name="custodian_2"
-								onChange={handleChange}
-							>
-								<MenuItem value={null}>None</MenuItem>
-								{gunmen.map((instance) => (
-									<MenuItem value={instance.id}>
-										{instance.first_name}{" "}
-										{instance.last_name}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} sm={12} lg={6}>
-						<FormControl variant="outlined" fullWidth>
-							<InputLabel id="demo-simple-select-outlined-label">
-								Custodian 3
-							</InputLabel>
-							<Select
-								labelId="demo-simple-select-outlined-label"
-								id="demo-simple-select-outlined"
-								name="custodian_3"
-								onChange={handleChange}
-							>
-								<MenuItem value={null}>None</MenuItem>
-								{gunmen.map((instance) => (
-									<MenuItem value={instance.id}>
-										{instance.first_name}{" "}
-										{instance.last_name}
 									</MenuItem>
 								))}
 							</Select>
@@ -356,7 +263,7 @@ export default function ShopFilterSidebar({
 							color="primary"
 							onClick={handleSubmit}
 						>
-							Add Trip
+							Update Branch
 						</Button>
 					</Grid>
 				</Grid>

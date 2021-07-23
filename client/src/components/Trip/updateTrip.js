@@ -60,7 +60,7 @@ export default function UpdateEmployee({
 
 	const getAllGunmen = async () => {
 		try {
-			const data = await getGunmens();
+			const data = await getAllGunmen();
 			console.log(data);
 			if (data.status === 200) {
 				setGunmen(data?.data?.results);
@@ -156,7 +156,7 @@ export default function UpdateEmployee({
 			let x = JSON.stringify(trip)
 			console.log(x);
 			const data = await updateTrip(trip?.id, {
-				
+
 			});
 			console.log(data);
 			if (data.status === 200) {
