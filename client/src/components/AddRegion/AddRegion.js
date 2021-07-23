@@ -29,7 +29,7 @@ import {
 	Select,
 } from "@material-ui/core";
 //
-import { getAllEmployees, addRegion } from "../../api/index";
+import { getAllEmployees, addRegion, getAllRegions } from "../../api/index";
 // ----------------------------------------------------------------------
 
 // ----------------------------------------------------------------------
@@ -46,6 +46,7 @@ export default function ShopFilterSidebar({
 	onResetFilter,
 	onOpenFilter,
 	onCloseFilter,
+	
 }) {
 	const [region, setRegion] = useState({
 		name: "",
@@ -125,6 +126,7 @@ export default function ShopFilterSidebar({
 			});
 		}
 	};
+	
 
 	useEffect(() => {
 		getUsers();
