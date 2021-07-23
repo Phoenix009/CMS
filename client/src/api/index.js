@@ -109,6 +109,7 @@ export const viewAllAttendance = () =>
 	axiosInstance.get("attendance/attendance");
 
 // gunmen
+<<<<<<< HEAD
 export const addGunmen = (formData) =>
 	axiosInstance.post("vendor/gunmen/", formData);
 export const updateGunmen = (formData) =>
@@ -121,6 +122,20 @@ export const getAllRegions = () => axiosInstance.get("users/region");
 export const addRegion = (formData) =>
 	axiosInstance.post("users/region/", formData);
 export const updateRegion = (id, formData) => {
+=======
+export const addGunmen = (formData)=> axiosInstance.post('vendor/custodian/',formData);
+// export const updateGunmen = (formData)=> axiosInstance.put('vendor/custodian/',formData);
+export const updateGunme = (id,formData) =>{
+	return axiosInstance.put(`vendor/custodian/${id}/`, formData);
+}
+export const deleteGunmen = ()=> axiosInstance.delete('vendor/custodian/');
+export const getGunmens = ()=> axiosInstance.get('vendor/custodian');
+
+// regions 
+export const getAllRegions = () => axiosInstance.get('users/region');
+export const addRegion = (formData) => axiosInstance.post('users/region/', formData);
+export const updateRegion = (id,formData) =>{
+>>>>>>> 8845edace544cbabcb29f32204a0c61f4170c1a1
 	return axiosInstance.put(`users/region/${id}/`, formData);
 };
 export const deleteRegion = (id) => {

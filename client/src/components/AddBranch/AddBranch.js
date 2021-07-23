@@ -218,6 +218,7 @@ export default function ShopFilterSidebar({
                     <Select
                       labelId="demo-simple-select-outlined-label"
                       id="demo-simple-select-outlined"
+                      name = 'branch_manager'
                       label="Age"
                       onChange={handleChange}
                     >
@@ -237,6 +238,7 @@ export default function ShopFilterSidebar({
                     <Select
                       labelId="demo-simple-select-outlined-label"
                       id="demo-simple-select-outlined"
+                      name='region'
                       label="Age"
                       onChange={handleChange}
                     >

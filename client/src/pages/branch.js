@@ -300,7 +300,8 @@ export default function Branch() {
 												{row.name}
 											</TableCell>
 											<TableCell >
-												{row.address}
+											{row.address.length<10?row.address:row.address.substring(0,10)}
+								
 											</TableCell>
 											<TableCell >
 											{`${row.branch_manager?.first_name} ${row.branch_manager?.last_name}`}
