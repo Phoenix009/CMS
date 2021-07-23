@@ -164,7 +164,7 @@ export default function User() {
       const data = await deleteTrip(region?.id);
       console.log(data);
       if (data.status === 204) {
-        toast("Region Deleted", {
+        toast("Trip Deleted", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -265,9 +265,9 @@ export default function User() {
           onCloseFilter={() => {
             setAddEmployeeOpen(false);
           }}
-          TripInfo={{}}
+          tripInfo={{}}
         />
-        {/* <UpdateEmployee
+        <UpdateEmployee
           isOpenFilter={isUpdateEmployeeOpen}
           onOpenFilter={() => {
             setUpdateEmployeeOpen(true);
@@ -275,8 +275,8 @@ export default function User() {
           onCloseFilter={() => {
             setUpdateEmployeeOpen(false);
           }}
-          regionInfo={regionInfo}
-        /> */}
+          tripInfo={tripInfo}
+        />
         <Card>
           <UserListToolbar
             numSelected={selected.length}
@@ -316,7 +316,7 @@ export default function User() {
                       <TableCell align="right">
                         <UserMoreMenu
                           handleEdit={() => {
-                            // openUpdateRegionDrawer(row);
+                            openUpdateTripDrawer(row);
                           }}
                           handleDelete={() => {
                             handleDeleteTrip(row);

@@ -60,8 +60,8 @@ export default function ShopFilterSidebar({
     'custodian_1' : '',
     'custodian_2' : '',
     'custodian_3' : '',
-    'added_by' : '',
-    'branch' : '',
+    
+    // 'branch' : '',
     'vehicle' : '',
 
   });
@@ -74,6 +74,7 @@ export default function ShopFilterSidebar({
   }
   const handleSubmit = async ()=>{
     try{
+      console.log(trip);
 			const data = await addTrip(trip);
 			console.log(data);
 			if(data.status === 201){
@@ -206,7 +207,7 @@ export default function ShopFilterSidebar({
                 <Grid item xs={12} sm={12} lg={6}>
                     <TextField
                         label="From"
-                        name="from"
+                        name="start_location"
                         onChange={handleChange}
                         fullWidth
                     >
@@ -215,7 +216,7 @@ export default function ShopFilterSidebar({
                 <Grid item xs={12} sm={12} lg={6}>
                     <TextField
                         label="To"
-                        name="to"
+                        name="end_location"
                         onChange={handleChange}
                         fullWidth
                     >
@@ -227,13 +228,13 @@ export default function ShopFilterSidebar({
                       <Select
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
-                        name = 'regional_officer'
+                        name = 'vehicle'
                         onChange={handleChange}
                       >
                         <MenuItem value = {null}>None</MenuItem>
                         {
                           vehicle.map((instance)=>(
-                            <MenuItem value={instance.id}>{instance.id}</MenuItem>
+                            <MenuItem value={instance.id}>{instance.number_plate}</MenuItem>
                           ))
                         }
                       </Select>
@@ -245,7 +246,7 @@ export default function ShopFilterSidebar({
                       <Select
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
-                        name = 'regional_officer'
+                        name = 'custodian_1'
                         onChange={handleChange}
                       >
                         <MenuItem value = {null}>None</MenuItem>
@@ -263,7 +264,7 @@ export default function ShopFilterSidebar({
                       <Select
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
-                        name = 'regional_officer'
+                        name = 'custodian_2'
                         onChange={handleChange}
                       >
                         <MenuItem value = {null}>None</MenuItem>
@@ -281,7 +282,7 @@ export default function ShopFilterSidebar({
                       <Select
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
-                        name = 'regional_officer'
+                        name = 'custodian_3'
                         onChange={handleChange}
                       >
                         <MenuItem value = {null}>None</MenuItem>
@@ -296,7 +297,7 @@ export default function ShopFilterSidebar({
                 
              
                 <Grid item xs={12} sm={12} lg={12} align="center">
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Region</Button>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Add Trip</Button>
                 </Grid>
             </Grid>
           </Drawer>
