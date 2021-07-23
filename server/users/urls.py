@@ -9,6 +9,7 @@ urlpatterns = [
     path("branch/<int:pk>/", views.BranchDetail.as_view()),
     path("region/", views.RegionList.as_view()),
     path("region/<int:pk>/", views.RegionDetail.as_view()),
+    path("current/", views.get_current_user),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -8,10 +8,12 @@ from rest_framework import filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404
 
 
 class CustomPagination(PageNumberPagination):
-    page_size = 10
+    page_size = 100
     page_size_query_param = "page_size"
     max_page_size = 1000
 
@@ -148,3 +150,12 @@ class RegionDetail(
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+
+@api_view(['GET'])
+def get_current_user(request):
+    print(request.user.id)
+    user = get_object_or_404(User, pk=request.user.id)
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
