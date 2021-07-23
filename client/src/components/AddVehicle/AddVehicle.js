@@ -81,7 +81,6 @@ export default function ShopFilterSidebar({
 					draggable: true,
 					progress: undefined,
 				});
-				onCloseFilter();
 			}
 		} catch (error) {
 			console.log(error);
@@ -187,7 +186,7 @@ export default function ShopFilterSidebar({
 				</Stack>
 
 				<Divider />
-				<Grid container spacing={2} sx={{ px: 5, py: 10 }}>
+				<Grid container spacing={3} sx={{ px: 5, py: 10 }}>
 					<Grid item xs={12} sm={12} lg={6}>
 						<TextField
 							label="Vehicle Name"
@@ -197,46 +196,44 @@ export default function ShopFilterSidebar({
 						></TextField>
 					</Grid>
 
-					<Grid container spacing={2} sx={{ px: 5, py: 10 }}>
-						<Grid item xs={12} sm={12} lg={6}>
-							<TextField
-								label="Vehicle Number"
-								name="number_plate"
+					<Grid item xs={12} sm={12} lg={6}>
+						<TextField
+							label="Vehicle Number"
+							name="number_plate"
+							onChange={handleChange}
+							fullWidth
+						></TextField>
+					</Grid>
+
+					<Grid item xs={12} sm={12} lg={6}>
+						<FormControl variant="outlined" fullWidth>
+							<InputLabel id="demo-simple-select-outlined-label">
+								{" "}
+								Vendor{" "}
+							</InputLabel>
+							<Select
+								labelId="demo-simple-select-outlined-label"
+								id="demo-simple-select-outlined"
+								name="vendor"
 								onChange={handleChange}
-								fullWidth
-							></TextField>
-						</Grid>
-
-						<Grid item xs={12} sm={12} lg={6}>
-							<FormControl variant="outlined" fullWidth>
-								<InputLabel id="demo-simple-select-outlined-label">
-									{" "}
-									Vendor{" "}
-								</InputLabel>
-								<Select
-									labelId="demo-simple-select-outlined-label"
-									id="demo-simple-select-outlined"
-									name="vendor"
-									onChange={handleChange}
-								>
-									{vendors.map((instance) => (
-										<MenuItem value={instance.id}>
-											{instance.email}
-										</MenuItem>
-									))}
-								</Select>
-							</FormControl>
-						</Grid>
-
-						<Grid item xs={12} sm={12} lg={12} align="center">
-							<Button
-								variant="contained"
-								color="primary"
-								onClick={handleSubmit}
 							>
-								Add Vehicle
-							</Button>
-						</Grid>
+								{vendors.map((instance) => (
+									<MenuItem value={instance.id}>
+										{instance.email}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Grid>
+
+					<Grid item xs={12} sm={12} lg={12} align="center">
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={handleSubmit}
+						>
+							Add Vehicle
+						</Button>
 					</Grid>
 				</Grid>
 			</Drawer>

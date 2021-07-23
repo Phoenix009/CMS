@@ -46,7 +46,6 @@ const TABLE_HEAD = [
 	{ id: "number_plate", label: "Vehicle Number", alignRight: false },
 	{ id: "vendor", label: "Vendor", alignRight: false },
 	{ id: "" },
-	{ id: "" },
 ];
 
 // ----------------------------------------------------------------------

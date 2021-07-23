@@ -72,7 +72,7 @@ export default function ShopFilterSidebar({
 					pauseOnHover: true,
 					draggable: true,
 				});
-				onCloseFilter();
+				isOpenFilter();
 			} else {
 				toast.error("Something went wrong!", {
 					position: "top-right",
