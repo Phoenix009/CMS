@@ -272,7 +272,10 @@ export default function User() {
 				<UpdateEmployee
 					isOpenFilter={isUpdateEmployeeOpen}
 					onOpenFilter= {()=>{setUpdateEmployeeOpen(true)}}
-					onCloseFilter={()=>{setUpdateEmployeeOpen(false)}}
+					onCloseFilter={async ()=>{
+						setUpdateEmployeeOpen(false)
+						await getData();
+					}}
 					regionInfo={regionInfo}
 				/>
 				<Card>
