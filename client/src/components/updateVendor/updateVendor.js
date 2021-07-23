@@ -29,12 +29,12 @@ import {
 	Select,
 } from "@material-ui/core";
 //
-import { addVendor, getAllVendors, updateVendor } from "../../api/index";
+import { addVendor, getAllVendors, updateVendor, getAllEmployees } from "../../api/index";
 // ----------------------------------------------------------------------
 
 // ----------------------------------------------------------------------
 
-ShopFilterSidebar.propTypes = {
+UpdateEmployee.propTypes = {
 	isOpenFilter: PropTypes.bool,
 	onResetFilter: PropTypes.func,
 	onOpenFilter: PropTypes.func,
@@ -42,7 +42,7 @@ ShopFilterSidebar.propTypes = {
 	vendorInfo: PropTypes.object,
 };
 
-export default function ShopFilterSidebar({
+export default function UpdateEmployee({
 	isOpenFilter,
 	onResetFilter,
 	onOpenFilter,
@@ -56,21 +56,21 @@ export default function ShopFilterSidebar({
 		contact: "",
 		officer_incharge: "",
 	});
-	// const [employees, setEmployees] = useState([]);
+	
+	const [employees, setEmployees] = useState([]);
+	
 	const handleChange = (e) => {
 		setVendor({ ...vendor, [e.target.name]: e.target.value });
 		console.log(vendor);
 	};
 	const handleSubmit = async () => {
+		console.log(vendor);
 		try {
-			const data = await updateVendor(vendor?.id, {
-				name: vendor?.name,
-				address: vendor?.address,
-				contact: vendor?.contact,
-				officer_incharge: vendor?.officer_incharge?.id,
-			});
-			if (data.status === 201) {
-				toast("Vendor Added", {
+			let x = JSON.stringify(vendor)
+			const data = await updateVendor(vendor?.id, vendor);
+			console.log(data);
+			if (data.status === 200) {
+				toast("Vendor Updated", {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -105,10 +105,10 @@ export default function ShopFilterSidebar({
 	};
 	const getUsers = async () => {
 		try {
-			const data = await getAllVendors();
+			const data = await getAllEmployees();
 			console.log(data);
 			if (data.status === 200) {
-				setVendor(data?.data);
+				setEmployees(data?.data);
 			} else {
 				toast.error("Something went wrong!", {
 					position: "top-right",
@@ -208,8 +208,7 @@ export default function ShopFilterSidebar({
 							label="Address"
 							name="address"
 							value={vendor?.address}
-							onChange={handleChange}
-							multiline
+   							multiline
 							rows={3}
 							fullWidth
 						></TextField>

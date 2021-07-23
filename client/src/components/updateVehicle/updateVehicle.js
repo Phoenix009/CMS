@@ -57,13 +57,11 @@ export default function UpdateEmployee({
 		console.log(vehicle);
 	};
 	const handleSubmit = async () => {
+		console.log("I hate living")
 		console.log(vehicle);
 		try {
-			const data = await updateVehicle(vehicle?.id, {
-				model_name: vehicle?.name,
-				number_plate: vehicle?.address,
-				vendor: vehicle?.vendor?.name,
-			});
+			let x = JSON.stringify(vehicle)
+			const data = await updateVehicle(vehicle?.id, x);
 			console.log(data);
 			if (data.status === 200) {
 				toast("Vehicle Updated", {
@@ -99,36 +97,7 @@ export default function UpdateEmployee({
 			});
 		}
 	};
-	const getUsers = async () => {
-		try {
-			const data = await getAllVehicles();
-			console.log(data);
-			if (data.status === 200) {
-				setVehicle(data?.data?.results);
-			} else {
-				toast.error("Something went wrong!", {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			}
-		} catch (error) {
-			console.log(error);
-			toast.error("Something went wrong!", {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-		}
-	};
+
 	const getVendor = async () => {
 		try {
 			const data = await getAllVendors();
@@ -161,7 +130,7 @@ export default function UpdateEmployee({
 	};
 
 	useEffect(() => {
-		getUsers();
+		
 		getVendor();
 		setVehicle(vehicleInfo);
 	}, [vehicleInfo]);
@@ -190,14 +159,14 @@ export default function UpdateEmployee({
 				</Stack>
 
 				<Divider />
-				<Grid container spacing={2} sx={{ px: 5, py: 10 }}>
+				<Grid container spacing={3} sx={{ px: 5, py: 10 }}>
 					<Grid item xs={12} sm={12} lg={6}>
 						<TextField
 							label="Vehicle Name"
 							name="model_name"
 							onChange={handleChange}
+							value={vehicle?.model_name}
 							fullWidth
-							value={vehicle?.name}
 						></TextField>
 					</Grid>
 
@@ -205,11 +174,9 @@ export default function UpdateEmployee({
 						<TextField
 							label="Vehicle Number"
 							name="number_plate"
-							onChange={handleChange}
-							multiline
-							rows={3}
-							fullWidth
 							value={vehicle?.number_plate}
+							onChange={handleChange}
+							fullWidth
 						></TextField>
 					</Grid>
 
@@ -217,13 +184,13 @@ export default function UpdateEmployee({
 						<FormControl variant="outlined" fullWidth>
 							<InputLabel id="demo-simple-select-outlined-label">
 								{" "}
-								Vendor
+								Vendor{" "}
 							</InputLabel>
 							<Select
 								labelId="demo-simple-select-outlined-label"
 								id="demo-simple-select-outlined"
-								name="regional_officer"
-								value={vehicle?.vendor?.name}
+								value={vehicle?.vendor}
+								name="vendor"
 								onChange={handleChange}
 							>
 								{vendors.map((instance) => (

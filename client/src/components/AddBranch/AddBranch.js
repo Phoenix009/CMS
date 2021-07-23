@@ -72,7 +72,7 @@ export default function AddBranch({
 					pauseOnHover: true,
 					draggable: true,
 				});
-				isOpenFilter();
+				onCloseFilter();
 			} else {
 				toast.error("Something went wrong!", {
 					position: "top-right",

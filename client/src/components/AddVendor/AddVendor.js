@@ -32,6 +32,7 @@ import {
 import { 
   addVendor,
   getAllVendors,
+  getAllEmployees,
 } from '../../api/index';
 // ----------------------------------------------------------------------
 
@@ -59,7 +60,7 @@ export default function ShopFilterSidebar({
     'contact':'',
     'officer_incharge': ''
   });
-  // const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const handleChange = (e)=>{
     setVendor({...vendor, [e.target.name] : e.target.value});
     console.log(vendor);
@@ -77,6 +78,7 @@ export default function ShopFilterSidebar({
 					pauseOnHover: true,
 					draggable: true,
 				});
+        onCloseFilter();
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -103,10 +105,10 @@ export default function ShopFilterSidebar({
   }
   const getUsers = async ()=>{
 		try{
-			const data = await getAllVendors();
+			const data = await getAllEmployees();
 			console.log(data);
 			if(data.status === 200 ){
-				setVendor(data?.data);
+				setEmployees(data?.data.results);
 			}else{
 				toast.error('Something went wrong!', {
 					position: "top-right",
@@ -181,8 +183,6 @@ export default function ShopFilterSidebar({
                     </TextField>
                 </Grid>
                 
-               
-                
                 <Grid item xs={12} sm={12} lg={6}>
                     <TextField
                         label="Contact"
@@ -192,6 +192,7 @@ export default function ShopFilterSidebar({
                     >
                     </TextField>
                   </Grid>
+                  
                     <Grid item xs={12} sm={12} lg={6}>
                       <TextField
                           label="Email"

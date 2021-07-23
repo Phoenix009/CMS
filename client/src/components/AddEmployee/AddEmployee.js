@@ -28,7 +28,8 @@ import {
 	MenuItem,
 	Select,
 } from "@material-ui/core";
-import { addEmployee, getAllEmployees } from "src/api/index";
+import { addEmployee, getAllEmployees,getAllBranch } from "src/api/index";
+import { xorBy } from "lodash";
 //
 
 // ----------------------------------------------------------------------
@@ -48,21 +49,42 @@ export default function ShopFilterSidebar({
 	onOpenFilter,
 	onCloseFilter,
 }) {
+	const [branch, setBranch] = useState([])
+	const [profile, setProfile] = useState({
+		gender:"",
+		branch:null,
+	})
 	const [employee, setEmployee] = useState({
 		first_name: "",
 		last_name: "",
+		username:"",
+		profile:profile,
+		// is_superuser: true,
 		email: "",
-		employee_id: "",
-		age: "",
-		role: "",
+
 	});
 	const handleChange = (e) => {
-		setEmployee({ ...employee, [e.target.name]: e.target.value });
+		if (e.target.name=="gender" || e.target.name=="branch"){
+			setProfile({...profile,[e.target.name]: e.target.value});
+			setEmployee({ ...employee, profile: profile });
+			// console.log(profile)
+		}
+		else{
+			setEmployee({ ...employee, [e.target.name]: e.target.value });
+		}
+	
+		
+		// 
+		console.log("Employee");
 		console.log(employee);
 	};
 	const handleSubmit = async () => {
 		try {
-			const data = await addEmployee(employee);
+			console.log("Please, I hate God");
+			// console.log(employee);
+			let x = JSON.stringify(employee)
+			console.log(x);
+			const data = await addEmployee(x);
 			console.log(data);
 			if (data.status === 201) {
 				toast("Employee Added", {
@@ -98,12 +120,13 @@ export default function ShopFilterSidebar({
 			});
 		}
 	};
-	const getUsers = async () => {
+	
+	const getBranches = async () => {
 		try {
-			const data = await getAllEmployees();
+			const data = await getAllBranch();
 			console.log(data);
 			if (data.status === 200) {
-				setEmployee(data?.data?.results);
+				setBranch(data?.data?.results);
 			} else {
 				toast.error("Something went wrong!", {
 					position: "top-right",
@@ -130,7 +153,8 @@ export default function ShopFilterSidebar({
 	};
 
 	useEffect(() => {
-		getUsers();
+		// getUsers();
+		getBranches()
 	}, []);
 	return (
 		<>
@@ -184,36 +208,57 @@ export default function ShopFilterSidebar({
 					</Grid>
 					<Grid item xs={12} sm={12} lg={4}>
 						<TextField
-							label="Employee Id"
-							name="employee_id"
+							label="Username"
+	
+							name="username"
 							onChange={handleChange}
 							fullWidth
 						></TextField>
 					</Grid>
-					<Grid item xs={12} sm={12} lg={4}>
-						<TextField
-							label="Age"
-							name="age"
-							onChange={handleChange}
-							fullWidth
-						></TextField>
-					</Grid>
+					
+						
+		{/* // profil:{
+		// 	gender: "",
+        // is_superuser: "",
+        // branch: ""
+		// }, */}
+	
 					<Grid item xs={12} sm={12} lg={4}>
 						<FormControl variant="outlined" fullWidth>
 							<InputLabel id="demo-simple-select-outlined-label">
-								Role
+								Gender
 							</InputLabel>
 							<Select
 								labelId="demo-simple-select-outlined-label"
 								id="demo-simple-select-outlined"
+								name="gender"
 								label="Age"
 								onChange={handleChange}
 							>
-								<MenuItem value={"admin"}>Admin</MenuItem>
-								<MenuItem value={"employee"}>Employee</MenuItem>
-								<MenuItem value={"superadmin"}>
-									SuperAdmin
+								<MenuItem value={"M"}>Male</MenuItem>
+								<MenuItem value={"F"}>Female</MenuItem>
+								<MenuItem value={"O"}>
+								Other
 								</MenuItem>
+							</Select>
+						</FormControl>
+					</Grid>
+					<Grid item xs={12} sm={12} lg={6}>
+						<FormControl variant="outlined" fullWidth>
+							<InputLabel id="demo-simple-select-outlined-label">
+								Branch
+							</InputLabel>
+							<Select
+								labelId="demo-simple-select-outlined-label"
+								id="demo-simple-select-outlined"
+								name="branch"
+								onChange={handleChange}
+							>
+								{branch.map((instance) => (
+									<MenuItem value={instance.id}>
+										{instance.name}
+									</MenuItem>
+								))}
 							</Select>
 						</FormControl>
 					</Grid>
