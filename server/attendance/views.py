@@ -7,6 +7,7 @@ from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import filters
 
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
@@ -52,6 +53,7 @@ class CustomPagination(PageNumberPagination):
 
 
 class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
     pagination_class = CustomPagination
@@ -80,6 +82,7 @@ class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
     ordering_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
+        print(request.user)
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

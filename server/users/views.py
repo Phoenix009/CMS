@@ -152,7 +152,6 @@ class RegionDetail(
         return self.destroy(request, *args, **kwargs)
 
 
-
 @api_view(['GET'])
 def get_current_user(request):
     print(request.user.id)
