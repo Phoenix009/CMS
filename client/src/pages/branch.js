@@ -1,8 +1,8 @@
 import { filter } from "lodash";
 import { Icon } from "@iconify/react";
 import { sentenceCase } from "change-case";
-import { useState,useEffect } from "react";
-import {toast} from 'react-toastify';
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
 import UpdateEmployee from "src/components/updateBranch/updateBranch";
@@ -20,7 +20,7 @@ import {
 	Typography,
 	TableContainer,
 	TablePagination,
-	Breadcrumbs
+	Breadcrumbs,
 } from "@material-ui/core";
 // components
 import Page from "../components/Page";
@@ -34,8 +34,8 @@ import {
 } from "../components/_dashboard/user";
 //
 import USERLIST from "../_mocks_/user";
-import AddBranch from '../components/AddBranch/AddBranch';
-import { getAllEmployees,getAllBranch,deleteBranch } from "../api/index";
+import AddBranch from "../components/AddBranch/AddBranch";
+import { getAllEmployees, getAllBranch, deleteBranch } from "../api/index";
 
 // ----------------------------------------------------------------------
 
@@ -96,8 +96,6 @@ export default function Branch() {
 	const [branch, setBranch] = useState([]);
 	const [branchInfo, setBranchInfo] = useState({});
 
-	
-	
 	// const handleClose
 
 	const handleRequestSort = (event, property) => {
@@ -156,41 +154,29 @@ export default function Branch() {
 	);
 
 	const isUserNotFound = filteredUsers.length === 0;
-    const openUpdateBranchDrawer = (row)=>{
+
+	const openUpdateBranchDrawer = (row) => {
 		console.log(row);
 		setBranchInfo(row);
 		setUpdateEmployeeOpen(true);
-	}
-	const handleDeleteBranch = async (branch)=>{
-		try{
-				const data = await deleteBranch(
-			branch?.id,
-			);
-				console.log(data);
-				if(data.status === 204){
-					toast('Branch Deleted', {
-						position: "top-right",
-						autoClose: 5000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-					});
-					getData();
-				}else{
-					toast.error('Something went wrong!', {
-						position: "top-right",
-						autoClose: 5000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-						progress: undefined,
-					});
-				} 
-			}catch(error){
-				console.log(error);
-				toast.error('Something went wrong!', {
+	};
+
+	const handleDeleteBranch = async (branch) => {
+		try {
+			const data = await deleteBranch(branch?.id);
+			console.log(data);
+			if (data.status === 204) {
+				toast("Branch Deleted", {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+				});
+				getData();
+			} else {
+				toast.error("Something went wrong!", {
 					position: "top-right",
 					autoClose: 5000,
 					hideProgressBar: false,
@@ -200,27 +186,9 @@ export default function Branch() {
 					progress: undefined,
 				});
 			}
-	  }
-	const getData = async ()=>{
-		try{
-			const data = await getAllBranch();
-			console.log(data);
-			if(data.status === 200 ){
-				setBranch(data?.data?.results);
-			}else{
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			} 
-		}catch(error){
+		} catch (error) {
 			console.log(error);
-			toast.error('Something went wrong!', {
+			toast.error("Something went wrong!", {
 				position: "top-right",
 				autoClose: 5000,
 				hideProgressBar: false,
@@ -230,11 +198,41 @@ export default function Branch() {
 				progress: undefined,
 			});
 		}
-	}
+	};
+
+	const getData = async () => {
+		try {
+			const data = await getAllBranch();
+			console.log(data);
+			if (data.status === 200) {
+				setBranch(data?.data?.results);
+			} else {
+				toast.error("Something went wrong!", {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
+		} catch (error) {
+			console.log(error);
+			toast.error("Something went wrong!", {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	};
 	useEffect(() => {
 		getData();
 	}, []);
-
 
 	return (
 		<Page title="Branch">
@@ -246,28 +244,42 @@ export default function Branch() {
 					mb={5}
 				>
 					<Breadcrumbs aria-label="breadcrumb">
-						<RouterLink color="inherit" to="/" onClick={handleClick}>
+						<RouterLink
+							color="inherit"
+							to="/"
+							onClick={handleClick}
+						>
 							Dashboard
 						</RouterLink>
 						<Typography color="textPrimary">Branch</Typography>
-						</Breadcrumbs>
+					</Breadcrumbs>
 					<Button
 						variant="contained"
-						onClick={()=>{setAddBranchOpen(true)}}
+						onClick={() => {
+							setAddBranchOpen(true);
+						}}
 						startIcon={<Icon icon={plusFill} />}
 					>
 						New Branch
 					</Button>
 				</Stack>
 				<AddBranch
-							isOpenFilter={isAddBranchOpen}
-							onOpenFilter= {()=>{setAddBranchOpen(true)}}
-							onCloseFilter={()=>{setAddBranchOpen(false)}}
+					isOpenFilter={isAddBranchOpen}
+					onOpenFilter={() => {
+						setAddBranchOpen(true);
+					}}
+					onCloseFilter={() => {
+						setAddBranchOpen(false);
+					}}
 				/>
 				<UpdateEmployee
 					isOpenFilter={isUpdateEmployeeOpen}
-					onOpenFilter= {()=>{setUpdateEmployeeOpen(true)}}
-					onCloseFilter={()=>{setUpdateEmployeeOpen(false)}}
+					onOpenFilter={() => {
+						setUpdateEmployeeOpen(true);
+					}}
+					onCloseFilter={() => {
+						setUpdateEmployeeOpen(false);
+					}}
 					branchInfo={branchInfo}
 				/>
 				<Card>
@@ -290,36 +302,43 @@ export default function Branch() {
 									onSelectAllClick={handleSelectAllClick}
 								/>
 								<TableBody>
-								{
-										branch.map((row)=>(
-											<TableRow>
-											<TableCell component="th" scope="row">
+									{branch.map((row) => (
+										<TableRow>
+											<TableCell
+												component="th"
+												scope="row"
+											>
 												{row.id}
 											</TableCell>
-											<TableCell >
-												{row.name}
+											<TableCell>{row.name}</TableCell>
+											<TableCell>
+												{row.address.length < 10
+													? row.address
+													: row.address.substring(
+															0,
+															10
+													  )}
 											</TableCell>
-											<TableCell >
-											{row.address.length<10?row.address:row.address.substring(0,10)}
-								
+											<TableCell>
+												{`${row.branch_manager?.first_name} ${row.branch_manager?.last_name}`}
 											</TableCell>
-											<TableCell >
-											{`${row.branch_manager?.first_name} ${row.branch_manager?.last_name}`}
-											</TableCell>
-											<TableCell >
-											{`${row.region?.name}`}
+											<TableCell>
+												{`${row.region?.name}`}
 											</TableCell>
 											<TableCell align="right">
-												<UserMoreMenu 
-													handleEdit={()=>{openUpdateBranchDrawer(row)}}
-													handleDelete={()=>{handleDeleteBranch(row)}}
+												<UserMoreMenu
+													handleEdit={() => {
+														openUpdateBranchDrawer(
+															row
+														);
+													}}
+													handleDelete={() => {
+														handleDeleteBranch(row);
+													}}
 												/>
 											</TableCell>
-											
-										
-											</TableRow>
-										))
-									}
+										</TableRow>
+									))}
 								</TableBody>
 								{isUserNotFound && (
 									<TableBody>

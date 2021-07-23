@@ -73,6 +73,7 @@ export default function UpdateEmployee({
 					pauseOnHover: true,
 					draggable: true,
 				});
+				onCloseFilter();
 			} else {
 				toast.error("Something went wrong!", {
 					position: "top-right",

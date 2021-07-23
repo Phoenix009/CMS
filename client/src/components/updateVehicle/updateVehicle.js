@@ -84,6 +84,7 @@ export default function UpdateEmployee({
 					draggable: true,
 					progress: undefined,
 				});
+				onCloseFilter();
 			}
 		} catch (error) {
 			console.log(error);

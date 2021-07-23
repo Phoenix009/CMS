@@ -16,7 +16,7 @@ import {
 	FormControlLabel,
 } from "@material-ui/core";
 import { LoadingButton } from "@material-ui/lab";
-import {toast} from 'react-toastify';
+import { toast } from "react-toastify";
 
 import { signIn } from "../../../api/index";
 
@@ -39,14 +39,40 @@ export default function LoginForm() {
 		},
 		validationSchema: LoginSchema,
 		onSubmit: async () => {
-			try{
-				const data = await signIn({username : values.email, password : values.password});
-				if(data.status === 200) {
-					localStorage.setItem('access_token', JSON.stringify(data?.data?.access));
-					localStorage.setItem('refresh_token', JSON.stringify(data?.data?.refresh));
+			try {
+				const data = await signIn({
+					username: values.email,
+					password: values.password,
+				});
+				if (data.status === 200) {
+					localStorage.setItem(
+						"access_token",
+						JSON.stringify(data?.data?.access)
+					);
+					localStorage.setItem(
+						"refresh_token",
+						JSON.stringify(data?.data?.refresh)
+					);
 					navigate("/dashboard", { replace: true });
-				}else{
-					toast('Something Went Wrong. Please check your username and password', {
+				} else {
+					toast(
+						"Something Went Wrong. Please check your username and password",
+						{
+							position: "top-right",
+							autoClose: 5000,
+							hideProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							draggable: true,
+							progress: undefined,
+						}
+					);
+				}
+			} catch (error) {
+				console.log(error);
+				toast(
+					"Something Went Wrong. Please check your username and password",
+					{
 						position: "top-right",
 						autoClose: 5000,
 						hideProgressBar: false,
@@ -54,20 +80,8 @@ export default function LoginForm() {
 						pauseOnHover: true,
 						draggable: true,
 						progress: undefined,
-					});
-				}
-
-			}catch(error){
-				console.log(error);
-				toast('Something Went Wrong. Please check your username and password', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
+					}
+				);
 			}
 		},
 	});
