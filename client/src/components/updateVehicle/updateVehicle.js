@@ -60,9 +60,9 @@ export default function UpdateEmployee({
 		console.log(vehicle);
 		try {
 			const data = await updateVehicle(vehicle?.id, {
-				model_name: vehicle?.name,
-				number_plate: vehicle?.address,
-				vendor: vehicle?.vendor?.name,
+				model_name: vehicle?.model_name,
+				number_plate: vehicle?.number_plate,
+				vendor: vehicle?.vendor?.id,
 			});
 			console.log(data);
 			if (data.status === 200) {
@@ -190,14 +190,14 @@ export default function UpdateEmployee({
 				</Stack>
 
 				<Divider />
-				<Grid container spacing={2} sx={{ px: 5, py: 10 }}>
+				<Grid container spacing={3} sx={{ px: 5, py: 10 }}>
 					<Grid item xs={12} sm={12} lg={6}>
 						<TextField
 							label="Vehicle Name"
 							name="model_name"
 							onChange={handleChange}
+							value={vehicle?.model_name}
 							fullWidth
-							value={vehicle?.name}
 						></TextField>
 					</Grid>
 
@@ -205,11 +205,9 @@ export default function UpdateEmployee({
 						<TextField
 							label="Vehicle Number"
 							name="number_plate"
-							onChange={handleChange}
-							multiline
-							rows={3}
-							fullWidth
 							value={vehicle?.number_plate}
+							onChange={handleChange}
+							fullWidth
 						></TextField>
 					</Grid>
 
@@ -217,13 +215,13 @@ export default function UpdateEmployee({
 						<FormControl variant="outlined" fullWidth>
 							<InputLabel id="demo-simple-select-outlined-label">
 								{" "}
-								Vendor
+								Vendor{" "}
 							</InputLabel>
 							<Select
 								labelId="demo-simple-select-outlined-label"
 								id="demo-simple-select-outlined"
-								name="regional_officer"
-								value={vehicle?.vendor?.name}
+								value={vehicle?.vendor}
+								name="vendor"
 								onChange={handleChange}
 							>
 								{vendors.map((instance) => (

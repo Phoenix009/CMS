@@ -35,7 +35,7 @@ import {
 //
 import USERLIST from "../_mocks_/user";
 import AddVehicle from '../components/AddVehicle/AddVehicle';
-import updateVehicle from "src/components/updateVehicle/updateVehicle";
+import UpdateEmployee from "src/components/updateVehicle/updateVehicle";
 import { getAllVendors,getAllVehicles,deleteVehicle } from "../api/index";
 
 // ----------------------------------------------------------------------
@@ -264,7 +264,7 @@ export default function User() {
 					onCloseFilter={()=>{setAddVehicleOpen(false)}}
 					vehicleInfo = {{}}
 				/>
-				<updateVehicle
+				<UpdateEmployee
 					isOpenFilter={isUpdateVehicleOpen}
 					onOpenFilter= {()=>{setUpdateVehicleOpen(true)}}
 					onCloseFilter={()=>{setUpdateVehicleOpen(false)}}
