@@ -14,7 +14,6 @@ from rest_framework.authentication import (
     TokenAuthentication,
 )
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 
 from users.serializers import BranchSerializer, UserSerializer
@@ -38,28 +37,8 @@ from attendance.models import (
 from attendance.utils import qs_to_local_csv
 
 
-class CustomPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = "page_size"
-    max_page_size = 1000
-
-    def get_paginated_response(self, data):
-        return Response(
-            {
-                "links": {
-                    "next": self.get_next_link(),
-                    "previous": self.get_previous_link(),
-                },
-                "count": self.page.paginator.count,
-                "page_size": self.page_size,
-                "results": data,
-            }
-        )
-
-
 # @csrf_exempt
 class TripList(generics.ListCreateAPIView):
-
     # authentication_classes = [
     #     TokenAuthentication,
     #     SessionAuthentication,
@@ -68,7 +47,6 @@ class TripList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
-    pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = [
         "^custodian_1__first_name",
@@ -152,10 +130,9 @@ class TripDetail(generics.RetrieveUpdateDestroyAPIView):
         return self.update(request, *args, **kwargs)
 
 
-class AttendanceVehicleList(generics.RetrieveUpdateDestroyAPIView):
+class AttendanceVehicleList(generics.ListCreateAPIView):
     queryset = AttendanceVehicle.objects.all()
     serializer_class = AttendanceVehicleSerializer
-    pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^vehicle__model_name", "^vehicle__number_plate"]
 
@@ -179,7 +156,6 @@ class AttendanceVehicleDetail(generics.RetrieveUpdateDestroyAPIView):
 class AttendanceList(generics.RetrieveUpdateDestroyAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
-    pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^custodian__first_name", "^custodian__last_name"]
 
@@ -275,7 +251,6 @@ class AttendanceDetail(generics.RetrieveUpdateDestroyAPIView):
 class IssueList(generics.ListCreateAPIView):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
-    pagination_class = CustomPagination
     ordering_fields = "__all__"
 
 

@@ -5,37 +5,16 @@ from rest_framework import mixins
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 
 
-class CustomPagination(PageNumberPagination):
-    page_size = 100
-    page_size_query_param = "page_size"
-    max_page_size = 1000
-
-    def get_paginated_response(self, data):
-        return Response(
-            {
-                "links": {
-                    "next": self.get_next_link(),
-                    "previous": self.get_previous_link(),
-                },
-                "count": self.page.paginator.count,
-                "page_size": self.page_size,
-                "results": data,
-            }
-        )
-
-
 class UserList(generics.ListCreateAPIView):
     # permission_classes = (IsAuthenticatedOrWriteOnly,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    pagination_class = CustomPagination
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^first_name", "^last_name", "^username", "^email"]
@@ -60,7 +39,6 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 class BranchList(generics.ListCreateAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
-    pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^name", "^address"]
     filterset_fields = ["name", "address", "branch_manager", "region"]
@@ -75,7 +53,6 @@ class BranchDetail(generics.RetrieveUpdateDestroyAPIView):
 class RegionList(generics.ListCreateAPIView):
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
-    pagination_class = CustomPagination
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["^name", "^address"]
