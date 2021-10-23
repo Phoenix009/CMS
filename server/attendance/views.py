@@ -58,7 +58,7 @@ class CustomPagination(PageNumberPagination):
 
 
 # @csrf_exempt
-class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class TripList(generics.ListCreateAPIView):
 
     # authentication_classes = [
     #     TokenAuthentication,
@@ -93,10 +93,6 @@ class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
     }
     ordering_fields = "__all__"
 
-    def get(self, request, *args, **kwargs):
-        print(request.user)
-        return self.list(request, *args, **kwargs)
-
     def post(self, request, *args, **kwargs):
         validated_data = request.data
 
@@ -125,17 +121,9 @@ class TripList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         return self.create(request, *args, **kwargs)
 
 
-class TripDetail(
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    generics.GenericAPIView,
-):
+class TripDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         validated_data = request.data
@@ -163,16 +151,8 @@ class TripDetail(
             request.data["custodian_3"] = request.data["custodian_1"]
         return self.update(request, *args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
 
-
-class AttendanceVehicleList(
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    generics.GenericAPIView,
-    # filters.FilterSet,
-):
+class AttendanceVehicleList(generics.RetrieveUpdateDestroyAPIView):
     queryset = AttendanceVehicle.objects.all()
     serializer_class = AttendanceVehicleSerializer
     pagination_class = CustomPagination
@@ -190,37 +170,13 @@ class AttendanceVehicleList(
 
     ordering_fields = "__all__"
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class AttendanceVehicleDetail(
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    generics.GenericAPIView,
-):
+class AttendanceVehicleDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = AttendanceVehicle.objects.all()
     serializer_class = AttendanceVehicleSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-
-class AttendanceList(
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    generics.GenericAPIView,
-):
+class AttendanceList(generics.RetrieveUpdateDestroyAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
     pagination_class = CustomPagination
@@ -244,7 +200,8 @@ class AttendanceList(
         end_date = params.get("end_date", datetime.max)
 
         queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.filter(entry_time__date__range=[start_date, end_date])
+        queryset = queryset.filter(entry_time__date__range=[
+                                   start_date, end_date])
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -291,7 +248,8 @@ class AttendanceList(
                 attendance.save()
                 result.append(AttendanceSerializer(attendance).data)
             else:
-                custodian_ = get_object_or_404(Custodian, pk=data.pop("custodian"))
+                custodian_ = get_object_or_404(
+                    Custodian, pk=data.pop("custodian"))
                 added_by_ = get_object_or_404(User, pk=data.pop("added_by"))
                 branch_ = get_object_or_404(Branch, pk=data.pop("branch"))
                 attendance_sheet_ = get_object_or_404(
@@ -309,54 +267,18 @@ class AttendanceList(
         return Response(data=result)
 
 
-class AttendanceDetail(
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    generics.GenericAPIView,
-):
+class AttendanceDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-
-class IssueList(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
+class IssueList(generics.ListCreateAPIView):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
     pagination_class = CustomPagination
     ordering_fields = "__all__"
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class IssueDetail(
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    generics.GenericAPIView,
-):
+class IssueDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
