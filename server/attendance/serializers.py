@@ -96,7 +96,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         ]
 
 
-class TripSerializer(serializers.ModelSerializer):
+class TripCreateSerializer(serializers.ModelSerializer):
     vehicle = RelatedFieldAlternative(
         queryset=Vehicle.objects.all(), serializer=VehicleSerializer
     )
@@ -107,14 +107,60 @@ class TripSerializer(serializers.ModelSerializer):
         queryset=Custodian.objects.all(), serializer=CustodianSerializer
     )
     custodian_3 = RelatedFieldAlternative(
-        queryset=Custodian.objects.all(), serializer=CustodianSerializer
-    )
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer, required=False)
     branch = RelatedFieldAlternative(
         queryset=Branch.objects.all(), serializer=BranchSerializer
     )
     added_by = RelatedFieldAlternative(
         queryset=User.objects.all(), serializer=UserSerializer
     )
+
+    class Meta:
+        model = Trip
+        fields = [
+            "id",
+            "vehicle",
+            "trip_code",
+            "trip_start",
+            "custodian_1",
+            "custodian_2",
+            "custodian_3",
+            "start_location",
+            "end_location",
+            "branch",
+            "added_by",
+        ]
+
+    def create(self, validated_data):
+        validated_data["trip_code"] = token_hex(6).upper()
+
+        custodian_1 = validated_data.get("custodian_1")
+        custodian_2 = validated_data.get("custodian_2")
+        custodian_3 = validated_data.get("custodian_3")
+
+        if custodian_1:
+            validated_data["custodian_1_code"] = token_hex(6).upper()
+        if custodian_2:
+            validated_data["custodian_2_code"] = token_hex(6).upper()
+        if custodian_3:
+            validated_data["custodian_3_code"] = token_hex(6).upper()
+
+        return super().create(validated_data)
+
+
+class TripSerializer(serializers.ModelSerializer):
+    vehicle = RelatedFieldAlternative(
+        queryset=Vehicle.objects.all(), serializer=VehicleSerializer)
+    custodian_1 = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer)
+    custodian_2 = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer)
+    custodian_3 = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer)
+    branch = RelatedFieldAlternative(
+        queryset=Branch.objects.all(), serializer=BranchSerializer)
+    added_by = RelatedFieldAlternative(
+        queryset=User.objects.all(), serializer=UserSerializer)
 
     class Meta:
         model = Trip
@@ -137,23 +183,6 @@ class TripSerializer(serializers.ModelSerializer):
             "added_by",
         ]
 
-    def create(self, validated_data):
-        print(validated_data)
-        validated_data["trip_code"] = token_hex(6).upper()
-
-        custodian_1 = validated_data.get("custodian_1")
-        custodian_2 = validated_data.get("custodian_2")
-        custodian_3 = validated_data.get("custodian_3")
-
-        if custodian_1:
-            validated_data["custodian_1_code"] = token_hex(6).upper()
-        if custodian_2 != custodian_2:
-            validated_data["custodian_2_code"] = token_hex(6).upper()
-        if custodian_3 != custodian_1:
-            validated_data["custodian_3_code"] = token_hex(6).upper()
-
-        return super().create(validated_data)
-
     def update(self, instance, validated_data):
         custodian_1 = validated_data.get("custodian_1")
         custodian_2 = validated_data.get("custodian_2")
@@ -162,6 +191,7 @@ class TripSerializer(serializers.ModelSerializer):
         custodian_2_code = validated_data.get("custodian_2_code")
         custodian_3_code = validated_data.get("custodian_3_code")
         trip_start = validated_data.get("trip_start")
+
         if trip_start and trip_start == True and instance.trip_start == False:
             AttendanceVehicle.objects.create(
                 vehicle=instance.vehicle,
@@ -260,5 +290,5 @@ class IssueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = ["id", "comment", "reverted_by", "vendor", "sheet", "created_at"]
-
+        fields = ["id", "comment", "reverted_by",
+                  "vendor", "sheet", "created_at"]

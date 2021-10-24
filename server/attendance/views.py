@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import get_object_or_404
 
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -21,12 +21,32 @@ from attendance.serializers import (
     AttendanceSerializer,
     IssueSerializer,
     TripSerializer,
+    TripCreateSerializer,
     AttendanceVehicleSerializer,
 )
 
 
-# @csrf_exempt
-class TripList(generics.ListCreateAPIView):
+class TripCreate(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Trip.objects.all()
+    serializer_class = TripCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        custodian_1 = request.data.get("custodian_1")
+        custodian_2 = request.data.get("custodian_2")
+        custodian_3 = request.data.get("custodian_3")
+
+        if (custodian_1 == custodian_2) or \
+            (custodian_1 == custodian_3) or \
+                (custodian_3 == custodian_2):
+            return Response(
+                {"error": "The same custodian cannot be added more than once"},
+                status=status.HTTP_400_BAD_REQUEST)
+
+        return super().post(request, *args, **kwargs)
+
+
+class TripList(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
@@ -54,62 +74,23 @@ class TripList(generics.ListCreateAPIView):
     }
     ordering_fields = "__all__"
 
-    def post(self, request, *args, **kwargs):
-        validated_data = request.data
-
-        custodian_1 = validated_data.get("custodian_1")
-        custodian_2 = validated_data.get("custodian_2")
-        custodian_3 = validated_data.get("custodian_3")
-
-        if custodian_1 and custodian_2 and custodian_1 == custodian_2:
-            return Response(
-                "!! ERR !!: The same custodian cannot be added more than once"
-            )
-        if custodian_1 and custodian_3 and custodian_1 == custodian_3:
-            return Response(
-                "!! ERR !!: The same custodian cannot be added more than once"
-            )
-        if custodian_3 and custodian_2 and custodian_3 == custodian_2:
-            return Response(
-                "!! ERR !!: The same custodian cannot be added more than once"
-            )
-
-        if not custodian_2:
-            request.data["custodian_2"] = request.data["custodian_1"]
-        if not custodian_3:
-            request.data["custodian_3"] = request.data["custodian_1"]
-
-        return self.create(request, *args, **kwargs)
-
 
 class TripDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
 
     def put(self, request, *args, **kwargs):
-        validated_data = request.data
+        custodian_1 = request.data.get("custodian_1")
+        custodian_2 = request.data.get("custodian_2")
+        custodian_3 = request.data.get("custodian_3")
 
-        custodian_1 = validated_data.get("custodian_1")
-        custodian_2 = validated_data.get("custodian_2")
-        custodian_3 = validated_data.get("custodian_3")
+        if (custodian_1 == custodian_2) or \
+            (custodian_1 == custodian_3) or \
+                (custodian_3 == custodian_2):
+            return Response(
+                {"error": "The same custodian cannot be added more than once"},
+                status=status.HTTP_400_BAD_REQUEST)
 
-        if custodian_1 and custodian_2 and custodian_1 == custodian_2:
-            return Response(
-                "!! ERR !!: The same custodian cannot be added more than once"
-            )
-        if custodian_1 and custodian_3 and custodian_1 == custodian_3:
-            return Response(
-                "!! ERR !!: The same custodian cannot be added more than once"
-            )
-        if custodian_3 and custodian_2 and custodian_3 == custodian_2:
-            return Response(
-                "!! ERR !!: The same custodian cannot be added more than once"
-            )
-
-        if not custodian_2:
-            request.data["custodian_2"] = request.data["custodian_1"]
-        if not custodian_3:
-            request.data["custodian_3"] = request.data["custodian_1"]
         return self.update(request, *args, **kwargs)
 
 
