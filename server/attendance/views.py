@@ -116,6 +116,11 @@ class AttendanceVehicleDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class AttendanceList(generics.ListCreateAPIView):
+    # When the object of attendance is created for a custodian then
+    # the start time of the attendance is initialized
+    # For the exit time the same attendance object can be update
+    # with the `exit` flag set to True
+
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
