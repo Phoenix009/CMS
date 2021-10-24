@@ -1,18 +1,16 @@
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics, filters
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+
 from .models import Branch, Region
 from .serializers import BranchSerializer, RegionSerializer, UserSerializer
-from rest_framework import mixins
-from rest_framework import generics
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.decorators import api_view
-from django.shortcuts import get_object_or_404
 
 
 class UserList(generics.ListCreateAPIView):
-    # permission_classes = (IsAuthenticatedOrWriteOnly,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

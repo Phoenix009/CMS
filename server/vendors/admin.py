@@ -39,6 +39,14 @@ class VehicleAdmin(admin.ModelAdmin):
     list_per_page = 20
 
 
+class GunmenAdmin(admin.ModelAdmin):
+    list_display = ("id", "first_name", "last_name", "vendor")
+    list_display_links = ("vendor",)
+    search_fields = ("id", "first_name", "last_name",)
+    list_per_page = 20
+
+
 admin.site.register(Custodian, CustodianAdmin)
 admin.site.register(Vendor, VendorAdmin)
 admin.site.register(Vehicle, VehicleAdmin)
+admin.site.register(Gunmen, GunmenAdmin)

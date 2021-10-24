@@ -1,32 +1,14 @@
 from datetime import datetime
-from secrets import token_hex
-
 from django.shortcuts import get_object_or_404
 
-from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import filters
-
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import (
-    BasicAuthentication,
-    SessionAuthentication,
-    TokenAuthentication,
-)
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
-from users.serializers import BranchSerializer, UserSerializer
-from vendors.serializers import CustodianSerializer, VehicleSerializer
-from attendance.serializers import (
-    AttendanceSerializer,
-    IssueSerializer,
-    TripSerializer,
-    AttendanceVehicleSerializer,
-)
-
 from users.models import Branch, User
-from vendors.models import Custodian, Vehicle, Gunmen
+from vendors.models import Custodian
 from attendance.models import (
     Attendance,
     AttendanceSheet,
@@ -34,16 +16,17 @@ from attendance.models import (
     Issue,
     Trip,
 )
-from attendance.utils import qs_to_local_csv
+
+from attendance.serializers import (
+    AttendanceSerializer,
+    IssueSerializer,
+    TripSerializer,
+    AttendanceVehicleSerializer,
+)
 
 
 # @csrf_exempt
 class TripList(generics.ListCreateAPIView):
-    # authentication_classes = [
-    #     TokenAuthentication,
-    #     SessionAuthentication,
-    #     BasicAuthentication,
-    # ]
     permission_classes = [IsAuthenticated]
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
