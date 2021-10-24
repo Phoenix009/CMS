@@ -96,6 +96,33 @@ class AttendanceSerializer(serializers.ModelSerializer):
         ]
 
 
+class AttendanceUpdateSerializer(serializers.ModelSerializer):
+    custodian = RelatedFieldAlternative(
+        queryset=Custodian.objects.all(), serializer=CustodianSerializer, required=False
+    )
+    attendance_sheet = RelatedFieldAlternative(
+        queryset=AttendanceSheet.objects.all(), serializer=AttendanceSheetSerializer, required=False
+    )
+    branch = RelatedFieldAlternative(
+        queryset=Branch.objects.all(), serializer=BranchSerializer, required=False
+    )
+    added_by = RelatedFieldAlternative(
+        queryset=User.objects.all(), serializer=UserSerializer, required=False
+    )
+
+    class Meta:
+        model = Attendance
+        fields = [
+            "id",
+            "custodian",
+            "entry_time",
+            "exit_time",
+            "branch",
+            "added_by",
+            "attendance_sheet",
+        ]
+
+
 class TripCreateSerializer(serializers.ModelSerializer):
     vehicle = RelatedFieldAlternative(
         queryset=Vehicle.objects.all(), serializer=VehicleSerializer
