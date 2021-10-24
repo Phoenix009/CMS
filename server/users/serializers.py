@@ -6,6 +6,12 @@ from .models import Profile, Region, Branch
 
 
 class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
+    """
+        Used to serialize the primary key related field
+        If serializer is passed then the instance related with the pk is serialized
+        Else only the pk of the field is sent
+    """
+
     def __init__(self, **kwargs):
         self.serializer = kwargs.pop("serializer", None)
         if self.serializer is not None and not issubclass(
@@ -32,10 +38,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # profile = RelatedFieldAlternative(
-    #     queryset=Profile.objects.all(), serializer=ProfileSerializer
-    # )
-    profile = ProfileSerializer(required=False)
+    profile = RelatedFieldAlternative(
+        queryset=Profile.objects.all(), serializer=ProfileSerializer
+    )
 
     class Meta:
         model = User
@@ -58,8 +63,9 @@ class UserSerializer(serializers.ModelSerializer):
         profile_data = validated_data.pop("profile")
         random_password = token_hex(6).upper()
         encoded_password = make_password(random_password)
+
         user = User.objects.create(**validated_data, password=encoded_password)
-        profile = Profile.objects.create(user=user, **profile_data)
+        Profile.objects.create(user=user, **profile_data)
 
         # mail(
         #     subject='CMS Login Credentials',
@@ -70,8 +76,10 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        instance.first_name = validated_data.get("first_name", instance.first_name)
-        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.first_name = validated_data.get(
+            "first_name", instance.first_name)
+        instance.last_name = validated_data.get(
+            "last_name", instance.last_name)
         instance.email = validated_data.get("email", instance.email)
         instance.username = validated_data.get("username", instance.username)
 
@@ -83,7 +91,8 @@ class UserSerializer(serializers.ModelSerializer):
             profile.is_superuser = profile_data.get(
                 "is_superuser", profile.is_superuser
             )
-            profile.is_incharge = profile_data.get("is_incharge", profile.is_incharge)
+            profile.is_incharge = profile_data.get(
+                "is_incharge", profile.is_incharge)
             profile.save()
         else:
             profile = Profile.objects.create(user=instance, **profile_data)
