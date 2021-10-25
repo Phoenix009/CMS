@@ -8,9 +8,10 @@
 *.pyc
 __pycache__/
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
+# db.sqlite3
+# db.sqlite3-journal
 media
+csvstorage/
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
@@ -167,7 +168,6 @@ sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/django,react
 {"mode":"full","isActive":false}
-<<<<<<< HEAD
 /client/node_modules
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
@@ -194,6 +194,6 @@ sketch
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-=======
-client/node_modules
->>>>>>> 41c413222912585d191bff8f01499aa1ade3307f
+/requests.txt
+/requests.http
+/.vscode

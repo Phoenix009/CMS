@@ -1,0 +1,1 @@
+PUT http://localhost:8000/api/users/user HTTP/1.1
