@@ -4,7 +4,7 @@ import { sentenceCase } from "change-case";
 import { useState,useEffect } from "react";
 import plusFill from "@iconify/icons-eva/plus-fill";
 import { Link as RouterLink } from "react-router-dom";
-import {toast} from 'react-toastify';
+import { showToast, showErrorToast } from "src/utils/toasts";
 // material
 import {
 	Card,
@@ -96,12 +96,12 @@ export default function User() {
 	const [filterName, setFilterName] = useState("");
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [isAddEmployeeOpen, setAddEmployeeOpen] = useState(false);
-	const [isUpdateEmployeeOpen, setUpdateEmployeeOpen] = useState(false);	
+	const [isUpdateEmployeeOpen, setUpdateEmployeeOpen] = useState(false);
 	const [vendors, setVendors] = useState([]);
 	const [vendorInfo, setVendorInfo] = useState({});
 
-	
-	
+
+
 	// const handleClose
 
 	const handleRequestSort = (event, property) => {
@@ -171,37 +171,11 @@ export default function User() {
 			);
 				console.log(data);
 				if(data.status === 204){
-					toast('Vendor Deleted', {
-						position: "top-right",
-						autoClose: 5000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-					});
+					showToast();
 					getData();
-				}else{
-					toast.error('Something went wrong!', {
-						position: "top-right",
-						autoClose: 5000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-						progress: undefined,
-					});
-				} 
+				}else showErrorToast();
 			}catch(error){
-				console.log(error);
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
+				showErrorToast();
 			}
 	  }
 
@@ -212,27 +186,10 @@ export default function User() {
 			if(data.status === 200 ){
 				setVendors(data?.data?.results);
 			}else{
-				toast.error('Something went wrong!', {
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				});
-			} 
+				showErrorToast();
+			}
 		}catch(error){
-			console.log(error);
-			toast.error('Something went wrong!', {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
+			showErrorToast();
 		}
 	}
 
@@ -255,7 +212,7 @@ export default function User() {
 							Dashboard
 						</RouterLink>
 						<Typography color="textPrimary">Vendors</Typography>
-						</Breadcrumbs>
+					</Breadcrumbs>
 					<Button
 						variant="contained"
 						onClick={()=>{setAddEmployeeOpen(true)}}
@@ -326,7 +283,7 @@ export default function User() {
 											</TableCell>
 
 											<TableCell align="right">
-												<UserMoreMenu 
+												<UserMoreMenu
 													handleEdit={()=>{openUpdateVendorDrawer(row)}}
 												handleDelete={()=>{handleDeleteVendor(row)}}
 												/>

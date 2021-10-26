@@ -42,6 +42,8 @@ UpdateGunmen.propTypes = {
 	branchInfo: PropTypes.object,
 };
 
+
+// TODO: Update to actually update the gunman
 export default function UpdateGunmen({
 	isOpenFilter,
 	onResetFilter,
