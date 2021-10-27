@@ -45,6 +45,7 @@ const TABLE_HEAD = [
 
 export default function Branch() {
     const [page, setPage] = useState(0);
+    const [totalGunman, setTotalGunman] = useState(0);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -55,9 +56,12 @@ export default function Branch() {
 
     const getGunmen = async () => {
         try {
-            const data = await getAllGunmen();
-            if (data.status === 200) setGunmen(data?.data?.results);
-            else showErrorToast();
+            const data = await getAllGunmen(page);
+            if (data.status === 200) {
+                setTotalGunman(data?.data?.count);
+                setGunmen(data?.data?.results);
+            }
+            else { showErrorToast() };
         }   catch (error) {
             showErrorToast();
         }
@@ -109,7 +113,7 @@ export default function Branch() {
 
     useEffect(() => {
         getGunmen();
-    }, []);
+    }, [page]);
 
 
 
@@ -212,7 +216,7 @@ export default function Branch() {
 
                     <TablePagination
                         component="div"
-                        count={gunmen.length}
+                        count={totalGunman}
                         rowsPerPageOptions={[]}
                         rowsPerPage={10}
                         page={page}
@@ -222,5 +226,4 @@ export default function Branch() {
             </Container>
         </Page>
     );
-
 }

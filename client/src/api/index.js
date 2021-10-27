@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const baseURL = "http://localhost:8000/api/";
+const PAGE_SIZE = 10;
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
@@ -117,7 +118,8 @@ export const deleteVendor = (row) => {
   return axiosInstance.delete(`vendor/vendor/${row}/`);
 };
 
-export const getAllGunmen = () => axiosInstance.get("vendor/custodian");
+export const getAllGunmen = (page) => axiosInstance.get("vendor/custodian", {params: {offset: page*PAGE_SIZE}});
+
 export const addGunmen = (formData) =>
   axiosInstance.post("vendor/custodian/", formData);
 export const updateGunmen = (id, formData) => {

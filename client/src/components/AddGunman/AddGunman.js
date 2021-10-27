@@ -50,7 +50,6 @@ export default function AddGunmen({
 
   const handleSubmit = async () => {
     try {
-        console.log(gunman);
       const data = await addGunmen(gunman);
       if (data.status === 201) {
         showToast("Gunman Added");
